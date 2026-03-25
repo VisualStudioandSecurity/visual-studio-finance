@@ -1,201 +1,188 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11493047857"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-11493047857');
+    </script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4389870681468404" crossorigin="anonymous"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Studio & Security | Intelligence Hub</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg: #0a0c10;
             --card: #161b22;
             --text: #c9d1d9;
-            --header: #f0f6fc;
-            --accent-green: #238636;
-            --accent-blue: #58a6ff;
-            --accent-gold: #f3ba2f;
+            --accent: #58a6ff;
             --border: #30363d;
-            --code-bg: #010409;
+            --critical: #d73a49;
+            --success: #3fb950;
         }
-
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: var(--bg); 
+            background: var(--bg); 
             color: var(--text); 
-            margin: 0; 
-            line-height: 1.6; 
+            line-height: 1.6;
             overflow-x: hidden;
         }
 
-        /* --- Header com o Olho Metálico --- */
-        header {
-            position: relative;
-            height: 500px;
-            overflow: hidden;
+        /* Layout Estrutural */
+        .main-layout {
             display: flex;
-            align-items: center;
             justify-content: center;
-            border-bottom: 2px solid var(--accent-blue);
-            background-color: #000;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 40px auto;
+            padding: 0 20px;
         }
 
-        .header-video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            object-fit: cover;
-            opacity: 0.5;
-            filter: brightness(0.7) contrast(1.2);
-        }
+        .side-ad { flex: 0 0 160px; display: none; }
+        @media (min-width: 1240px) { .side-ad { display: block; } }
 
-        .header-content {
-            position: relative;
-            z-index: 2;
-            background: rgba(13, 17, 23, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            border: 1px solid var(--border);
-            max-width: 800px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+        .content-area { flex: 1; max-width: 900px; }
 
-        .logo { 
-            font-family: 'Poppins', sans-serif; 
-            font-size: 2.5rem; 
-            color: var(--header); 
-            margin: 0; 
-            text-transform: uppercase; 
-            letter-spacing: 2px;
-        }
-
-        .logo span { color: var(--accent-blue); }
-
-        /* --- Grid de Conteúdo --- */
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-
-        .articles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-        }
-
-        .featured-article { 
-            background: var(--card); 
-            border: 1px solid var(--border); 
-            border-radius: 12px; 
-            overflow: hidden; 
+        /* Componentes de UI */
+        .status-bar {
+            background: #0d1117;
+            padding: 12px 25px;
             display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .featured-article:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-blue);
+        .intel-report {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 40px;
+            margin-bottom: 30px;
         }
 
-        .article-header-img { width: 100%; height: 200px; background-size: cover; background-position: center; }
-        .article-body { padding: 25px; flex-grow: 1; }
-
-        .badge { 
-            display: inline-block; padding: 4px 10px; border-radius: 6px; 
-            font-size: 0.7rem; font-weight: 700; margin-bottom: 12px; 
-            text-transform: uppercase; background: var(--accent-green); color: white; 
-        }
-        .badge-alert { background: #d73a49; }
-
-        h2.post-title { font-size: 1.4rem; color: var(--header); margin: 0 0 10px 0; }
-        .meta { font-size: 0.75rem; color: #8b949e; margin-bottom: 15px; display: block; }
-
-        /* --- Glossário de Especialista --- */
-        .glossary { 
-            background: #1c2128; padding: 40px; border-radius: 12px; 
-            border: 1px dotted var(--border); margin-top: 60px; 
-        }
-        .glossary h2 { color: var(--accent-blue); font-family: 'JetBrains Mono', monospace; }
-        .glossary dt { font-weight: bold; color: var(--accent-gold); margin-top: 15px; font-family: 'JetBrains Mono', monospace; }
-
-        footer { 
-            text-align: center; padding: 60px 20px; 
-            border-top: 1px solid var(--border); background: var(--code-bg); 
-        }
-        .nav-links a { color: var(--accent-blue); text-decoration: none; margin: 0 15px; font-weight: 600; }
+        .badge { background: var(--critical); color: #fff; padding: 4px 8px; font-family: 'JetBrains Mono'; font-size: 0.7rem; border-radius: 4px; }
+        h1.report-title { font-family: 'JetBrains Mono'; font-size: 1.8rem; margin: 20px 0; color: #fff; }
         
-        @media (max-width: 768px) {
-            .logo { font-size: 1.8rem; }
-            header { height: 400px; }
+        .report-content p { margin-bottom: 20px; color: #8b949e; text-align: justify; }
+        .tool-list { margin: 25px 0; padding-left: 20px; border-left: 2px solid var(--accent); }
+        .tool-item { margin-bottom: 15px; font-size: 0.9rem; }
+        .tool-name { color: var(--accent); font-family: 'JetBrains Mono'; font-weight: bold; }
+
+        /* Seção Como se Proteger */
+        .protection-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(63, 185, 80, 0.05);
+            border: 1px solid var(--success);
+            border-radius: 8px;
         }
+
+        .multiplex-container {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(22, 27, 34, 0.5);
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+        }
+
+        footer { text-align: center; padding: 60px; border-top: 1px solid var(--border); opacity: 0.5; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-<header>
-    <video autoplay loop muted playsinline class="header-video">
-        <source src="assets/tech_eye_background.mp4" type="video/mp4">
-    </video>
-    
-    <div class="header-content">
-        <h1 class="logo">Visual Studio <span>& Security</span></h1>
-        <p>Hub de Inteligência em Cibersegurança e Defesa Digital</p>
+<div class="status-bar">
+    <div style="display: flex; gap: 20px;">
+        <div><span style="color:var(--accent)">ID:</span> VISUAL_STUDIO_SECURITY</div>
+        <div><span style="color:var(--accent)">STATUS:</span> <span style="color:var(--success)">ONLINE</span></div>
     </div>
-</header>
+    <div><span style="color:var(--accent)">IP:</span> <span id="ip-addr">168.228.25.207</span></div>
+</div>
 
-<div class="container">
-    <div class="articles-grid">
-        <article class="featured-article">
-            <div class="article-header-img" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=600');"></div>
-            <div class="article-body">
-                <span class="badge">Relatório Técnico</span>
-                <h2 class="post-title">Campanha FAUX#ELEVATE</h2>
-                <span class="meta">24 Mar, 2026</span>
-                <p>Análise de exfiltração de dados Chromium via VBScript em ambientes Windows.</p>
-            </div>
-        </article>
+<div class="main-layout">
+    <aside class="side-ad">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4389870681468404"
+             data-ad-slot="9778961944"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
 
-        <article class="featured-article">
-            <div class="article-header-img" style="background-image: url('https://images.unsplash.com/photo-21780ecad995?q=80&w=600');"></div>
-            <div class="article-body">
-                <span class="badge badge-alert">Alerta Crítico</span>
-                <h2 class="post-title">Vulnerabilidade XPIA em IAs</h2>
-                <span class="meta">24 Mar, 2026</span>
-                <p>Riscos de injeção indireta de prompt em agentes autônomos OpenClaw.</p>
-            </div>
-        </article>
-    </div>
-
-    <section class="glossary">
-        <h2>_terminologia_técnica</h2>
-        <dl>
-            <dt>WMI (Windows Management Instrumentation)</dt>
-            <dd>Framework explorado para persistência e coleta de dados silenciosa.</dd>
+    <main class="content-area">
+        <article class="intel-report">
+            <span class="badge">Ameaça Crítica: FAUX#ELEVATE</span>
+            <h1 class="report-title">Relatório de Inteligência: Mineração e Exfiltração de Dados</h1>
             
-            <dt>ABE (App-Bound Encryption)</dt>
-            <dd>Camada de proteção que vincula segredos à identidade do executável no Chrome.</dd>
-        </dl>
-    </section>
+            <div class="report-content">
+                <p><strong>Hackers estão utilizando uma nova abordagem para roubar credenciais empresariais e implementando o Crypto miner (Mecanismo de Mineração de Crypto ativos).</strong></p>
+                
+                <p>A campanha utiliza currículos falsos ofuscados em VBScript para infectar redes corporativas. O vírus aplica uma execução de ferramentas multiuso configurada para extrair dados e minerar crypto ativos da rede Monero.</p>
+
+                <p>O ataque se destaca por abusar de infraestruturas legítimas como DropBox e servidores WordPress comprometidos para controle (C2). A exfiltração utiliza SMTP direto para contas de e-mail russas (.ru).</p>
+
+                <div class="tool-list">
+                    <div class="tool-item"><span class="tool-name">mozilla.vbs:</span> Roubo de credenciais do navegador Firefox.</div>
+                    <div class="tool-item"><span class="tool-name">mservice.exe:</span> Minerador XMRig de alta performance.</div>
+                    <div class="tool-item"><span class="tool-name">WinRing0x64.sys:</span> Driver de kernel para maximizar uso da CPU.</div>
+                </div>
+
+                <p>O malware desativa agressivamente o Microsoft Defender e o UAC via registros do Windows, completando a infecção e exfiltração em aproximadamente 25 segundos.</p>
+            </div>
+
+            <section class="protection-box">
+                <h2 style="font-family: 'JetBrains Mono'; color: var(--success); margin-bottom: 20px; font-size: 1.2rem;">>_ COMO SE PROTEGER</h2>
+                <div style="font-size: 0.9rem; color: #8b949e;">
+                    <p style="margin-bottom: 10px;"><strong style="color:#fff">1. Bloqueio de Scripts:</strong> Desative a execução de arquivos .vbs e .js via GPO.</p>
+                    <p style="margin-bottom: 10px;"><strong style="color:#fff">2. Monitoramento WMI:</strong> Alerte sobre criações de processos incomuns como <em>RuntimeHost.exe</em>.</p>
+                    <p style="margin-bottom: 10px;"><strong style="color:#fff">3. Filtro SMTP:</strong> Bloqueie conexões de saída em portas de e-mail para domínios desconhecidos.</p>
+                </div>
+            </section>
+        </article>
+
+        <div class="multiplex-container">
+            <h3 style="color: var(--accent); font-size: 0.8rem; margin-bottom: 15px; font-family: 'JetBrains Mono';">_conteudo_relacionado</h3>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-format="autorelaxed"
+                 data-ad-client="ca-pub-4389870681468404"
+                 data-ad-slot="9348417801"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+    </main>
+
+    <aside class="side-ad">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4389870681468404"
+             data-ad-slot="9778961944"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
 </div>
 
 <footer>
-    <nav class="nav-links">
-        <a href="#">Dashboards</a>
-        <a href="#">Projetos</a>
-        <a href="#">Cybersecurity</a>
-    </nav>
-    <p>&copy; 2026 Kovaliosky DeV | Visual Studio & Security. Licenciado sob Apache 2.0.</p>
+    <p>&copy; 2026 Kovaliosky DeV | Visual Studio & Security.</p>
 </footer>
+
+<script>
+    fetch('https://api.ipify.org?format=json')
+        .then(res => res.json())
+        .then(data => document.getElementById('ip-addr').innerText = data.ip);
+</script>
 
 </body>
 </html>
