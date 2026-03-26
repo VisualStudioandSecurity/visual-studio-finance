@@ -8,7 +8,6 @@
       gtag('js', new Date());
       gtag('config', 'AW-11493047857');
     </script>
-
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4389870681468404" crossorigin="anonymous"></script>
 
     <meta charset="UTF-8">
@@ -33,7 +32,36 @@
             color: var(--text); 
             line-height: 1.6;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
+
+        /* Status Bar com Link Interligado */
+        .status-bar {
+            background: #0d1117;
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            color: var(--bg);
+            background: var(--success);
+            text-decoration: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+        .nav-btn:hover { opacity: 0.8; }
 
         /* Layout Estrutural */
         .main-layout {
@@ -43,6 +71,7 @@
             max-width: 1600px;
             margin: 40px auto;
             padding: 0 20px;
+            flex-grow: 1;
         }
 
         .side-ad { flex: 0 0 160px; display: none; }
@@ -51,19 +80,6 @@
         .content-area { flex: 1; max-width: 900px; }
 
         /* Componentes de UI */
-        .status-bar {
-            background: #0d1117;
-            padding: 12px 25px;
-            display: flex;
-            justify-content: space-between;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
         .intel-report {
             background: var(--card);
             border: 1px solid var(--border);
@@ -80,7 +96,6 @@
         .tool-item { margin-bottom: 15px; font-size: 0.9rem; }
         .tool-name { color: var(--accent); font-family: 'JetBrains Mono'; font-weight: bold; }
 
-        /* Seção Como se Proteger */
         .protection-box {
             margin-top: 40px;
             padding: 30px;
@@ -89,100 +104,10 @@
             border-radius: 8px;
         }
 
-        .multiplex-container {
-            margin-top: 40px;
-            padding: 20px;
-            background: rgba(22, 27, 34, 0.5);
-            border: 1px dashed var(--border);
-            border-radius: 8px;
-        }
-
-        footer { text-align: center; padding: 60px; border-top: 1px solid var(--border); opacity: 0.5; font-size: 0.8rem; }
+        footer { text-align: center; padding: 40px; border-top: 1px solid var(--border); font-size: 0.8rem; color: #8b949e; margin-top: auto; }
     </style>
 </head>
 <body>
 
 <div class="status-bar">
-    <div style="display: flex; gap: 20px;">
-        <div><span style="color:var(--accent)">ID:</span> VISUAL_STUDIO_SECURITY</div>
-        <div><span style="color:var(--accent)">STATUS:</span> <span style="color:var(--success)">ONLINE</span></div>
-    </div>
-    <div><span style="color:var(--accent)">IP:</span> <span id="ip-addr">168.228.25.207</span></div>
-</div>
-
-<div class="main-layout">
-    <aside class="side-ad">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-4389870681468404"
-             data-ad-slot="9778961944"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </aside>
-
-    <main class="content-area">
-        <article class="intel-report">
-            <span class="badge">Ameaça Crítica: FAUX#ELEVATE</span>
-            <h1 class="report-title">Relatório de Inteligência: Mineração e Exfiltração de Dados</h1>
-            
-            <div class="report-content">
-                <p><strong>Hackers estão utilizando uma nova abordagem para roubar credenciais empresariais e implementando o Crypto miner (Mecanismo de Mineração de Crypto ativos).</strong></p>
-                
-                <p>A campanha utiliza currículos falsos ofuscados em VBScript para infectar redes corporativas. O vírus aplica uma execução de ferramentas multiuso configurada para extrair dados e minerar crypto ativos da rede Monero.</p>
-
-                <p>O ataque se destaca por abusar de infraestruturas legítimas como DropBox e servidores WordPress comprometidos para controle (C2). A exfiltração utiliza SMTP direto para contas de e-mail russas (.ru).</p>
-
-                <div class="tool-list">
-                    <div class="tool-item"><span class="tool-name">mozilla.vbs:</span> Roubo de credenciais do navegador Firefox.</div>
-                    <div class="tool-item"><span class="tool-name">mservice.exe:</span> Minerador XMRig de alta performance.</div>
-                    <div class="tool-item"><span class="tool-name">WinRing0x64.sys:</span> Driver de kernel para maximizar uso da CPU.</div>
-                </div>
-
-                <p>O malware desativa agressivamente o Microsoft Defender e o UAC via registros do Windows, completando a infecção e exfiltração em aproximadamente 25 segundos.</p>
-            </div>
-
-            <section class="protection-box">
-                <h2 style="font-family: 'JetBrains Mono'; color: var(--success); margin-bottom: 20px; font-size: 1.2rem;">>_ COMO SE PROTEGER</h2>
-                <div style="font-size: 0.9rem; color: #8b949e;">
-                    <p style="margin-bottom: 10px;"><strong style="color:#fff">1. Bloqueio de Scripts:</strong> Desative a execução de arquivos .vbs e .js via GPO.</p>
-                    <p style="margin-bottom: 10px;"><strong style="color:#fff">2. Monitoramento WMI:</strong> Alerte sobre criações de processos incomuns como <em>RuntimeHost.exe</em>.</p>
-                    <p style="margin-bottom: 10px;"><strong style="color:#fff">3. Filtro SMTP:</strong> Bloqueie conexões de saída em portas de e-mail para domínios desconhecidos.</p>
-                </div>
-            </section>
-        </article>
-
-        <div class="multiplex-container">
-            <h3 style="color: var(--accent); font-size: 0.8rem; margin-bottom: 15px; font-family: 'JetBrains Mono';">_conteudo_relacionado</h3>
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-format="autorelaxed"
-                 data-ad-client="ca-pub-4389870681468404"
-                 data-ad-slot="9348417801"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        </div>
-    </main>
-
-    <aside class="side-ad">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-4389870681468404"
-             data-ad-slot="9778961944"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </aside>
-</div>
-
-<footer>
-    <p>&copy; 2026 Kovaliosky DeV | Visual Studio & Security.</p>
-</footer>
-
-<script>
-    fetch('https://api.ipify.org?format=json')
-        .then(res => res.json())
-        .then(data => document.getElementById('ip-addr').innerText = data.ip);
-</script>
-
-</body>
-</html>
+    <div style="display: flex; gap: 20px; align
