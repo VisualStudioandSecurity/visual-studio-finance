@@ -1,1012 +1,154 @@
-<!doctype html>
-<html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Security Navigator Dashboard</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
-  <style>
-html, body { height: 100%; margin: 0; }
-* { box-sizing: border-box; }
-body { font-family: 'DM Sans', sans-serif; }
-.mono { font-family: 'Space Mono', monospace; }
-.fade-in { animation: fadeIn 0.6s ease both; }
-.fade-in-d1 { animation: fadeIn 0.6s ease 0.1s both; }
-.fade-in-d2 { animation: fadeIn 0.6s ease 0.2s both; }
-.fade-in-d3 { animation: fadeIn 0.6s ease 0.3s both; }
-.fade-in-d4 { animation: fadeIn 0.6s ease 0.4s both; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.bar-grow { animation: barGrow 1s ease both; }
-@keyframes barGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-.glow-line { background: linear-gradient(90deg, transparent, var(--accent), transparent); height: 1px; }
-.stat-ring { background: conic-gradient(var(--accent) var(--pct), rgba(255,255,255,0.08) 0); }
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
-.tab-btn { transition: all 0.2s; }
-.tab-btn.active { border-bottom: 2px solid var(--accent); color: var(--accent); }
-.donut-segment { transition: stroke-dashoffset 0.8s ease; }
-</style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script>
-// Bloqueia DevTools e inspeção
-(function() {
-  // Detecta F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+Shift+K
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'F12' || 
-        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-        (e.ctrlKey && e.shiftKey && e.key === 'J') ||
-        (e.ctrlKey && e.shiftKey && e.key === 'C') ||
-        (e.ctrlKey && e.shiftKey && e.key === 'K') ||
-        (e.ctrlKey && e.key === 'u')) {
-      e.preventDefault();
-      e.stopPropagation();
-      return false;
-    }
-  }, true);
+import time
+import ssl
+import socket
+import requests
+import dns.resolver
+from datetime import datetime
+from typing import List
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 
-  // Bloqueia clique direito + inspeção
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  }, true);
+app = FastAPI(title="Visual Studio Security Engine")
 
-  // Detecta abertura de DevTools via console
-  const devtools = { open: false, orientation: null };
-  const threshold = 160;
-  
-  setInterval(function() {
-    if (window.outerHeight - window.innerHeight > threshold ||
-        window.outerWidth - window.innerWidth > threshold) {
-      if (!devtools.open) {
-        devtools.open = true;
-        // DevTools detectado - redireciona ou limpa
-        document.body.innerHTML = '';
-        window.location.href = 'about:blank';
-      }
-    } else {
-      devtools.open = false;
-    }
-  }, 500);
+# Habilitar CORS para o seu Frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-  // Bloqueia debugger
-  setInterval(function() {
-    debugger;
-  }, 100);
-})();
-  </script>
- </head>
- <body class="h-full">
-  <div id="app" class="w-full h-full overflow-auto" style="background:#0a0e1a;"><!-- Header -->
-   <header class="fade-in px-6 pt-6 pb-4 flex items-center justify-between flex-wrap gap-3" style="border-bottom:1px solid rgba(255,255,255,0.06);">
-    <div class="flex items-center gap-3">
-     <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#1a5c3a,#2a7a4a);"><i data-lucide="shield" style="width:20px;height:20px;color:#fff;"></i>
-     </div>
-     <div>
-      <h1 id="mainTitle" class="text-lg font-bold" style="color:#f0f0f0;">Navegador Visual Studio And Security</h1>
-      <p id="subtitle" class="text-xs" style="color:#7a8299;">Orange Cyberdefense — Key Data on Cybersecurity</p>
-     </div>
-    </div>
-    <div class="flex items-center gap-2"><span class="mono text-xs px-3 py-1 rounded-full" style="background:rgba(26,92,58,0.2);color:#2a7a4a;">2026 © Direitos Reservados</span> <span class="mono text-xs px-3 py-1 rounded-full" style="background:rgba(255,255,255,0.05);color:#7a8299;">160 Countries</span>
-    </div>
-   </header><!-- Tabs -->
-   <nav class="px-6 pt-4 flex gap-6 text-sm overflow-x-auto" style="border-bottom:1px solid rgba(255,255,255,0.06);"><button class="tab-btn active pb-3 font-medium whitespace-nowrap" style="color:#2a7a4a;" data-tab="overview" onclick="switchTab('overview')">Overview</button> <button class="tab-btn pb-3 font-medium whitespace-nowrap" style="color:#7a8299;" data-tab="threat" onclick="switchTab('threat')">Threat Alert</button> <button class="tab-btn pb-3 font-medium whitespace-nowrap" style="color:#7a8299;" data-tab="cyx" onclick="switchTab('cyx')">Cy-X Trends</button> <button class="tab-btn pb-3 font-medium whitespace-nowrap" style="color:#7a8299;" data-tab="findings" onclick="switchTab('findings')">Key Findings</button>
-   </nav><!-- TAB: Overview -->
-   <div id="tab-overview" class="px-6 py-5"><!-- Top Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 fade-in-d1">
-     <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <p class="text-xs mb-1" style="color:#7a8299;">Potential Incidents</p>
-      <p class="mono text-2xl font-bold" style="color:#ff6600;">139,373</p>
-     </div>
-     <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <p class="text-xs mb-1" style="color:#7a8299;">Confirmed Incidents</p>
-      <p class="mono text-2xl font-bold" style="color:#2a7a4a;">19,053</p>
-     </div>
-     <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <p class="text-xs mb-1" style="color:#7a8299;">Confirmation Rate</p>
-      <p class="mono text-2xl font-bold" style="color:#f0f0f0;">13.7%</p>
-     </div>
-     <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <p class="text-xs mb-1" style="color:#7a8299;">Security Vendors Tracked</p>
-      <p class="mono text-2xl font-bold" style="color:#f0f0f0;">25</p>
-     </div>
-    </div><!-- Funnel Visual -->
-    <div class="fade-in-d2 rounded-xl p-5 mb-6" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-     <h2 class="text-sm font-semibold mb-1" style="color:#f0f0f0;">Incident Funnel</h2>
-     <p class="text-xs mb-4" style="color:#7a8299;">139,373 potential → 19,053 confirmed security incidents</p>
-     <div class="flex items-center gap-3">
-      <div class="h-8 rounded" style="width:100%;background:linear-gradient(90deg,#1a5c3a,#2a7a4a);opacity:0.9;"></div>
-     </div>
-     <div class="flex items-center gap-3">
-      <div class="h-8 rounded" style="width:13.7%;background:#2a7a4a;"></div><span class="mono text-xs" style="color:#1a5c3a;">13.7% confirmed</span>
-     </div>
-    </div><!-- Three Column Breakdown -->
-    <div class="grid md:grid-cols-3 gap-4 fade-in-d3"><!-- Actors -->
-     <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <div class="flex items-center gap-2 mb-4"><i data-lucide="user" style="width:16px;height:16px;color:#2a7a4a;"></i>
-       <h3 class="text-sm font-semibold" style="color:#f0f0f0;">Actors</h3>
-      </div>
-      <div id="actors-chart" class="space-y-2"></div>
-     </div><!-- Actions -->
-     <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <div class="flex items-center gap-2 mb-4"><i data-lucide="zap" style="width:16px;height:16px;color:#2a7a4a;"></i>
-       <h3 class="text-sm font-semibold" style="color:#f0f0f0;">Actions</h3>
-      </div>
-      <div id="actions-chart" class="space-y-2"></div>
-     </div><!-- Assets -->
-     <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <div class="flex items-center gap-2 mb-4"><i data-lucide="server" style="width:16px;height:16px;color:#2a7a4a;"></i>
-       <h3 class="text-sm font-semibold" style="color:#f0f0f0;">Assets Targeted</h3>
-      </div>
-      <div id="assets-chart" class="space-y-2"></div>
-     </div>
-    </div>
-   </div><!-- TAB: Threat Alert -->
-   <div id="tab-threat" class="px-6 py-5 hidden">
-    <div class="fade-in rounded-xl p-6 mb-6" style="background:rgba(26,92,58,0.12);border:1px solid rgba(42,122,74,0.4);">
-     <div class="flex items-start gap-4">
-      <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(42,122,74,0.2);"><i data-lucide="alert-circle" style="width:24px;height:24px;color:#2a7a4a;"></i>
-      </div>
-      <div>
-       <h2 id="threatTitle" class="text-lg font-bold mb-1" style="color:#2a7a4a;">CRITICAL THREAT DETECTED</h2>
-       <p id="threatName" class="mono text-2xl font-bold mb-4" style="color:#2a7a4a;">FAUX#ELEVATE</p>
-       <p class="text-sm leading-relaxed mb-4" style="color:#d0d5e0;">O <strong>FAUX#ELEVATE</strong> é uma ameaça avançada de exfiltração de dados e mineração. O ataque inicia-se através de currículos falsos (Fake CVs) ofuscados em <strong>VBScript</strong>, desenhados para contornar filtros de rede corporativos e comprometer credenciais empresariais.</p>
-      </div>
-     </div>
-    </div><!-- Threat Details Grid -->
-    <div class="grid md:grid-cols-2 gap-4 mb-6">
-     <div class="fade-in-d1 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(42,122,74,0.2);">
-      <h3 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color:#f0f0f0;"><i data-lucide="virus" style="width:16px;height:16px;color:#2a7a4a;"></i>Vetor de Infeção</h3>
-      <p class="text-xs leading-relaxed" style="color:#9aa0b0;">VBScript ofuscado em documentos de recrutamento</p>
-     </div>
-     <div class="fade-in-d1 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(42,122,74,0.2);">
-      <h3 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color:#f0f0f0;"><i data-lucide="cpu" style="width:16px;height:16px;color:#2a7a4a;"></i>Componente: mservice.exe</h3>
-      <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Implementação do minerador XMRig para exploração de CPU</p>
-     </div>
-     <div class="fade-in-d2 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(42,122,74,0.2);">
-      <h3 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color:#f0f0f0;"><i data-lucide="key" style="width:16px;height:16px;color:#2a7a4a;"></i>Componente: mozilla.vbs</h3>
-      <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Script dedicado ao roubo de credenciais do navegador Firefox</p>
-     </div>
-     <div class="fade-in-d2 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(42,122,74,0.2);">
-      <h3 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color:#f0f0f0;"><i data-lucide="shield-off" style="width:16px;height:16px;color:#2a7a4a;"></i>Persistência no Kernel</h3>
-      <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Uso do driver WinRing0x64.sys para maximizar recursos</p>
-     </div>
-     <div class="fade-in-d3 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(42,122,74,0.2);">
-      <h3 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color:#f0f0f0;"><i data-lucide="eye-off" style="width:16px;height:16px;color:#2a7a4a;"></i>Ação Evasiva</h3>
-      <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Desativação forçada do Microsoft Defender e Controlo de Conta de Utilizador (UAC)</p>
-     </div>
-    </div><!-- Defense Guide -->
-    <div class="fade-in-d4 rounded-xl p-6 mb-6" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
-     <h3 class="text-sm font-semibold mb-5 uppercase" style="color:#f0f0f0;letter-spacing:1px;">Manual de Defesa Ativa</h3>
-     <div class="space-y-4">
-      <div>
-       <h4 class="text-xs font-bold mb-2" style="color:#ff6600;">1. Neutralização de Binários</h4>
-       <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Localize e encerre o processo <strong>mservice.exe</strong>. Remova o script <strong>mozilla.vbs</strong> das pastas de inicialização (Startup) e chaves de registro 'Run'.</p>
-      </div>
-      <div>
-       <h4 class="text-xs font-bold mb-2" style="color:#ff6600;">2. Expurgo de Driver de Kernel</h4>
-       <p class="text-xs leading-relaxed mb-2" style="color:#9aa0b0;">O driver WinRing0x64.sys permite acesso Ring 0. Remova o serviço via CMD administrativo:</p>
-       <div class="bg-black rounded px-3 py-2 text-xs" style="font-family:'Space Mono',monospace;color:#00ff41;border-left:2px solid #ff6600;">
-        sc stop "WinRing0" &amp;&amp; sc delete "WinRing0"
-       </div>
-      </div>
-      <div>
-       <h4 class="text-xs font-bold mb-2" style="color:#ff6600;">3. Restauração de Segurança</h4>
-       <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Reative o Microsoft Defender e limpe as exclusões de caminhos criadas pelo malware no registro do sistema.</p>
-      </div>
-     </div>
-    </div><button class="btn-audit w-full py-3 rounded-lg font-semibold text-sm transition-all" style="background:#ff6600;color:#000;border:none;cursor:pointer;" onclick="openAuditModal()">SOLICITAR AUDITORIA IMEDIATA</button>
-   </div>
-   <div id="tab-cyx" class="px-6 py-5 hidden">
-    <div class="fade-in rounded-xl p-5 mb-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-     <h2 class="text-sm font-semibold mb-1" style="color:#f0f0f0;">Cyber Extortion (Cy-X) Over Time</h2>
-     <p class="text-xs mb-5" style="color:#7a8299;">Victims observed on double-extortion leak sites (2020–2025 Q1-Q3)</p>
-     <div id="cyx-bar-chart" class="flex items-end justify-around gap-2" style="height:220px;"></div>
-     <div class="flex items-end justify-around gap-2 mt-2" id="cyx-labels"></div>
-    </div>
-    <div class="grid md:grid-cols-2 gap-4 fade-in-d1">
-     <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <h3 class="text-sm font-semibold mb-3" style="color:#f0f0f0;">Victim Growth</h3>
-      <div class="space-y-3">
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2020 → 2021</span><span class="mono font-bold" style="color:#ff6600;">+51%</span>
-       </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2021 → 2022</span><span class="mono font-bold" style="color:#e04040;">-4%</span>
-       </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2022 → 2023</span><span class="mono font-bold" style="color:#ff6600;">+89%</span>
-       </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2023 → 2024</span><span class="mono font-bold" style="color:#ff6600;">+9%</span>
-       </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2024 → 2025 (Q1-Q3)</span><span class="mono font-bold" style="color:#ff6600;">+5%</span>
-       </div>
-      </div>
-     </div>
-     <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <h3 class="text-sm font-semibold mb-3" style="color:#f0f0f0;">Active Threat Actors</h3>
-      <div class="space-y-3">
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2020</span><span class="mono font-bold" style="color:#f0f0f0;">33</span>
-       </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2021</span><span class="mono font-bold" style="color:#f0f0f0;">51</span>
-       </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2022</span><span class="mono font-bold" style="color:#f0f0f0;">41</span>
-       </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2023</span><span class="mono font-bold" style="color:#f0f0f0;">57</span>
-       </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2024</span><span class="mono font-bold" style="color:#f0f0f0;">76</span>
-       </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2025 (Q1-Q3)</span><span class="mono font-bold" style="color:#ff6600;">89</span>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div><!-- TAB: Findings -->
-   <div id="tab-findings" class="px-6 py-5 hidden">
-    <div class="space-y-4">
-     <div class="fade-in rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <div class="flex items-start gap-3">
-       <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(255,102,0,0.15);"><i data-lucide="trending-up" style="width:16px;height:16px;color:#ff6600;"></i>
-       </div>
-       <div>
-        <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Cyber Extortion at Record Levels</h3>
-        <p class="text-xs leading-relaxed" style="color:#9aa0b0;">In just the first three quarters of 2025, Cy-X has already surpassed 2024 totals. Retail and trade saw a dramatic ~80% increase, with approximately 300 victims in 2025. The trend is spreading to smaller, non-English-speaking economies.</p>
-       </div>
-      </div>
-     </div>
-     <div class="fade-in-d1 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <div class="flex items-start gap-3">
-       <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(255,102,0,0.15);"><i data-lucide="shield-check" style="width:16px;height:16px;color:#ff6600;"></i>
-       </div>
-       <div>
-        <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Law Enforcement Intensifying</h3>
-        <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Efforts prove cyber criminals are not beyond reach. A dedicated criminological deep-dive examines apprehended criminals, law enforcement actions, collaborations, and demographics of those caught.</p>
-       </div>
-      </div>
-     </div>
-     <div class="fade-in-d2 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <div class="flex items-start gap-3">
-       <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(255,102,0,0.15);"><i data-lucide="atom" style="width:16px;height:16px;color:#ff6600;"></i>
-       </div>
-       <div>
-        <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Steal Now, Decrypt Later</h3>
-        <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Quantum computing poses the next major disruption in cybersecurity, particularly for encryption. Practical steps for migrating to quantum-safe solutions are explored as cybercriminals prepare for this new era.</p>
-       </div>
-      </div>
-     </div>
-     <div class="fade-in-d3 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <div class="flex items-start gap-3">
-       <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(255,102,0,0.15);"><i data-lucide="alert-triangle" style="width:16px;height:16px;color:#ff6600;"></i>
-       </div>
-       <div>
-        <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Vulnerabilities in Security Products</h3>
-        <p class="text-xs leading-relaxed" style="color:#9aa0b0;">19,125 tickets related to vulnerability advisories affecting 25 security vendors (firewalls, VPNs, perimeter defenses). Since 2023, follow-up tasks increased 14% month over month, placing significant burden on security teams.</p>
-       </div>
-      </div>
-     </div>
-     <div class="fade-in-d4 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <div class="flex items-start gap-3">
-       <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(255,102,0,0.15);"><i data-lucide="globe" style="width:16px;height:16px;color:#ff6600;"></i>
-       </div>
-       <div>
-        <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Technology Dependency &amp; Geopolitics</h3>
-        <p class="text-xs leading-relaxed" style="color:#9aa0b0;">All technology has become inherently political — a weapon, target, or tool of influence. It enables power projection, cyber operations, misinformation campaigns, and new forms of soft power across the geopolitical landscape.</p>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div>
-  </div>
-  <script>
-// Data
-const actors = [
-  { label: 'Internal', pct: 56.9, color: '#ff6600' },
-  { label: 'External', pct: 39.1, color: '#ff8c00' },
-  { label: 'Other', pct: 3.5, color: '#555' },
-  { label: 'Partner', pct: 0.5, color: '#444' }
-];
-const actions = [
-  { label: 'Misuse', pct: 44.6, color: '#ff6600' },
-  { label: 'Hacking', pct: 30.8, color: '#ff8c00' },
-  { label: 'Error', pct: 6.3, color: '#cc5500' },
-  { label: 'Malware', pct: 5.2, color: '#aa4400' },
-  { label: 'Social', pct: 0.2, color: '#555' },
-  { label: 'Environment', pct: 0.1, color: '#444' },
-  { label: 'Physical', pct: 0.1, color: '#333' }
-];
-const assets = [
-  { label: 'End User Device', pct: 52.5, color: '#ff6600' },
-  { label: 'Account', pct: 17.2, color: '#ff8c00' },
-  { label: 'Server', pct: 16.5, color: '#cc5500' },
-  { label: 'Network', pct: 6.8, color: '#aa4400' },
-  { label: 'Other/Unknown', pct: 2.6, color: '#666' },
-  { label: 'Cloud', pct: 2.0, color: '#555' },
-  { label: 'People', pct: 1.7, color: '#444' },
-  { label: 'Media', pct: 0.8, color: '#333' }
-];
+class ScanRequest(BaseModel):
+    url: str
 
-function renderBars(containerId, data) {
-  const c = document.getElementById(containerId);
-  const max = Math.max(...data.map(d => d.pct));
-  c.innerHTML = data.map(d => `
-    <div class="flex items-center gap-2">
-      <span class="text-xs w-24 flex-shrink-0" style="color:#9aa0b0;">${d.label}</span>
-      <div class="flex-1 h-5 rounded-sm overflow-hidden" style="background:rgba(255,255,255,0.04);">
-        <div class="h-full rounded-sm bar-grow" style="width:${(d.pct/max)*100}%;background:${d.color};transform-origin:left;"></div>
-      </div>
-      <span class="mono text-xs w-12 text-right flex-shrink-0" style="color:#f0f0f0;">${d.pct}%</span>
-    </div>
-  `).join('');
-}
+class VulnerabilityScanner:
+    def __init__(self, url):
+        self.url = url
+        self.domain = urlparse(url).netloc
+        self.results = []
+        self.sqli_payloads = ["'", "''", "1' OR '1'='1", "SLEEP(5)"]
+        self.common_subs = ["www", "dev", "api", "test", "staging", "admin", "webmail"]
 
-const cyxData = [
-  { year: '2020', victims: 1497, actors: 33 },
-  { year: '2021', victims: 2268, actors: 51 },
-  { year: '2022', victims: 2169, actors: 41 },
-  { year: '2023', victims: 4092, actors: 57 },
-  { year: '2024', victims: 4478, actors: 76 },
-  { year: '2025*', victims: 4685, actors: 89 }
-];
+    def check_ssl(self):
+        """Verifica a saúde do certificado SSL."""
+        try:
+            context = ssl.create_default_context()
+            with socket.create_connection((self.domain, 443), timeout=5) as sock:
+                with context.wrap_socket(sock, server_hostname=self.domain) as ssock:
+                    cert = ssock.getpeercert()
+                    expire_date = datetime.strptime(cert['notAfter'], '%b %d %H:%M:%S %Y %Z')
+                    days_left = (expire_date - datetime.now()).days
+                    if days_left < 30:
+                        self.results.append({
+                            "name": "Certificado SSL Expirando",
+                            "severity": "medium",
+                            "layer": "SSL/TLS",
+                            "desc": f"O certificado expira em {days_left} dias. Renove para evitar bloqueios."
+                        })
+        except:
+            self.results.append({
+                "name": "Falha na Verificação SSL",
+                "severity": "high",
+                "layer": "SSL/TLS",
+                "desc": "Não foi possível validar o handshake SSL/TLS."
+            })
 
-function renderCyxChart() {
-  const chart = document.getElementById('cyx-bar-chart');
-  const labels = document.getElementById('cyx-labels');
-  const maxV = Math.max(...cyxData.map(d => d.victims));
-  chart.innerHTML = cyxData.map((d, i) => `
-    <div class="flex-1 flex flex-col items-center gap-1">
-      <span class="mono text-xs" style="color:#ff8c00;">${d.actors}</span>
-      <div class="w-full flex flex-col items-center justify-end" style="height:180px;">
-        <div class="w-full max-w-12 rounded-t bar-grow" style="height:${(d.victims/maxV)*100}%;background:linear-gradient(180deg,#ff6600,#ff8c00);transform-origin:bottom;animation-delay:${i*0.1}s;"></div>
-      </div>
-      <span class="mono text-xs" style="color:#f0f0f0;">${d.victims.toLocaleString()}</span>
-    </div>
-  `).join('');
-  labels.innerHTML = cyxData.map(d => `<div class="flex-1 text-center"><span class="text-xs" style="color:#7a8299;">${d.year}</span></div>`).join('');
-}
+    def check_headers_and_files(self):
+        """Verifica headers de segurança e exposição de arquivos sensíveis."""
+        try:
+            res = requests.get(self.url, timeout=10, verify=False)
+            headers = res.headers
+            
+            checks = {
+                "Content-Security-Policy": "critical",
+                "X-Frame-Options": "high",
+                "Strict-Transport-Security": "high",
+                "X-Content-Type-Options": "medium"
+            }
+            for h, sev in checks.items():
+                if h not in headers:
+                    self.results.append({
+                        "name": f"Header {h} Ausente",
+                        "severity": sev,
+                        "layer": "HTTP Headers",
+                        "desc": "A ausência deste header facilita ataques de Clickjacking ou Injeção."
+                    })
 
-function switchTab(tab) {
-  document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden'));
-  document.getElementById('tab-' + tab).classList.remove('hidden');
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.classList.remove('active');
-    btn.style.color = '#7a8299';
-    btn.style.borderBottom = '2px solid transparent';
-  });
-  const activeBtn = document.querySelector(`[data-tab="${tab}"]`);
-  activeBtn.classList.add('active');
-  activeBtn.style.color = '#ff6600';
-  activeBtn.style.borderBottom = '2px solid #ff6600';
-  if (tab === 'cyx') renderCyxChart();
-}
+            for path in ["/.env", "/.git/config", "/phpmyadmin/"]:
+                if requests.get(f"{self.url.rstrip('/')}{path}", timeout=5).status_code == 200:
+                    self.results.append({
+                        "name": f"Arquivo Exposto: {path}",
+                        "severity": "critical",
+                        "layer": "Info Leak",
+                        "desc": "Arquivos de configuração ou sistemas internos acessíveis publicamente."
+                    })
+        except: pass
 
-function openAuditModal() {
-  alert('Auditoria solicitada! Entre em contato via email: visualstudioandsecurityoficial@gmail.com');
-}
+    def run_subdomain_recon(self):
+        """Busca subdomínios ativos via DNS."""
+        found = []
+        for sub in self.common_subs:
+            try:
+                target = f"{sub}.{self.domain}"
+                dns.resolver.resolve(target, 'A')
+                found.append(target)
+            except: continue
+        
+        if found:
+            self.results.append({
+                "name": f"{len(found)} Subdomínios Encontrados",
+                "severity": "low",
+                "layer": "Infraestrutura",
+                "desc": f"Superfície de ataque identificada: {', '.join(found)}"
+            })
 
-// Init charts
-renderBars('actors-chart', actors);
-renderBars('actions-chart', actions);
-renderBars('assets-chart', assets);
+    def run_fuzzer(self):
+        """Testa injeção SQL em parâmetros da URL."""
+        parsed = urlparse(self.url)
+        params = parse_qs(parsed.query)
+        for param in params:
+            for payload in self.sqli_payloads:
+                test_params = params.copy()
+                test_params[param] = payload
+                test_url = urlunparse(parsed._replace(query=urlencode(test_params, doseq=True)))
+                
+                try:
+                    start = time.time()
+                    res = requests.get(test_url, timeout=10)
+                    duration = time.time() - start
+                    
+                    if any(err in res.text.lower() for err in ["sql syntax", "mysql_fetch", "sqlite"]):
+                        self.results.append({
+                            "name": "SQL Injection (Error-based)",
+                            "severity": "critical",
+                            "layer": "SQL Injection",
+                            "desc": f"Vulnerabilidade crítica no parâmetro '{param}'."
+                        })
+                        break
+                    if "SLEEP" in payload and duration > 4:
+                        self.results.append({
+                            "name": "Blind SQLi (Time-based)",
+                            "severity": "critical",
+                            "layer": "SQL Injection",
+                            "desc": f"Injeção detectada via delay de resposta no parâmetro '{param}'."
+                        })
+                except: continue
 
-lucide.createIcons();
-
-// Element SDK
-const defaultConfig = {
-  main_title: 'Security Navigator 2026',
-  subtitle: 'Orange Cyberdefense',
-  background_color: '#0a0e1a',
-  surface_color: 'rgba(255,255,255,0.03)',
-  text_color: '#f0f0f0',
-  accent_color: '#ff6600',
-  muted_color: '#7a8299',
-  font_family: 'DM Sans',
-  font_size: 14
-};
-
-function applyConfig(config) {
-  const t = (k) => config[k] || defaultConfig[k];
-  document.getElementById('mainTitle').textContent = t('main_title');
-  document.getElementById('subtitle').textContent = t('subtitle') + ' — Key Data on Cybersecurity';
-
-  const app = document.getElementById('app');
-  app.style.background = t('background_color');
-
-  const font = t('font_family');
-  const baseSize = t('font_size');
-  document.body.style.fontFamily = `${font}, DM Sans, sans-serif`;
-
-  document.getElementById('mainTitle').style.fontSize = `${baseSize * 1.3}px`;
-  document.getElementById('subtitle').style.fontSize = `${baseSize * 0.85}px`;
-
-  // Apply text color to headings
-  document.querySelectorAll('h1, h2, h3').forEach(el => el.style.color = t('text_color'));
-  document.querySelectorAll('.mono').forEach(el => {
-    el.style.fontFamily = `Space Mono, ${font}, monospace`;
-  });
-}
-
-window.elementSdk.init({
-  defaultConfig,
-  onConfigChange: async (config) => applyConfig(config),
-  mapToCapabilities: (config) => {
-    const c = (key) => ({
-      get: () => config[key] || defaultConfig[key],
-      set: (v) => { config[key] = v; window.elementSdk.setConfig({ [key]: v }); }
-    });
-    return {
-      recolorables: [c('background_color'), c('surface_color'), c('text_color'), c('accent_color'), c('muted_color')],
-      borderables: [],
-      fontEditable: c('font_family'),
-      fontSizeable: c('font_size')
-    };
-  },
-  mapToEditPanelValues: (config) => new Map([
-    ['main_title', config.main_title || defaultConfig.main_title],
-    ['subtitle', config.subtitle || defaultConfig.subtitle]
-  ])
-});
-</script>
-  <!doctype html>
-<html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Security Scan Dashboard</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Outfit:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-  <style>
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; height: 100%; }
-  body { font-family: 'Outfit', sans-serif; }
-  .mono { font-family: 'JetBrains Mono', monospace; }
-
-  @keyframes scanPulse {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
-  }
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes gridMove {
-    0% { background-position: 0 0; }
-    100% { background-position: 40px 40px; }
-  }
-  .anim-slide { animation: slideUp 0.5s ease forwards; opacity: 0; }
-  .anim-d1 { animation-delay: 0.05s; }
-  .anim-d2 { animation-delay: 0.1s; }
-  .anim-d3 { animation-delay: 0.15s; }
-  .anim-d4 { animation-delay: 0.2s; }
-  .anim-d5 { animation-delay: 0.25s; }
-
-  .scan-active .scan-dot { animation: scanPulse 0.6s ease infinite; }
-
-  .grid-bg {
-    background-image:
-      linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    animation: gridMove 8s linear infinite;
-  }
-
-  .severity-critical { border-left: 3px solid #ff2d55; }
-  .severity-high { border-left: 3px solid #ff9500; }
-  .severity-medium { border-left: 3px solid #ffcc00; }
-  .severity-low { border-left: 3px solid #30d158; }
-
-  .glow-green { box-shadow: 0 0 20px rgba(0,255,136,0.15); }
-  .glow-red { box-shadow: 0 0 20px rgba(255,45,85,0.2); }
-
-  input:focus { outline: none; }
-
-  .toast-msg {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-    padding: 10px 20px; border-radius: 8px; font-size: 14px; z-index: 100;
-    animation: slideUp 0.3s ease;
-  }
-
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-</style>
-  <style>body { box-sizing: border-box; }</style>
- </head>
- <body class="h-full">
-  <div id="app" class="h-full w-full overflow-auto grid-bg" style="background-color: #0a0e17;">
-   <!-- Header -->
-   <header class="px-6 py-5 flex items-center justify-between border-b" style="border-color: rgba(0,255,136,0.1);">
-    <div class="flex items-center gap-3">
-     <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: rgba(0,255,136,0.1);">
-      <i data-lucide="shield-check" style="width:22px;height:22px;color:#00ff88;"></i>
-     </div>
-     <div>
-      <h1 id="app-title" class="text-lg font-bold" style="color:#e8ecf4;">Security Scan Dashboard</h1>
-      <p id="app-subtitle" class="text-xs" style="color:#00ff88;">Vulnerability Assessment Engine</p>
-     </div>
-    </div>
-    <div class="flex items-center gap-3">
-     <span id="scan-count-badge" class="mono text-xs px-3 py-1 rounded-full" style="background:rgba(0,255,136,0.1);color:#00ff88;">0 scans</span> <button id="btn-clear-history" class="p-2 rounded-lg transition-colors" style="color:#5a6478;" title="Clear scan history"> <i data-lucide="trash-2" style="width:16px;height:16px;"></i> </button>
-    </div>
-   </header><!-- Scan Input -->
-   <div class="px-6 pt-5 anim-slide anim-d1">
-    <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(0,255,136,0.08);">
-     <form id="scan-form" class="flex gap-3">
-      <div class="flex-1 relative">
-       <i data-lucide="globe" style="width:16px;height:16px;color:#5a6478;position:absolute;left:12px;top:50%;transform:translateY(-50%);"></i> <input id="url-input" type="text" placeholder="https://target-url.com/page?param=value" class="w-full rounded-lg px-4 py-3 pl-10 mono text-sm transition-all" style="background:rgba(0,0,0,0.4);border:1px solid rgba(0,255,136,0.15);color:#e8ecf4;" onfocus="this.style.borderColor='#00ff88'" onblur="this.style.borderColor='rgba(0,255,136,0.15)'">
-      </div><button type="submit" id="btn-scan" class="px-6 py-3 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all" style="background:#00ff88;color:#0a0e17;"> <i data-lucide="scan" style="width:16px;height:16px;"></i> <span>Run Scan</span> </button>
-     </form>
-     <div id="scan-status" class="hidden mt-3 flex items-center gap-2 text-xs" style="color:#00ff88;">
-      <div class="scan-dot w-2 h-2 rounded-full" style="background:#00ff88;"></div><span class="mono">Scanning target...</span>
-     </div>
-    </div>
-   </div><!-- Stats Row -->
-   <div id="stats-row" class="px-6 pt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 anim-slide anim-d2">
-    <div class="rounded-xl p-4" style="background:rgba(255,45,85,0.06);border:1px solid rgba(255,45,85,0.15);">
-     <div class="text-xs font-medium mb-1" style="color:#ff2d55;">
-      Critical
-     </div>
-     <div id="stat-critical" class="text-2xl font-bold mono" style="color:#ff2d55;">
-      0
-     </div>
-    </div>
-    <div class="rounded-xl p-4" style="background:rgba(255,149,0,0.06);border:1px solid rgba(255,149,0,0.15);">
-     <div class="text-xs font-medium mb-1" style="color:#ff9500;">
-      High
-     </div>
-     <div id="stat-high" class="text-2xl font-bold mono" style="color:#ff9500;">
-      0
-     </div>
-    </div>
-    <div class="rounded-xl p-4" style="background:rgba(255,204,0,0.06);border:1px solid rgba(255,204,0,0.15);">
-     <div class="text-xs font-medium mb-1" style="color:#ffcc00;">
-      Medium
-     </div>
-     <div id="stat-medium" class="text-2xl font-bold mono" style="color:#ffcc00;">
-      0
-     </div>
-    </div>
-    <div class="rounded-xl p-4" style="background:rgba(48,209,88,0.06);border:1px solid rgba(48,209,88,0.15);">
-     <div class="text-xs font-medium mb-1" style="color:#30d158;">
-      Low / Clear
-     </div>
-     <div id="stat-low" class="text-2xl font-bold mono" style="color:#30d158;">
-      0
-     </div>
-    </div>
-   </div><!-- Results Area -->
-   <div class="px-6 pt-4 pb-6 anim-slide anim-d3">
-    <!-- Empty State -->
-    <div id="empty-state" class="rounded-xl p-10 text-center" style="background:rgba(255,255,255,0.02);border:1px dashed rgba(0,255,136,0.1);">
-     <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" style="background:rgba(0,255,136,0.05);">
-      <i data-lucide="radar" style="width:32px;height:32px;color:#00ff8855;"></i>
-     </div>
-     <p class="text-sm font-medium" style="color:#5a6478;">Enter a URL above to start scanning</p>
-     <p class="text-xs mt-1" style="color:#3a4050;">Simulated analysis of headers, exposed files, and SQL injection vectors</p>
-    </div><!-- Scan Results (hidden initially) -->
-    <div id="results-container" class="hidden space-y-3">
-     <div class="flex items-center justify-between mb-2">
-      <h2 class="text-sm font-semibold" style="color:#e8ecf4;">Findings</h2><span id="vuln-count" class="mono text-xs" style="color:#5a6478;"></span>
-     </div>
-     <div id="vuln-list" class="space-y-2"></div>
-    </div><!-- Scan History -->
-    <div id="history-section" class="hidden mt-6">
-     <h2 class="text-sm font-semibold mb-3" style="color:#e8ecf4;">Scan History</h2>
-     <div id="history-list" class="space-y-2"></div>
-    </div>
-   </div><!-- Inline Confirm Delete Modal -->
-   <div id="confirm-overlay" class="hidden fixed inset-0 z-50 flex items-center justify-center" style="background:rgba(0,0,0,0.6);">
-    <div class="rounded-xl p-6 max-w-sm w-full mx-4" style="background:#141925;border:1px solid rgba(255,45,85,0.2);">
-     <p class="text-sm font-medium mb-1" style="color:#e8ecf4;">Clear all scan history?</p>
-     <p class="text-xs mb-4" style="color:#5a6478;">This cannot be undone.</p>
-     <div class="flex gap-3 justify-end">
-      <button id="confirm-cancel" class="px-4 py-2 rounded-lg text-xs font-medium" style="background:rgba(255,255,255,0.05);color:#e8ecf4;">Cancel</button> <button id="confirm-delete" class="px-4 py-2 rounded-lg text-xs font-medium" style="background:#ff2d55;color:#fff;">Delete All</button>
-     </div>
-    </div>
-   </div>
-  </div>
-  <script>
-// ── Config & SDK ──
-const defaultConfig = {
-  app_title: "Security Scan Dashboard",
-  subtitle_text: "Vulnerability Assessment Engine",
-  background_color: "#0a0e17",
-  surface_color: "#141925",
-  text_color: "#e8ecf4",
-  primary_action_color: "#00ff88",
-  secondary_action_color: "#5a6478"
-};
-
-let scanRecords = [];
-let isScanning = false;
-
-// ── Element SDK Init ──
-window.elementSdk.init({
-  defaultConfig,
-  onConfigChange: async (config) => {
-    const c = key => config[key] || defaultConfig[key];
-    document.getElementById('app').style.backgroundColor = c('background_color');
-    document.getElementById('app-title').textContent = c('app_title');
-    document.getElementById('app-title').style.color = c('text_color');
-    document.getElementById('app-subtitle').textContent = c('subtitle_text');
-    document.getElementById('app-subtitle').style.color = c('primary_action_color');
-    document.getElementById('btn-scan').style.backgroundColor = c('primary_action_color');
-    document.getElementById('btn-scan').style.color = c('background_color');
-    document.getElementById('scan-count-badge').style.background = hexAlpha(c('primary_action_color'), 0.1);
-    document.getElementById('scan-count-badge').style.color = c('primary_action_color');
-    document.querySelectorAll('#stats-row > div .text-xs').forEach(el => {
-      // keep severity colors, skip
-    });
-    document.querySelectorAll('h2').forEach(el => el.style.color = c('text_color'));
-    document.getElementById('btn-clear-history').style.color = c('secondary_action_color');
-  },
-  mapToCapabilities: (config) => {
-    const c = key => config[key] || defaultConfig[key];
-    const mut = (key) => ({
-      get: () => c(key),
-      set: (v) => { config[key] = v; window.elementSdk.setConfig({ [key]: v }); }
-    });
-    return {
-      recolorables: [
-        mut('background_color'),
-        mut('surface_color'),
-        mut('text_color'),
-        mut('primary_action_color'),
-        mut('secondary_action_color')
-      ],
-      borderables: [],
-      fontEditable: {
-        get: () => config.font_family || 'Outfit',
-        set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-      },
-      fontSizeable: {
-        get: () => config.font_size || 14,
-        set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-      }
-    };
-  },
-  mapToEditPanelValues: (config) => new Map([
-    ["app_title", config.app_title || defaultConfig.app_title],
-    ["subtitle_text", config.subtitle_text || defaultConfig.subtitle_text]
-  ])
-});
-
-function hexAlpha(hex, alpha) {
-  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-  return `rgba(${r},${g},${b},${alpha})`;
-}
-
-// ── Data SDK Init ──
-const dataHandler = {
-  onDataChanged(data) {
-    scanRecords = data;
-    renderHistory();
-    document.getElementById('scan-count-badge').textContent = `${data.length} scan${data.length!==1?'s':''}`;
-  }
-};
-
-(async () => {
-  const res = await window.dataSdk.init(dataHandler);
-  if (!res.isOk) console.error("Data SDK init failed");
-})();
-
-// ── Simulated Scanner ──
-// Mirrors the FastAPI VulnerabilityScanner logic client-side for demo
-function simulateScan(url) {
-  const vulns = [];
-  const parsed = new URL(url);
-
-  // Header checks (simulated)
-  const missingHeaders = [
-    { 
-      name: "Content-Security-Policy", 
-      sev: "critical", 
-      desc: "No CSP header detected. Risk of XSS and code injection.",
-      fix: "Add to response headers: Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"
-    },
-    { 
-      name: "X-Frame-Options", 
-      sev: "high", 
-      desc: "Missing clickjacking protection header.",
-      fix: "Add to response headers: X-Frame-Options: DENY or SAMEORIGIN to prevent clickjacking attacks."
-    },
-    { 
-      name: "Strict-Transport-Security", 
-      sev: "high", 
-      desc: "No HSTS enforcement. Vulnerable to downgrade attacks.",
-      fix: "Add to response headers: Strict-Transport-Security: max-age=31536000; includeSubDomains; preload"
-    }
-  ];
-  // Simulate: ~70% chance each header is missing
-  missingHeaders.forEach(h => {
-    if (Math.random() < 0.7) {
-      vulns.push({ name: `${h.name} Absent`, severity: h.sev, layer: "HTTP Headers", desc: h.desc, fix: h.fix });
-    }
-  });
-
-  // Sensitive file checks (simulated)
-  if (Math.random() < 0.3) {
-    vulns.push({ 
-      name: "Exposure: /.env", 
-      severity: "critical", 
-      layer: "Info Leak", 
-      desc: "Environment file publicly accessible. Credentials may be exposed.",
-      fix: "1. Remove .env from web root\n2. Add to .gitignore: .env\n3. Use server config to deny access: deny from all on .env files\n4. Store secrets in environment variables or secure vault"
-    });
-  }
-  if (Math.random() < 0.2) {
-    vulns.push({ 
-      name: "Exposure: /.git/config", 
-      severity: "critical", 
-      layer: "Info Leak", 
-      desc: "Git configuration exposed. Source code may be retrievable.",
-      fix: "1. Remove .git directory from web root\n2. Configure web server to deny .git access\n3. Use .htaccess or nginx config: deny access to /.git\n4. Never deploy .git folder to production"
-    });
-  }
-
-  // SQLi fuzzing (simulated based on URL params)
-  const params = parsed.searchParams;
-  params.forEach((val, key) => {
-    if (Math.random() < 0.5) {
-      vulns.push({ 
-        name: "SQL Injection (Error-based)", 
-        severity: "critical", 
-        layer: "SQL Injection", 
-        desc: `Potential injection in parameter '${key}'. Error-based detection triggered.`,
-        fix: `1. Use parameterized queries: PreparedStatement or ORM frameworks\n2. Validate input: whitelist allowed values for '${key}'\n3. Use type casting: ensure ${key} is the expected data type\n4. Apply WAF rules to detect SQL patterns in input\n5. Example (Node.js): db.query('SELECT * FROM users WHERE id = ?', [userId])`
-      });
-    } else if (Math.random() < 0.3) {
-      vulns.push({ 
-        name: "Blind SQLi (Time-based)", 
-        severity: "critical", 
-        layer: "SQL Injection", 
-        desc: `Time-based blind injection detected on parameter '${key}'.`,
-        fix: `1. Implement parameterized queries immediately\n2. Add rate limiting to prevent exploitation\n3. Use prepared statements with bound parameters\n4. Example (Python): cursor.execute('SELECT * FROM users WHERE id = %s', (user_id,))\n5. Disable detailed error messages in production`
-      });
-    }
-  });
-
-  return vulns;
-}
-
-// ── UI Logic ──
-const form = document.getElementById('scan-form');
-const urlInput = document.getElementById('url-input');
-const btnScan = document.getElementById('btn-scan');
-const scanStatus = document.getElementById('scan-status');
-const emptyState = document.getElementById('empty-state');
-const resultsContainer = document.getElementById('results-container');
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  if (isScanning) return;
-
-  const url = urlInput.value.trim();
-  if (!url) { showToast("Please enter a URL", "warn"); return; }
-  try { new URL(url); } catch { showToast("Invalid URL format", "warn"); return; }
-
-  if (scanRecords.length >= 999) {
-    showToast("Scan history limit reached. Clear some entries.", "warn");
-    return;
-  }
-
-  isScanning = true;
-  btnScan.disabled = true;
-  btnScan.style.opacity = "0.5";
-  scanStatus.classList.remove('hidden');
-  scanStatus.closest('div').classList.add('scan-active');
-
-  // Simulate scan delay
-  await new Promise(r => setTimeout(r, 1500 + Math.random() * 1000));
-
-  const vulns = simulateScan(url);
-  displayResults(vulns);
-
-  const critCount = vulns.filter(v => v.severity === "critical").length;
-  const highCount = vulns.filter(v => v.severity === "high").length;
-  const medCount = vulns.filter(v => v.severity === "medium").length;
-  const lowCount = vulns.filter(v => v.severity === "low").length;
-
-  document.getElementById('stat-critical').textContent = critCount;
-  document.getElementById('stat-high').textContent = highCount;
-  document.getElementById('stat-medium').textContent = medCount;
-  document.getElementById('stat-low').textContent = vulns.length === 0 ? "✓" : lowCount;
-
-  // Save to data SDK
-  const result = await window.dataSdk.create({
-    url: url,
-    scan_date: new Date().toISOString(),
-    total_vulns: vulns.length,
-    critical_count: critCount,
-    high_count: highCount,
-    medium_count: medCount,
-    low_count: lowCount,
-    status: vulns.length === 0 ? "clean" : "vulnerable",
-    vulns_json: JSON.stringify(vulns)
-  });
-
-  if (!result.isOk) showToast("Failed to save scan result", "error");
-
-  isScanning = false;
-  btnScan.disabled = false;
-  btnScan.style.opacity = "1";
-  scanStatus.classList.add('hidden');
-  scanStatus.closest('div').classList.remove('scan-active');
-});
-
-function displayResults(vulns) {
-  emptyState.classList.add('hidden');
-  resultsContainer.classList.remove('hidden');
-  document.getElementById('vuln-count').textContent = `${vulns.length} finding${vulns.length!==1?'s':''}`;
-
-  const list = document.getElementById('vuln-list');
-  list.innerHTML = '';
-
-  if (vulns.length === 0) {
-    list.innerHTML = `<div class="rounded-lg p-4 glow-green" style="background:rgba(48,209,88,0.06);border:1px solid rgba(48,209,88,0.2);">
-      <div class="flex items-center gap-2"><i data-lucide="check-circle" style="width:18px;height:18px;color:#30d158;"></i>
-      <span class="text-sm font-medium" style="color:#30d158;">No vulnerabilities detected</span></div></div>`;
-    lucide.createIcons();
-    return;
-  }
-
-  vulns.forEach((v, i) => {
-    const el = document.createElement('div');
-    el.className = `severity-${v.severity} rounded-lg p-4 anim-slide`;
-    el.style.cssText = `background:rgba(255,255,255,0.02);animation-delay:${i*0.05}s`;
+@app.post("/api/v1/scan")
+async def start_audit(request: ScanRequest):
+    scanner = VulnerabilityScanner(request.url)
     
-    const fixSteps = v.fix ? v.fix.split('\n').map(step => step.trim()).filter(s => s) : [];
-    const fixHTML = fixSteps.length > 0 ? `
-      <div class="mt-3 pt-3 border-t" style="border-color:rgba(255,255,255,0.1);">
-        <p class="text-xs font-semibold mb-2" style="color:#00ff88;">⚡ How to Fix:</p>
-        <ul class="space-y-1">
-          ${fixSteps.map(step => `<li class="text-xs" style="color:#5a6478;">${step}</li>`).join('')}
-        </ul>
-      </div>
-    ` : '';
+    # Execução das Camadas
+    scanner.run_subdomain_recon()
+    scanner.check_ssl()
+    scanner.check_headers_and_files()
+    scanner.run_fuzzer()
     
-    el.innerHTML = `
-      <div class="flex items-start justify-between gap-3">
-        <div class="flex-1">
-          <div class="flex items-center gap-2 mb-1">
-            <span class="mono text-xs px-2 py-0.5 rounded font-medium" style="background:${sevBg(v.severity)};color:${sevColor(v.severity)};">${v.severity.toUpperCase()}</span>
-            <span class="text-xs mono" style="color:#5a6478;">${v.layer}</span>
-          </div>
-          <p class="text-sm font-medium" style="color:#e8ecf4;">${v.name}</p>
-          <p class="text-xs mt-1" style="color:#5a6478;">${v.desc}</p>
-          ${fixHTML}
-        </div>
-      </div>`;
-    list.appendChild(el);
-  });
-  lucide.createIcons();
-}
-
-function sevColor(s) {
-  return { critical:'#ff2d55', high:'#ff9500', medium:'#ffcc00', low:'#30d158' }[s] || '#5a6478';
-}
-function sevBg(s) {
-  return { critical:'rgba(255,45,85,0.12)', high:'rgba(255,149,0,0.12)', medium:'rgba(255,204,0,0.12)', low:'rgba(48,209,88,0.12)' }[s] || 'rgba(255,255,255,0.05)';
-}
-
-function renderHistory() {
-  const section = document.getElementById('history-section');
-  const list = document.getElementById('history-list');
-
-  if (scanRecords.length === 0) {
-    section.classList.add('hidden');
-    return;
-  }
-  section.classList.remove('hidden');
-
-  const existing = new Map([...list.children].map(el => [el.dataset.id, el]));
-  const sorted = [...scanRecords].sort((a, b) => new Date(b.scan_date) - new Date(a.scan_date));
-
-  sorted.forEach(rec => {
-    const id = rec.__backendId;
-    if (existing.has(id)) {
-      updateHistoryItem(existing.get(id), rec);
-      existing.delete(id);
-    } else {
-      list.appendChild(createHistoryItem(rec));
+    return {
+        "status": "success",
+        "url": request.url,
+        "timestamp": datetime.now().isoformat(),
+        "vulnerabilities": scanner.results
     }
-  });
-  existing.forEach(el => el.remove());
-
-  // Reorder
-  sorted.forEach(rec => {
-    const el = list.querySelector(`[data-id="${rec.__backendId}"]`);
-    if (el) list.appendChild(el);
-  });
-  lucide.createIcons();
-}
-
-function createHistoryItem(rec) {
-  const el = document.createElement('div');
-  el.dataset.id = rec.__backendId;
-  el.className = 'rounded-lg p-3 flex items-center justify-between';
-  el.style.cssText = 'background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);';
-  updateHistoryItem(el, rec);
-  return el;
-}
-
-function updateHistoryItem(el, rec) {
-  const d = new Date(rec.scan_date);
-  const dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  const statusIcon = rec.status === 'clean' ? 'check-circle' : 'alert-triangle';
-  const statusColor = rec.status === 'clean' ? '#30d158' : '#ff2d55';
-
-  el.innerHTML = `
-    <div class="flex items-center gap-3 flex-1 min-w-0">
-      <i data-lucide="${statusIcon}" style="width:16px;height:16px;color:${statusColor};flex-shrink:0;"></i>
-      <div class="min-w-0 flex-1">
-        <p class="mono text-xs truncate" style="color:#e8ecf4;">${rec.url}</p>
-        <p class="text-xs" style="color:#5a6478;">${dateStr} · ${rec.total_vulns} finding${rec.total_vulns!==1?'s':''}</p>
-      </div>
-    </div>
-    <button class="hist-delete p-1.5 rounded-lg transition-colors" style="color:#5a6478;" title="Delete">
-      <i data-lucide="x" style="width:14px;height:14px;"></i>
-    </button>`;
-
-  el.querySelector('.hist-delete').addEventListener('click', async () => {
-    el.style.opacity = '0.4';
-    el.querySelector('.hist-delete').disabled = true;
-    const result = await window.dataSdk.delete(rec);
-    if (!result.isOk) {
-      el.style.opacity = '1';
-      showToast("Failed to delete", "error");
-    }
-  });
-}
-
-// Clear all
-document.getElementById('btn-clear-history').addEventListener('click', () => {
-  if (scanRecords.length === 0) return;
-  document.getElementById('confirm-overlay').classList.remove('hidden');
-});
-document.getElementById('confirm-cancel').addEventListener('click', () => {
-  document.getElementById('confirm-overlay').classList.add('hidden');
-});
-document.getElementById('confirm-delete').addEventListener('click', async () => {
-  document.getElementById('confirm-overlay').classList.add('hidden');
-  const btn = document.getElementById('btn-clear-history');
-  btn.style.opacity = '0.4';
-  for (const rec of [...scanRecords]) {
-    await window.dataSdk.delete(rec);
-  }
-  btn.style.opacity = '1';
-  showToast("History cleared", "ok");
-});
-
-// Toast
-function showToast(msg, type) {
-  const colors = { ok: '#30d158', warn: '#ff9500', error: '#ff2d55' };
-  const t = document.createElement('div');
-  t.className = 'toast-msg mono';
-  t.style.cssText = `background:${colors[type]||'#00ff88'};color:#0a0e17;`;
-  t.textContent = msg;
-  document.getElementById('app').appendChild(t);
-  setTimeout(() => t.remove(), 2500);
-}
-
-lucide.createIcons();
-</script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e2f68f9d0f0a41d',t:'MTc3NDYyNTE1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e2f3a16f144623c',t:'MTc3NDYyMzIzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
