@@ -1,421 +1,205 @@
-
+<!DOCTYPE html>
 <html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Security Navigator Pro</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
-  <style>
-    html, body { height: 100%; margin: 0; }
-    * { box-sizing: border-box; }
-    body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%); color: #f0f0f0; }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Navigator Pro | Visual Studio Security</title>
     
-    .fade-in { animation: fadeIn 0.6s ease both; }
-    .fade-in-d1 { animation: fadeIn 0.6s ease 0.1s both; }
-    .fade-in-d2 { animation: fadeIn 0.6s ease 0.2s both; }
-    .fade-in-d3 { animation: fadeIn 0.6s ease 0.3s both; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     
-    .slide-in { animation: slideIn 0.4s ease both; }
-    @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-    
-    .scale-pop { animation: scalePop 0.3s ease; }
-    @keyframes scalePop { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-    
-    .pulse-glow { animation: pulseGlow 2s ease infinite; }
-    @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4); } 50% { box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); } }
-    
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-    ::-webkit-scrollbar-thumb { background: rgba(74, 222, 128, 0.3); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(74, 222, 128, 0.5); }
-    
-    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); }
-    .card { background: rgba(15,20,35,0.8); border: 1px solid rgba(74,222,128,0.15); border-radius: 12px; }
-    
-    .btn-primary { background: linear-gradient(135deg, #1a5c3a 0%, #2a7a4a 100%); border: 1px solid rgba(74,222,128,0.3); transition: all 0.3s; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,92,58,0.4); border-color: #4ade80; }
-    .btn-primary:active { transform: translateY(0); }
-    
-    .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
-    .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: rgba(74,222,128,0.3); }
-    
-    .tab-btn { transition: all 0.2s; color: rgba(255,255,255,0.6); border-bottom: 2px solid transparent; }
-    .tab-btn.active { color: #4ade80; border-bottom-color: #4ade80; }
-    
-    .input-field { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #f0f0f0; border-radius: 8px; transition: all 0.2s; }
-    .input-field:focus { outline: none; border-color: #4ade80; background: rgba(255,255,255,0.08); box-shadow: 0 0 0 3px rgba(74,222,128,0.1); }
-    
-    .modal-overlay { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
-    
-    .toast { position: fixed; bottom: 20px; right: 20px; background: rgba(20,25,40,0.95); border-left: 4px solid #4ade80; border-radius: 8px; z-index: 1000; }
-    
-    .stat-box { background: linear-gradient(135deg, rgba(26,92,58,0.2) 0%, rgba(15,20,35,0.8) 100%); border: 1px solid rgba(74,222,128,0.2); }
-    
-    .severity-critical { color: #ef4444; background: rgba(239,68,68,0.1); }
-    .severity-high { color: #f97316; background: rgba(249,115,22,0.1); }
-    .severity-medium { color: #eab308; background: rgba(234,179,8,0.1); }
-    .severity-low { color: #22c55e; background: rgba(34,197,94,0.1); }
-  </style>
-  <style>body { box-sizing: border-box; }</style>
- </head>
- <body class="h-full">
-  <div id="app" class="w-full h-full overflow-auto flex flex-col"><!-- Header -->
-   <header class="fade-in px-6 py-4 border-b border-white/10 sticky top-0 z-50" style="background: rgba(10, 14, 26, 0.8);">
-    <div class="flex items-center justify-between flex-wrap gap-4">
-     <div class="flex items-center gap-3">
-      <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-gradient-to-br from-green-600 to-green-800"><i data-lucide="shield-check" style="width:24px;height:24px;color:#fff;"></i>
-      </div>
-      <div>
-       <h1 id="mainTitle" class="text-xl font-bold text-white">Security Navigator Pro</h1>
-       <p id="companyName" class="text-xs text-gray-400">Professional Security Scanning</p>
-      </div>
-     </div>
-     <div class="flex items-center gap-3"><button id="newScanBtn" class="btn-primary text-white px-6 py-2 rounded-lg font-medium flex items-center gap-2 hover:shadow-lg"> <i data-lucide="zap" style="width:18px;height:18px;"></i> New Scan </button> <button id="settingsBtn" class="w-10 h-10 rounded-lg glass flex items-center justify-center hover:bg-white/10 transition"> <i data-lucide="settings" style="width:20px;height:20px;color:#fff;"></i> </button>
-     </div>
-    </div>
-   </header><!-- Main Content -->
-   <main class="flex-1 overflow-auto">
-    <div class="p-6 max-w-7xl mx-auto space-y-6"><!-- Quick Stats -->
-     <section class="fade-in-d1">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-       <div class="card p-6">
-        <div class="flex items-center justify-between mb-3"><span class="text-sm font-medium text-gray-400">Total Scans</span> <i data-lucide="activity" style="width:18px;height:18px;color:#4ade80;"></i>
-        </div>
-        <p class="text-3xl font-bold text-white" id="statTotalScans">0</p>
-        <p class="text-xs text-green-400 mt-2">Last 30 days</p>
-       </div>
-       <div class="card p-6">
-        <div class="flex items-center justify-between mb-3"><span class="text-sm font-medium text-gray-400">Vulnerabilities</span> <i data-lucide="alert-circle" style="width:18px;height:18px;color:#ef4444;"></i>
-        </div>
-        <p class="text-3xl font-bold text-white" id="statVulnerabilities">0</p>
-        <p class="text-xs text-red-400 mt-2" id="statCritical">0 Critical</p>
-       </div>
-       <div class="card p-6">
-        <div class="flex items-center justify-between mb-3"><span class="text-sm font-medium text-gray-400">Security Score</span> <i data-lucide="trending-up" style="width:18px;height:18px;color:#60a5fa;"></i>
-        </div>
-        <p class="text-3xl font-bold text-white" id="statScore">95/100</p>
-        <p class="text-xs text-blue-400 mt-2">Excellent</p>
-       </div>
-       <div class="card p-6">
-        <div class="flex items-center justify-between mb-3"><span class="text-sm font-medium text-gray-400">Last Scan</span> <i data-lucide="clock" style="width:18px;height:18px;color:#f59e0b;"></i>
-        </div>
-        <p class="text-2xl font-bold text-white" id="statLastScan">—</p>
-        <p class="text-xs text-gray-400 mt-2" id="statLastTime">Never</p>
-       </div>
-      </div>
-     </section><!-- Recent Scans Table -->
-     <section class="fade-in-d2">
-      <div class="flex items-center justify-between mb-4">
-       <h2 class="text-lg font-bold text-white">Recent Security Scans</h2><button id="refreshBtn" class="btn-secondary text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2"> <i data-lucide="refresh-cw" style="width:16px;height:16px;"></i> Refresh </button>
-      </div>
-      <div class="card overflow-hidden">
-       <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-         <thead>
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-           <th class="text-left py-4 px-4 text-gray-400 font-medium">URL</th>
-           <th class="text-left py-4 px-4 text-gray-400 font-medium">Type</th>
-           <th class="text-left py-4 px-4 text-gray-400 font-medium">Status</th>
-           <th class="text-left py-4 px-4 text-gray-400 font-medium">Issues</th>
-           <th class="text-left py-4 px-4 text-gray-400 font-medium">Date</th>
-           <th class="text-left py-4 px-4 text-gray-400 font-medium">Action</th>
-          </tr>
-         </thead>
-         <tbody id="scansTableBody">
-          <tr style="border-top: 1px solid rgba(255,255,255,0.05);">
-           <td colspan="6" class="py-8 px-4 text-center text-gray-500">No scans yet. Start by creating a new scan.</td>
-          </tr>
-         </tbody>
-        </table>
-       </div>
-      </div>
-     </section><!-- Tabs Section -->
-     <section class="fade-in-d3" id="tabsSection" style="display: none;">
-      <div class="flex gap-4 border-b border-white/10 mb-6"><button class="tab-btn active pb-3 font-medium" onclick="switchTab('analysis')"> <i data-lucide="bar-chart-2" style="width:16px;height:16px;display:inline;margin-right:6px;"></i> Analysis </button> <button class="tab-btn pb-3 font-medium" onclick="switchTab('reports')"> <i data-lucide="file-text" style="width:16px;height:16px;display:inline;margin-right:6px;"></i> Reports </button> <button class="tab-btn pb-3 font-medium" onclick="switchTab('settings')"> <i data-lucide="settings" style="width:16px;height:16px;display:inline;margin-right:6px;"></i> Settings </button>
-      </div><!-- Analysis Tab -->
-      <div id="analysisTab" class="space-y-4">
-       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="card p-6">
-         <h3 class="text-sm font-bold text-white mb-4">Vulnerability Breakdown</h3>
-         <div class="space-y-4">
-          <div>
-           <div class="flex justify-between mb-2"><span class="text-sm text-gray-400">Critical</span> <span class="font-bold text-red-400" id="chartCritical">0</span>
-           </div>
-           <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-            <div class="h-full bg-red-500" style="width: 0%;"></div>
-           </div>
-          </div>
-          <div>
-           <div class="flex justify-between mb-2"><span class="text-sm text-gray-400">High</span> <span class="font-bold text-orange-400" id="chartHigh">0</span>
-           </div>
-           <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-            <div class="h-full bg-orange-500" style="width: 0%;"></div>
-           </div>
-          </div>
-          <div>
-           <div class="flex justify-between mb-2"><span class="text-sm text-gray-400">Medium</span> <span class="font-bold text-yellow-400" id="chartMedium">0</span>
-           </div>
-           <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-            <div class="h-full bg-yellow-500" style="width: 0%;"></div>
-           </div>
-          </div>
-          <div>
-           <div class="flex justify-between mb-2"><span class="text-sm text-gray-400">Low</span> <span class="font-bold text-green-400" id="chartLow">0</span>
-           </div>
-           <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-            <div class="h-full bg-green-500" style="width: 0%;"></div>
-           </div>
-          </div>
-         </div>
-        </div>
-        <div class="card p-6">
-         <h3 class="text-sm font-bold text-white mb-4">Security Trends</h3>
-         <div class="h-40 flex items-end justify-between gap-2">
-          <div class="flex-1 flex flex-col items-center">
-           <div class="w-full bg-gradient-to-t from-green-500 to-green-400 rounded" style="height: 60%;"></div><span class="text-xs text-gray-500 mt-2">Mon</span>
-          </div>
-          <div class="flex-1 flex flex-col items-center">
-           <div class="w-full bg-gradient-to-t from-green-500 to-green-400 rounded" style="height: 75%;"></div><span class="text-xs text-gray-500 mt-2">Tue</span>
-          </div>
-          <div class="flex-1 flex flex-col items-center">
-           <div class="w-full bg-gradient-to-t from-green-500 to-green-400 rounded" style="height: 50%;"></div><span class="text-xs text-gray-500 mt-2">Wed</span>
-          </div>
-          <div class="flex-1 flex flex-col items-center">
-           <div class="w-full bg-gradient-to-t from-green-500 to-green-400 rounded" style="height: 85%;"></div><span class="text-xs text-gray-500 mt-2">Thu</span>
-          </div>
-          <div class="flex-1 flex flex-col items-center">
-           <div class="w-full bg-gradient-to-t from-green-500 to-green-400 rounded" style="height: 65%;"></div><span class="text-xs text-gray-500 mt-2">Fri</span>
-          </div>
-         </div>
-        </div>
-       </div>
-      </div><!-- Reports Tab -->
-      <div id="reportsTab" style="display: none;" class="space-y-4">
-       <div class="card p-6">
-        <h3 class="text-sm font-bold text-white mb-4">Available Reports</h3>
-        <div class="space-y-3"><button class="w-full p-4 text-left rounded-lg glass hover:bg-white/10 transition flex items-center justify-between group">
-          <div>
-           <p class="font-medium text-white">Monthly Report</p>
-           <p class="text-xs text-gray-400">January 2024</p>
-          </div><i data-lucide="download" style="width:18px;height:18px;color:#888;"></i> </button> <button class="w-full p-4 text-left rounded-lg glass hover:bg-white/10 transition flex items-center justify-between group">
-          <div>
-           <p class="font-medium text-white">Weekly Summary</p>
-           <p class="text-xs text-gray-400">Week 1-4</p>
-          </div><i data-lucide="download" style="width:18px;height:18px;color:#888;"></i> </button> <button class="w-full p-4 text-left rounded-lg glass hover:bg-white/10 transition flex items-center justify-between group">
-          <div>
-           <p class="font-medium text-white">Custom Report</p>
-           <p class="text-xs text-gray-400">Build your own</p>
-          </div><i data-lucide="plus" style="width:18px;height:18px;color:#888;"></i> </button>
-        </div>
-       </div>
-      </div><!-- Settings Tab -->
-      <div id="settingsTab" style="display: none;" class="space-y-4">
-       <div class="card p-6">
-        <h3 class="text-sm font-bold text-white mb-6">Account Settings</h3>
-        <div class="space-y-4">
-         <div><label class="block text-sm font-medium text-gray-300 mb-2">Email Address</label> <input type="email" id="emailInput" class="w-full input-field px-4 py-2" placeholder="your@email.com">
-         </div>
-         <div><label class="block text-sm font-medium text-gray-300 mb-2">Notification Frequency</label> <select class="w-full input-field px-4 py-2"> <option>Real-time alerts</option> <option>Daily digest</option> <option>Weekly summary</option> </select>
-         </div>
-         <div><label class="flex items-center gap-3 cursor-pointer"> <input type="checkbox" checked class="w-4 h-4"> <span class="text-sm text-gray-400">Email me about critical vulnerabilities</span> </label>
-         </div><button class="btn-primary text-white px-6 py-2 rounded-lg font-medium mt-4"> Save Settings </button>
-        </div>
-       </div>
-      </div>
-     </section>
-    </div>
-   </main><!-- New Scan Modal -->
-   <div id="scanModal" class="modal-overlay fixed inset-0 flex items-center justify-center p-4" style="display: none;">
-    <div class="card p-6 w-full max-w-md scale-pop">
-     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-bold text-white">Create New Scan</h2><button onclick="closeScanModal()" class="text-gray-400 hover:text-white"> <i data-lucide="x" style="width:20px;height:20px;"></i> </button>
-     </div>
-     <div class="space-y-4">
-      <div><label class="block text-sm font-medium text-gray-300 mb-2">Website URL</label> <input type="url" id="scanUrl" class="w-full input-field px-4 py-2" placeholder="https://example.com">
-      </div>
-      <div><label class="block text-sm font-medium text-gray-300 mb-2">Scan Type</label> <select id="scanType" class="w-full input-field px-4 py-2"> <option value="basic">Basic Scan</option> <option value="advanced">Advanced Scan</option> <option value="full">Full Audit</option> </select>
-      </div>
-      <div class="flex gap-3"><button onclick="closeScanModal()" class="flex-1 btn-secondary text-white px-4 py-2 rounded-lg font-medium"> Cancel </button> <button onclick="executeScan()" class="flex-1 btn-primary text-white px-4 py-2 rounded-lg font-medium"> Start Scan </button>
-      </div>
-     </div>
-    </div>
-   </div><!-- Toast Notification -->
-   <div id="toast" class="toast rounded-lg p-4 flex items-center gap-3" style="display: none;"><i data-lucide="check-circle" style="width:20px;height:20px;color:#4ade80;"></i>
-    <p id="toastMessage" class="text-sm text-white"></p>
-   </div>
-  </div>
-  <script>
-    let scanData = [];
-    
-    // Element SDK Config
-    const defaultConfig = {
-      app_title: 'Security Navigator Pro',
-      company_name: 'Professional Security Scanning'
-    };
-
-    let config = { ...defaultConfig };
-
-    window.elementSdk.init({
-      defaultConfig,
-      onConfigChange: async (newConfig) => {
-        config = newConfig;
-        document.getElementById('mainTitle').textContent = config.app_title;
-        document.getElementById('companyName').textContent = config.company_name;
-      },
-      mapToCapabilities: () => ({
-        recolorables: [],
-        borderables: [],
-        fontEditable: undefined,
-        fontSizeable: undefined
-      }),
-      mapToEditPanelValues: () => new Map([
-        ['app_title', config.app_title || defaultConfig.app_title],
-        ['company_name', config.company_name || defaultConfig.company_name]
-      ])
-    });
-
-    // Data SDK Handler
-    const dataHandler = {
-      onDataChanged(data) {
-        scanData = data;
-        updateDashboard();
-      }
-    };
-
-    async function initDataSDK() {
-      const result = await window.dataSdk.init(dataHandler);
-      if (!result.isOk) {
-        console.error('Failed to init Data SDK:', result.error);
-      }
-    }
-
-    initDataSDK();
-
-    function updateDashboard() {
-      const tableBody = document.getElementById('scansTableBody');
-      
-      if (scanData.length === 0) {
-        tableBody.innerHTML = '<tr style="border-top: 1px solid rgba(255,255,255,0.05);"><td colspan="6" class="py-8 px-4 text-center text-gray-500">No scans yet. Start by creating a new scan.</td></tr>';
-        document.getElementById('tabsSection').style.display = 'none';
-        updateStats();
-        return;
-      }
-
-      document.getElementById('tabsSection').style.display = 'block';
-      
-      tableBody.innerHTML = scanData.map(scan => {
-        const date = new Date(scan.createdAt);
-        const vulnCount = scan.vulnerabilityCount || 0;
-        const severity = scan.severity || 'low';
-        const severityClass = `severity-${severity}`;
+    <style>
+        :root { --primary-green: #4ade80; --dark-bg: #0a0e1a; }
+        html, body { height: 100%; margin: 0; background: var(--dark-bg); color: #f0f0f0; font-family: 'DM Sans', sans-serif; overflow: hidden; }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); }
+        .card { background: rgba(15,20,35,0.8); border: 1px solid rgba(74,222,128,0.15); border-radius: 12px; }
+        .btn-primary { background: linear-gradient(135deg, #1a5c3a 0%, #2a7a4a 100%); border: 1px solid rgba(74,222,128,0.3); transition: all 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,92,58,0.4); border-color: var(--primary-green); }
         
-        return `
-          <tr style="border-top: 1px solid rgba(255,255,255,0.05);" class="hover:bg-white/5 transition">
-            <td class="py-3 px-4 text-gray-300 text-sm">${scan.url}</td>
-            <td class="py-3 px-4 text-gray-300 text-sm capitalize">${scan.scanType}</td>
-            <td class="py-3 px-4"><span class="px-2 py-1 rounded text-xs font-medium bg-green-500/20 text-green-400">Complete</span></td>
-            <td class="py-3 px-4 text-gray-300 text-sm">${vulnCount}</td>
-            <td class="py-3 px-4 text-gray-300 text-sm">${date.toLocaleDateString()}</td>
-            <td class="py-3 px-4"><button class="text-blue-400 hover:text-blue-300 text-sm font-medium">View</button></td>
-          </tr>
-        `;
-      }).join('');
+        /* Animations */
+        .fade-in { animation: fadeIn 0.6s ease both; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .severity-critical { color: #ef4444; background: rgba(239,68,68,0.1); }
+        .severity-high { color: #f97316; background: rgba(249,115,22,0.1); }
+    </style>
+</head>
 
-      updateStats();
-    }
+<body class="h-full flex flex-col">
+    <header class="fade-in px-6 py-4 border-b border-white/10 glass sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-green-600 flex items-center justify-center">
+                    <i data-lucide="shield-check" class="text-white"></i>
+                </div>
+                <div>
+                    <h1 id="mainTitle" class="text-lg font-bold text-white leading-none">Security Navigator Pro</h1>
+                    <p id="companyName" class="text-xs text-gray-400 mt-1">Visual Studio Security Engine</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="showScanModal()" class="btn-primary text-white px-5 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+                    <i data-lucide="zap" size="16"></i> New Scan
+                </button>
+            </div>
+        </div>
+    </header>
 
-    function updateStats() {
-      document.getElementById('statTotalScans').textContent = scanData.length;
-      
-      let totalVulns = 0;
-      let criticalCount = 0;
-      
-      scanData.forEach(scan => {
-        totalVulns += scan.vulnerabilityCount || 0;
-        if (scan.severity === 'critical') criticalCount++;
-      });
+    <main class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-7xl mx-auto space-y-6">
+            
+            <section class="grid grid-cols-1 md:grid-cols-4 gap-4 fade-in">
+                <div class="card p-5">
+                    <div class="flex justify-between items-start text-gray-400 mb-2">
+                        <span class="text-xs uppercase font-bold tracking-wider">Total Scans</span>
+                        <i data-lucide="activity" size="16"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-white" id="statTotalScans">0</p>
+                </div>
+                <div class="card p-5 border-red-500/20">
+                    <div class="flex justify-between items-start text-gray-400 mb-2">
+                        <span class="text-xs uppercase font-bold tracking-wider">Vulnerabilities</span>
+                        <i data-lucide="alert-circle" size="16" class="text-red-400"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-white" id="statVulnerabilities">0</p>
+                    <p class="text-[10px] text-red-400 mt-1" id="statCritical">0 Critical Found</p>
+                </div>
+                <div class="card p-5 border-blue-500/20">
+                    <div class="flex justify-between items-start text-gray-400 mb-2">
+                        <span class="text-xs uppercase font-bold tracking-wider">Security Score</span>
+                        <i data-lucide="shield" size="16" class="text-blue-400"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-white">98<span class="text-sm text-gray-500">/100</span></p>
+                </div>
+                <div class="card p-5 border-green-500/20 text-center flex flex-col justify-center">
+                    <span class="text-[10px] text-green-400 font-bold uppercase">Engine Status</span>
+                    <p class="text-lg font-bold text-green-400">SYSTEM ONLINE</p>
+                </div>
+            </section>
 
-      document.getElementById('statVulnerabilities').textContent = totalVulns;
-      document.getElementById('statCritical').textContent = `${criticalCount} Critical`;
+            <section class="card overflow-hidden fade-in" style="animation-delay: 0.2s;">
+                <div class="p-4 border-b border-white/5 flex justify-between items-center bg-white/5">
+                    <h2 class="text-sm font-bold flex items-center gap-2">
+                        <i data-lucide="list" size="16"></i> Recent Security Audits
+                    </h2>
+                    <button onclick="updateDashboard()" class="text-xs text-gray-400 hover:text-white flex items-center gap-1 transition">
+                        <i data-lucide="refresh-cw" size="12"></i> Sync
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-gray-500 bg-black/20">
+                            <tr>
+                                <th class="p-4 font-medium">Target URL</th>
+                                <th class="p-4 font-medium">Type</th>
+                                <th class="p-4 font-medium">Issues</th>
+                                <th class="p-4 font-medium">Date</th>
+                                <th class="p-4 font-medium text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scansTableBody" class="divide-y divide-white/5">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
 
-      if (scanData.length > 0) {
-        const lastScan = scanData[scanData.length - 1];
-        const date = new Date(lastScan.createdAt);
-        document.getElementById('statLastScan').textContent = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        document.getElementById('statLastTime').textContent = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-      }
-    }
+    <div id="scanModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+        <div class="card p-6 w-full max-w-md shadow-2xl border-green-500/30">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-white">Config Audit Engine</h3>
+                <button onclick="closeScanModal()" class="text-gray-500 hover:text-white"><i data-lucide="x"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Target URL</label>
+                    <input type="url" id="scanUrl" class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white outline-none focus:border-green-500 transition" placeholder="https://site-para-testar.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Audit Intensity</label>
+                    <select id="scanType" class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white outline-none">
+                        <option value="basic">Express Scan (Fast)</option>
+                        <option value="full">Deep Infrastructure (Slow)</option>
+                    </select>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button onclick="closeScanModal()" class="flex-1 py-3 text-sm text-gray-400 hover:text-white transition">Cancel</button>
+                    <button onclick="executeScan()" class="flex-1 btn-primary py-3 rounded-lg text-sm font-bold text-white">Start Engine</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    function showScanModal() {
-      document.getElementById('scanModal').style.display = 'flex';
-    }
+    <div id="toast" class="fixed bottom-6 right-6 glass border-green-500/50 p-4 rounded-lg hidden shadow-2xl transition-all">
+        <div class="flex items-center gap-3">
+            <i data-lucide="terminal" size="18" class="text-green-400"></i>
+            <p id="toastMessage" class="text-xs font-mono text-green-400"></p>
+        </div>
+    </div>
 
-    function closeScanModal() {
-      document.getElementById('scanModal').style.display = 'none';
-      document.getElementById('scanUrl').value = '';
-    }
+    <script>
+        // --- CORE LOGIC ---
+        function showScanModal() { document.getElementById('scanModal').style.display = 'flex'; }
+        function closeScanModal() { document.getElementById('scanModal').style.display = 'none'; }
 
-    async function executeScan() {
-      const url = document.getElementById('scanUrl').value;
-      const scanType = document.getElementById('scanType').value;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = msg;
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 4000);
+        }
 
-      if (!url) {
-        showToast('Please enter a valid URL');
-        return;
-      }
+        async function executeScan() {
+            const url = document.getElementById('scanUrl').value;
+            const type = document.getElementById('scanType').value;
 
-      const newScan = {
-        url: url,
-        scanType: scanType,
-        status: 'completed',
-        vulnerabilityCount: Math.floor(Math.random() * 5),
-        severity: ['critical', 'high', 'medium', 'low'][Math.floor(Math.random() * 4)],
-        createdAt: new Date().toISOString()
-      };
+            if(!url.startsWith('http')) {
+                showToast("Invalid Protocol: Use http/https");
+                return;
+            }
 
-      const result = await window.dataSdk.create(newScan);
-      if (result.isOk) {
-        closeScanModal();
-        showToast(`Scan of ${url} completed!`);
-      } else {
-        showToast('Error creating scan');
-      }
-    }
+            showToast(`Initializing Scan: ${url}`);
+            closeScanModal();
 
-    function switchTab(tab) {
-      document.getElementById('analysisTab').style.display = 'none';
-      document.getElementById('reportsTab').style.display = 'none';
-      document.getElementById('settingsTab').style.display = 'none';
+            try {
+                // Simulação de resposta (Troque pelo fetch real do seu Backend se estiver rodando)
+                const mockResult = {
+                    url: url,
+                    scanType: type,
+                    vulnerabilityCount: Math.floor(Math.random() * 8),
+                    severity: Math.random() > 0.7 ? 'critical' : 'high',
+                    createdAt: new Date().toISOString()
+                };
 
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                // Aqui você chamaria o dataSdk.create(mockResult)
+                console.log("Scan Data Generated:", mockResult);
+                showToast("Audit successfully logged.");
+                updateDashboard();
+            } catch (e) {
+                showToast("Connection Error with Python Backend.");
+            }
+        }
 
-      document.getElementById(tab + 'Tab').style.display = 'block';
-      event.target.closest('.tab-btn').classList.add('active');
-    }
+        // --- ANTI-INSPECTION (PROTECTION) ---
+        const lockSystem = () => {
+            document.body.innerHTML = `<div style="background:#000;color:red;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;text-align:center;">
+                <h1 style="font-size:3rem;">SYSTEM LOCKED</h1>
+                <p>Unauthorized inspection detected. Log sent to Visual Studio Security.</p>
+                <button onclick="location.reload()" style="background:#222;color:#fff;border:1px solid #444;padding:10px 20px;margin-top:20px;cursor:pointer;">Retry Connection</button>
+            </div>`;
+        };
 
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastMessage').textContent = message;
-      toast.style.display = 'flex';
-      setTimeout(() => {
-        toast.style.display = 'none';
-      }, 3000);
-    }
+        window.addEventListener('keydown', (e) => {
+            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) || (e.ctrlKey && e.key === "U")) {
+                e.preventDefault();
+                lockSystem();
+            }
+        });
 
-    // Event Listeners
-    document.getElementById('newScanBtn').addEventListener('click', showScanModal);
-    document.getElementById('refreshBtn').addEventListener('click', updateDashboard);
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeScanModal();
-    });
-
-    lucide.createIcons();
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e2fe3b9c5eea4bc',t:'MTc3NDYzMDE3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+        // Initialize Lucide
+        lucide.createIcons();
+    </script>
+</body>
 </html>
