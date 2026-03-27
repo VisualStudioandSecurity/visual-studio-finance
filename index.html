@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-pt" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual Studio And Security | Intelligence & Cyber Defense</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;900&display=swap" rel="stylesheet">
-    <style>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visual Studio And Security | Intelligence &amp; Cyber Defense</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;family=Inter:wght@300;400;900&amp;display=swap" rel="stylesheet">
+  <style>
         :root {
             --cyber-red: #ff003c;
             --cyber-blue: #00f2ff;
@@ -73,130 +73,121 @@
             display: inline-block;
             margin-top: 40px;
             padding: 12px 30px;
-            border: 1px solid var(--cyber-blue);
-            color: var(--cyber-blue);
+            border: 1px solid var(--cyber-red);
+            color: var(--cyber-red);
             text-decoration: none;
             font-weight: bold;
             transition: 0.3s;
+            background: transparent;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
         }
-        .btn-action:hover { background: var(--cyber-blue); color: #000; }
+        .btn-action:hover { 
+            background: var(--cyber-red); 
+            color: #000; 
+        }
 
         /* Estilo do Guia Detalhado */
-        .guide-section { margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); pt: 40px; }
+        .guide-section { margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px; }
         .guide-step { margin-bottom: 25px; }
         .guide-step h4 { color: var(--cyber-blue); font-family: 'JetBrains Mono'; margin-bottom: 10px; }
         .code-block { background: #000; padding: 10px; border-left: 2px solid var(--cyber-red); font-family: 'JetBrains Mono'; font-size: 0.8rem; color: #00ff41; margin-top: 10px; }
     </style>
-</head>
-<body>
-
-    <header style="padding: 80px 0; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">
-        <div class="container">
-            <h1 class="glitch-text" style="font-size: 3rem;">Visual Studio And Security</h1>
-            <p style="color: #888; margin-top: 15px;">Monitorização e Defesa de Infraestruturas Críticas</p>
-        </div>
-    </header>
-
-    <main class="container">
-        
-        <section class="threat-intel-box">
-            <span class="threat-label">CRITICAL THREAT DETECTED</span>
-            <h2 class="malware-name">FAUX#ELEVATE</h2>
-            <p style="color: #ccc; line-height: 1.8;">
-                O <strong>FAUX#ELEVATE</strong> é uma ameaça avançada de exfiltração de dados e mineração. O ataque inicia-se através de currículos falsos (Fake CVs) ofuscados em <strong>VBScript</strong>, desenhados para contornar filtros de rede corporativos e comprometer credenciais empresariais.
-            </p>
-
-            <div class="tech-details">
-                <div class="detail-item">
-                    <strong>Vetor de Infeção</strong>
-                    VBScript ofuscado em documentos de recrutamento.
-                </div>
-                <div class="detail-item">
-                    <strong>Componente: mservice.exe</strong>
-                    Implementação do minerador XMRig para exploração de CPU.
-                </div>
-                <div class="detail-item">
-                    <strong>Componente: mozilla.vbs</strong>
-                    Script dedicado ao roubo de credenciais do navegador Firefox.
-                </div>
-                <div class="detail-item">
-                    <strong>Persistência no Kernel</strong>
-                    Uso do driver WinRing0x64.sys para maximizar recursos.
-                </div>
-                <div class="detail-item">
-                    <strong>Ação Evasiva</strong>
-                    Desativação forçada do Microsoft Defender e Controlo de Conta de Utilizador (UAC).
-                </div>
-            </div>
-
-            <div class="guide-section">
-                <h3 style="color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">Manual de Defesa Ativa:</h3>
-                
-                <div class="guide-step">
-                    <h4>1. Neutralização de Binários</h4>
-                    <p style="font-size: 0.9rem; color: #aaa;">Localize e encerre o processo <strong>mservice.exe</strong>. Remova o script <strong>mozilla.vbs</strong> das pastas de inicialização (Startup) e chaves de registro 'Run'.</p>
-                </div>
-
-                <div class="guide-step">
-                    <h4>2. Expurgo de Driver de Kernel</h4>
-                    <p style="font-size: 0.9rem; color: #aaa;">O driver WinRing0x64.sys permite acesso Ring 0. Remova o serviço via CMD administrativo:</p>
-                    <div class="code-block">sc stop "WinRing0" && sc delete "WinRing0"</div>
-                </div>
-
-                <div class="guide-step">
-                    <h4>3. Restauração de Segurança</h4>
-                    <p style="font-size: 0.9rem; color: #aaa;">Reative o Microsoft Defender e limpe as exclusões de caminhos criadas pelo malware no registro do sistema.</p>
-                </div>
-            </div>
-        </section>
-
-        <section style="margin: 80px 0; text-align: center;">
-            <p>Precisa de auditar a sua rede contra estas ameaças?</p>
-            <a href="mailto:visualstudioandsecurityoficial@gmail.com" class="btn-action">SOLICITAR AUDITORIA</a>
-        </section>
-
-    </main>
-
-    <footer style="background: #0a0a0a; border-top: 1px solid rgba(0, 242, 255, 0.1); padding: 60px 0 30px 0;">
-        <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
-            <div class="footer-about">
-                <h3 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; margin-bottom: 20px;">[ SOBRE NÓS ]</h3>
-                <p style="color: #aaa; font-size: 0.95rem; line-height: 1.6; text-align: justify;">
-                    A **Visual Studio And Security** é uma empresa de desenvolvimento e criação de softwares de alta performance. 
-                    Fundada por **Guilherme Kovaliosky**, Especialista Senior em Cibersegurança e Desenvolvedor Senior, a empresa foca na união entre design inovador e blindagem digital robusta para garantir o sucesso e a segurança da sua marca.
-                </p>
-            </div>
-
-            <div class="footer-links">
-                <h3 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; margin-bottom: 20px;">[ NAVEGAÇÃO ]</h3>
-                <ul style="list-style: none; padding: 0; line-height: 2;">
-                    <li><a href="#services" style="color: #888; text-decoration: none;">Serviços</a></li>
-                    <li><a href="#projects" style="color: #888; text-decoration: none;">Projetos</a></li>
-                    <li><a href="#security-news" style="color: #888; text-decoration: none;">Avisos de Malware</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-contact">
-                <h3 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; margin-bottom: 20px;">[ CONTATO ]</h3>
-                <p style="color: #888; font-size: 0.9rem;">
-                    Email: visualstudioandsecurityoficial@gmail.com<br>
-                    Localização: Ji-Paraná, RO
-                </p>
-                <div style="margin-top: 15px;">
-                    <span style="color: var(--cyber-red); font-weight: bold; font-size: 0.8rem;">STATUS DO SISTEMA: PROTEGIDO</span>
-                </div>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
-            <p style="color: #555; font-size: 0.8rem;">
-                © 2026 Visual Studio And Security Protocol. All Rights Reserved. 
-                Desenvolvido por Guilherme Kovaliosky.
-            </p>
-        </div>
-    </footer>
-
-   
-    </script>
-</body>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body>
+  <header style="padding: 80px 0; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">
+   <div class="container">
+    <h1 class="glitch-text" style="font-size: 3rem;">Visual Studio And Security</h1>
+    <p style="color: #888; margin-top: 15px;">Monitorização e Defesa de Infraestruturas Críticas</p>
+   </div>
+  </header>
+  <main class="container">
+   <section class="threat-intel-box"><span class="threat-label">CRITICAL THREAT DETECTED</span>
+    <h2 class="malware-name">FAUX#ELEVATE</h2>
+    <p style="color: #ccc; line-height: 1.8;">O <strong>FAUX#ELEVATE</strong> é uma ameaça avançada de exfiltração de dados e mineração. O ataque inicia-se através de currículos falsos (Fake CVs) ofuscados em <strong>VBScript</strong>, desenhados para contornar filtros de rede corporativos e comprometer credenciais empresariais.</p>
+    <div class="tech-details">
+     <div class="detail-item"><strong>Vetor de Infeção</strong> VBScript ofuscado em documentos de recrutamento.
+     </div>
+     <div class="detail-item"><strong>Componente: mservice.exe</strong> Implementação do minerador XMRig para exploração de CPU.
+     </div>
+     <div class="detail-item"><strong>Componente: mozilla.vbs</strong> Script dedicado ao roubo de credenciais do navegador Firefox.
+     </div>
+     <div class="detail-item"><strong>Persistência no Kernel</strong> Uso do driver WinRing0x64.sys para maximizar recursos.
+     </div>
+     <div class="detail-item"><strong>Ação Evasiva</strong> Desativação forçada do Microsoft Defender e Controlo de Conta de Utilizador (UAC).
+     </div>
+    </div>
+    <div class="guide-section">
+     <h3 style="color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">Manual de Defesa Ativa:</h3>
+     <div class="guide-step">
+      <h4>1. Neutralização de Binários</h4>
+      <p style="font-size: 0.9rem; color: #aaa;">Localize e encerre o processo <strong>mservice.exe</strong>. Remova o script <strong>mozilla.vbs</strong> das pastas de inicialização (Startup) e chaves de registro 'Run'.</p>
+     </div>
+     <div class="guide-step">
+      <h4>2. Expurgo de Driver de Kernel</h4>
+      <p style="font-size: 0.9rem; color: #aaa;">O driver WinRing0x64.sys permite acesso Ring 0. Remova o serviço via CMD administrativo:</p>
+      <div class="code-block">
+       sc stop "WinRing0" &amp;&amp; sc delete "WinRing0"
+      </div>
+     </div>
+     <div class="guide-step">
+      <h4>3. Restauração de Segurança</h4>
+      <p style="font-size: 0.9rem; color: #aaa;">Reative o Microsoft Defender e limpe as exclusões de caminhos criadas pelo malware no registro do sistema.</p>
+     </div>
+    </div>
+   </section>
+   <section style="margin: 80px 0;">
+    <h2 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 40px; text-align: center;">[ SERVIÇOS ]</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+     <div style="background: rgba(255, 0, 60, 0.05); border: 1px solid rgba(255, 0, 60, 0.3); padding: 30px; border-radius: 8px; transition: 0.3s;">
+      <h3 style="color: var(--cyber-red); font-size: 1.3rem; margin-bottom: 15px;">AUDITORIAS DE SEGURANÇA</h3>
+      <p style="color: #aaa; line-height: 1.6; font-size: 0.95rem;">Análise profunda de infraestruturas, identificação de vulnerabilidades e plano de remediação customizado para sua empresa.</p>
+     </div>
+     <div style="background: rgba(0, 242, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.3); padding: 30px; border-radius: 8px; transition: 0.3s;">
+      <h3 style="color: var(--cyber-blue); font-size: 1.3rem; margin-bottom: 15px;">DESENVOLVIMENTO DE SOFTWARE</h3>
+      <p style="color: #aaa; line-height: 1.6; font-size: 0.95rem;">Soluções customizadas de alta performance com arquitetura segura e blindagem digital integrada desde o design.</p>
+     </div>
+     <div style="background: rgba(255, 0, 60, 0.05); border: 1px solid rgba(255, 0, 60, 0.3); padding: 30px; border-radius: 8px; transition: 0.3s;">
+      <h3 style="color: var(--cyber-red); font-size: 1.3rem; margin-bottom: 15px;">MONITORIZAÇÃO 24/7</h3>
+      <p style="color: #aaa; line-height: 1.6; font-size: 0.95rem;">Sistema contínuo de detecção e resposta a ameaças com alertas em tempo real e suporte técnico especializado.</p>
+     </div>
+    </div>
+   </section>
+   <section style="margin: 80px 0; text-align: center;">
+    <p style="color: #ccc; font-size: 1.1rem; margin-bottom: 20px;">Precisa de auditar a sua rede contra estas ameaças?</p><a href="mailto:visualstudioandsecurityoficial@gmail.com" class="btn-action">SOLICITAR AUDITORIA</a>
+   </section>
+  </main>
+  <footer style="background: #0a0a0a; border-top: 1px solid rgba(0, 242, 255, 0.1); padding: 60px 0 30px 0;">
+   <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
+    <div class="footer-about">
+     <h3 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; margin-bottom: 20px;">[ SOBRE NÓS ]</h3>
+     <p style="color: #aaa; font-size: 0.95rem; line-height: 1.6; text-align: justify;">A <strong>Visual Studio And Security</strong> é uma empresa de desenvolvimento e criação de softwares de alta performance. Fundada por <strong>Guilherme Kovaliosky</strong>, Especialista Senior em Cibersegurança e Desenvolvedor Senior, a empresa foca na união entre design inovador e blindagem digital robusta para garantir o sucesso e a segurança da sua marca.</p>
+    </div>
+    <div class="footer-links">
+     <h3 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; margin-bottom: 20px;">[ NAVEGAÇÃO ]</h3>
+     <ul style="list-style: none; padding: 0; line-height: 2;">
+      <li><a href="#services" style="color: #888; text-decoration: none;">Serviços</a></li>
+      <li><a href="#projects" style="color: #888; text-decoration: none;">Projetos</a></li>
+      <li><a href="#security-news" style="color: #888; text-decoration: none;">Avisos de Malware</a></li>
+     </ul>
+    </div>
+    <div class="footer-contact">
+     <h3 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; margin-bottom: 20px;">[ CONTATO ]</h3>
+     <p style="color: #888; font-size: 0.9rem;">Email: visualstudioandsecurityoficial@gmail.com<br>
+       Localização: Ji-Paraná, RO</p>
+     <div style="margin-top: 15px;"><span style="color: var(--cyber-red); font-weight: bold; font-size: 0.8rem;">STATUS DO SISTEMA: PROTEGIDO</span>
+     </div>
+    </div>
+   </div>
+   <div style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+    <p style="color: #555; font-size: 0.8rem;">© 2026 Visual Studio And Security Protocol. All Rights Reserved. Desenvolvido por Guilherme Kovaliosky.</p>
+   </div>
+  </footer>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e2eee8e251b93a8',t:'MTc3NDYyMDEzNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
