@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Studio And Security | Intelligence & Cyber Defense</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <meta name="google-adsense-account" content="ca-pub-4389870681468404">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4389870681468404" crossorigin="anonymous"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -79,8 +82,9 @@
             text-decoration: none;
             font-weight: bold;
             transition: 0.3s;
+            border-radius: 4px;
         }
-        .btn-action:hover { background: var(--cyber-blue); color: #000; }
+        .btn-action:hover { background: var(--cyber-blue); color: #000; box-shadow: 0 0 15px var(--cyber-blue); }
     </style>
 </head>
 <body>
@@ -98,7 +102,7 @@
             <span class="threat-label">CRITICAL THREAT DETECTED</span>
             <h2 class="malware-name">FAUX#ELEVATE</h2>
             <p style="color: #ccc; line-height: 1.8;">
-                O <strong>FAUX#ELEVATE</strong> é uma ameaça avançada de exfiltração de dados e mineração. O ataque inicia-se através de currículos falsos (Fake CVs) ofuscados em <strong>VBScript</strong>, desenhados para contornar filtros de rede corporativos e comprometer credenciais empresariais.
+                O <strong>FAUX#ELEVATE</strong> é uma ameaça avançada de exfiltração de dados e mineração. O ataque utiliza <strong>Fake CVs</strong> ofuscados em <strong>VBScript</strong> para contornar filtros e comprometer credenciais empresariais.
             </p>
 
             <div class="tech-details">
@@ -107,20 +111,16 @@
                     VBScript ofuscado em documentos de recrutamento.
                 </div>
                 <div class="detail-item">
-                    <strong>Componente: mservice.exe</strong>
-                    Implementação do minerador XMRig para exploração de CPU.
+                    <strong>Mserviced.exe</strong>
+                    Implementação do minerador XMRig via CPU.
                 </div>
                 <div class="detail-item">
-                    <strong>Componente: mozilla.vbs</strong>
-                    Script dedicado ao roubo de credenciais do navegador Firefox.
+                    <strong>Mozilla.vbs</strong>
+                    Script dedicado ao roubo de credenciais do Firefox.
                 </div>
                 <div class="detail-item">
-                    <strong>Persistência no Kernel</strong>
-                    Uso do driver WinRing0x64.sys para maximizar recursos.
-                </div>
-                <div class="detail-item">
-                    <strong>Ação Evasiva</strong>
-                    Desativação forçada do Microsoft Defender e Controlo de Conta de Utilizador (UAC).
+                    <strong>Persistência</strong>
+                    Uso do driver WinRing0x64.sys no Kernel.
                 </div>
             </div>
         </section>
@@ -132,11 +132,40 @@
 
     </main>
 
-    <footer style="padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; font-size: 0.8rem; color: #555;">
-        © 2026 Guilherme Kovaliosky - Visual Studio Security Protocol 0x88234
+    <footer style="background: #0a0a0a; border-top: 1px solid rgba(0, 242, 255, 0.1); padding: 60px 0 30px 0;">
+        <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
+            <div class="footer-about">
+                <h3 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; margin-bottom: 20px;">[ SOBRE NÓS ]</h3>
+                <p style="color: #aaa; font-size: 0.95rem; line-height: 1.6; text-align: justify;">
+                    A <strong>Visual Studio And Security</strong> une design de alta performance com blindagem digital. Fundada por <strong>Guilherme Kovaliosky</strong>, focamos na segurança e integridade da sua marca.
+                </p>
+            </div>
+            <div class="footer-contact">
+                <h3 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; margin-bottom: 20px;">[ CONTATO ]</h3>
+                <p style="color: #888; font-size: 0.9rem;">
+                    Email: visualstudioandsecurityoficial@gmail.com<br>
+                    Localização: Ji-Paraná, RO
+                </p>
+                <div style="margin-top: 15px;">
+                    <span style="color: var(--cyber-red); font-weight: bold; font-size: 0.8rem;">STATUS DO SISTEMA: PROTEGIDO</span>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <p style="color: #555; font-size: 0.8rem;">© 2026 Visual Studio And Security. Desenvolvido por Guilherme Kovaliosky.</p>
+        </div>
     </footer>
 
-
+    <script>
+        // FUNÇÃO DE BANIMENTO (ANTI-INSPEÇÃO)
+        function applyBan() {
+            localStorage.setItem('visual_studio_ban', 'true');
+            document.body.innerHTML = `
+                <div style="background:#000; color:red; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-family: 'JetBrains Mono', monospace;">
+                    <h1 style="font-size:3rem;">[ ACCESS DENIED ]</h1>
+                    <p style="color:#fff;">Tentativa de inspeção detectada. Seu IP foi sinalizado pelo protocolo Visual Security.</p>
+                </div>`;
+        }
 
         if (localStorage.getItem('visual_studio_ban') === 'true') { applyBan(); }
         
@@ -148,6 +177,7 @@
             }
         };
 
+        // Detecção de DevTools via Resize
         setInterval(() => {
             const threshold = 160;
             if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
@@ -155,45 +185,5 @@
             }
         }, 1000);
     </script>
-    <footer style="background: #0a0a0a; border-top: 1px solid rgba(0, 242, 255, 0.1); padding: 60px 0 30px 0; margin-top: 80px;">
-    <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
-        
-        <div class="footer-about">
-            <h3 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; margin-bottom: 20px;">[ SOBRE NÓS ]</h3>
-            <p style="color: #aaa; font-size: 0.95rem; line-height: 1.6; text-align: justify;">
-                A **Visual Studio And Security** é uma empresa de desenvolvimento e criação de softwares de alta performance. 
-                Fundada por **Guilherme Kovaliosky**, Especialista Senior em Cibersegurança e Desenvolvedor Senior, a empresa foca na união entre design inovador e blindagem digital robusta para garantir o sucesso e a segurança da sua marca.
-            </p>
-        </div>
-
-        <div class="footer-links">
-            <h3 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; margin-bottom: 20px;">[ NAVEGAÇÃO ]</h3>
-            <ul style="list-style: none; padding: 0; line-height: 2;">
-                <li><a href="#services" style="color: #888; text-decoration: none;">Serviços</a></li>
-                <li><a href="#projects" style="color: #888; text-decoration: none;">Projetos</a></li>
-                <li><a href="#security-news" style="color: #888; text-decoration: none;">Avisos de Malware</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-contact">
-            <h3 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; margin-bottom: 20px;">[ CONTATO ]</h3>
-            <p style="color: #888; font-size: 0.9rem;">
-                Email: visualstudioandsecurityoficial@gmail.com<br>
-                Localização: Ji-Paraná, RO
-            </p>
-            <div style="margin-top: 15px;">
-                <span style="color: var(--cyber-red); font-weight: bold; font-size: 0.8rem;">STATUS DO SISTEMA: PROTEGIDO</span>
-            </div>
-        </div>
-
-    </div>
-
-    <div style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
-        <p style="color: #555; font-size: 0.8rem;">
-            © 2026 Visual Studio And Security Protocol. All Rights Reserved. 
-            Desenvolvido por Guilherme Kovaliosky.
-        </p>
-    </div>
-</footer>
 </body>
 </html>
