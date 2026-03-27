@@ -1,113 +1,170 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-pt" class="h-full">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11493047857"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'AW-11493047857');
-    </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4389870681468404" crossorigin="anonymous"></script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual Studio & Security | Intelligence Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
+    <title>Visual Studio And Security | Intelligence & Cyber Defense</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0c10;
-            --card: #161b22;
-            --text: #c9d1d9;
-            --accent: #58a6ff;
-            --border: #30363d;
-            --critical: #d73a49;
-            --success: #3fb950;
+            --cyber-red: #ff003c;
+            --cyber-blue: #00f2ff;
+            --bg-black: #050505;
+            --card-gray: #0d0d0d;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
+            background-color: var(--bg-black); 
+            color: #fff; 
             font-family: 'Inter', sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            line-height: 1.6;
+            margin: 0;
             overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
         }
-
-        /* Status Bar com Link Interligado */
-        .status-bar {
-            background: #0d1117;
-            padding: 12px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 25px; }
+        .glitch-text { 
+            color: var(--cyber-blue); 
+            font-family: 'JetBrains Mono', monospace; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-
-        .nav-btn {
-            color: var(--bg);
-            background: var(--success);
-            text-decoration: none;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            transition: opacity 0.2s;
-        }
-        .nav-btn:hover { opacity: 0.8; }
-
-        /* Layout Estrutural */
-        .main-layout {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            max-width: 1600px;
-            margin: 40px auto;
-            padding: 0 20px;
-            flex-grow: 1;
-        }
-
-        .side-ad { flex: 0 0 160px; display: none; }
-        @media (min-width: 1240px) { .side-ad { display: block; } }
-
-        .content-area { flex: 1; max-width: 900px; }
-
-        /* Componentes de UI */
-        .intel-report {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 40px;
-            margin-bottom: 30px;
-        }
-
-        .badge { background: var(--critical); color: #fff; padding: 4px 8px; font-family: 'JetBrains Mono'; font-size: 0.7rem; border-radius: 4px; }
-        h1.report-title { font-family: 'JetBrains Mono'; font-size: 1.8rem; margin: 20px 0; color: #fff; }
         
-        .report-content p { margin-bottom: 20px; color: #8b949e; text-align: justify; }
-        .tool-list { margin: 25px 0; padding-left: 20px; border-left: 2px solid var(--accent); }
-        .tool-item { margin-bottom: 15px; font-size: 0.9rem; }
-        .tool-name { color: var(--accent); font-family: 'JetBrains Mono'; font-weight: bold; }
-
-        .protection-box {
-            margin-top: 40px;
+        /* Secção de Alerta Crítico */
+        .threat-intel-box {
+            background: rgba(255, 0, 60, 0.05);
+            border: 1px solid var(--cyber-red);
             padding: 30px;
-            background: rgba(63, 185, 80, 0.05);
-            border: 1px solid var(--success);
-            border-radius: 8px;
+            border-radius: 12px;
+            margin-top: 50px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(255, 0, 60, 0.1);
         }
+        .threat-label {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--cyber-red);
+            color: #000;
+            font-weight: 900;
+            padding: 2px 15px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+        }
+        .malware-name { 
+            color: var(--cyber-red); 
+            font-size: 2.2rem; 
+            font-weight: 900; 
+            margin: 10px 0;
+        }
+        .tech-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+        .detail-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-left: 2px solid var(--cyber-red);
+        }
+        .detail-item strong { color: var(--cyber-red); display: block; margin-bottom: 5px; }
 
-        footer { text-align: center; padding: 40px; border-top: 1px solid var(--border); font-size: 0.8rem; color: #8b949e; margin-top: auto; }
+        .btn-action {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 12px 30px;
+            border: 1px solid var(--cyber-blue);
+            color: var(--cyber-blue);
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-action:hover { background: var(--cyber-blue); color: #000; }
     </style>
 </head>
 <body>
 
-<div class="status-bar">
-    <div style="display: flex; gap: 20px; align
+    <header style="padding: 80px 0; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <div class="container">
+            <h1 class="glitch-text" style="font-size: 3rem;">Visual Studio And Security</h1>
+            <p style="color: #888; margin-top: 15px;">Monitorização e Defesa de Infraestruturas Críticas</p>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <section class="threat-intel-box">
+            <span class="threat-label">CRITICAL THREAT DETECTED</span>
+            <h2 class="malware-name">FAUX#ELEVATE</h2>
+            <p style="color: #ccc; line-height: 1.8;">
+                O <strong>FAUX#ELEVATE</strong> é uma ameaça avançada de exfiltração de dados e mineração. O ataque inicia-se através de currículos falsos (Fake CVs) ofuscados em <strong>VBScript</strong>, desenhados para contornar filtros de rede corporativos e comprometer credenciais empresariais.
+            </p>
+
+            <div class="tech-details">
+                <div class="detail-item">
+                    <strong>Vetor de Infeção</strong>
+                    VBScript ofuscado em documentos de recrutamento.
+                </div>
+                <div class="detail-item">
+                    <strong>Componente: mservice.exe</strong>
+                    Implementação do minerador XMRig para exploração de CPU.
+                </div>
+                <div class="detail-item">
+                    <strong>Componente: mozilla.vbs</strong>
+                    Script dedicado ao roubo de credenciais do navegador Firefox.
+                </div>
+                <div class="detail-item">
+                    <strong>Persistência no Kernel</strong>
+                    Uso do driver WinRing0x64.sys para maximizar recursos.
+                </div>
+                <div class="detail-item">
+                    <strong>Ação Evasiva</strong>
+                    Desativação forçada do Microsoft Defender e Controlo de Conta de Utilizador (UAC).
+                </div>
+            </div>
+        </section>
+
+        <section style="margin: 80px 0; text-align: center;">
+            <p>Precisa de auditar a sua rede contra estas ameaças?</p>
+            <a href="mailto:visualstudioandsecurityoficial@gmail.com" class="btn-action">SOLICITAR AUDITORIA</a>
+        </section>
+
+    </main>
+
+    <footer style="padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; font-size: 0.8rem; color: #555;">
+        © 2026 Guilherme Kovaliosky - Visual Studio Security Protocol 0x88234
+    </footer>
+
+    <script>
+        function applyBan() {
+            localStorage.setItem('visual_studio_ban', 'true');
+            document.body.innerHTML = `
+                <div style="background:#000; color:#ff003c; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family: 'JetBrains Mono', monospace; text-align:center; padding: 20px;">
+                    <h1 style="font-size: 3rem;">⚠️ ACESSO BLOQUEADO ⚠️</h1>
+                    <p style="font-size: 1.2rem;">TENTATIVA DE INSPEÇÃO DETECTADA PELO SISTEMA DE SEGURANÇA VISUAL STUDIO.</p>
+                    <p>O seu dispositivo foi identificado e o acesso revogado.</p>
+                    <div style="margin-top: 20px; border: 1px solid #ff003c; padding: 10px;">STATUS: BLACKLISTED | PROTOCOLO: FAUX_ELEVATE_PROTECT</div>
+                </div>
+            `;
+        }
+
+        if (localStorage.getItem('visual_studio_ban') === 'true') { applyBan(); }
+        
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) {
+                applyBan();
+                return false;
+            }
+        };
+
+        setInterval(() => {
+            const threshold = 160;
+            if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+                applyBan();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
