@@ -95,65 +95,75 @@
         .code-block { background: #000; padding: 10px; border-left: 2px solid var(--cyber-red); font-family: 'JetBrains Mono'; font-size: 0.8rem; color: #00ff41; margin-top: 10px; }
     </style>
   <style>body { box-sizing: border-box; }</style>
-  <script>
-    const auditBtn = document.getElementById('auditBtn');
-    const auditModal = document.getElementById('auditModal');
-    const closeBtn = document.getElementById('closeBtn');
-    const auditForm = document.getElementById('auditForm');
-    const successMsg = document.getElementById('successMsg');
-    const emailInput = document.getElementById('emailInput');
-    const messageInput = document.getElementById('messageInput');
-
-    auditBtn.addEventListener('click', () => {
-      auditModal.style.display = 'flex';
-    });
-
-    closeBtn.addEventListener('click', () => {
-      auditModal.style.display = 'none';
-      auditForm.style.display = 'flex';
-      successMsg.style.display = 'none';
-      emailInput.value = '';
-      messageInput.value = '';
-    });
-
-    auditModal.addEventListener('click', (e) => {
-      if (e.target === auditModal) {
-        auditModal.style.display = 'none';
-        auditForm.style.display = 'flex';
-        successMsg.style.display = 'none';
-        emailInput.value = '';
-        messageInput.value = '';
-      }
-    });
-
-    auditForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = emailInput.value;
-      const message = messageInput.value;
-      
-      // Envia email
-      const mailtoLink = `mailto:visualstudioandsecurityoficial@gmail.com?subject=Solicitação de Auditoria&body=Email do Cliente: ${encodeURIComponent(email)}%0A%0AMensagem:%0A${encodeURIComponent(message)}`;
-      window.open(mailtoLink, '_blank');
-      
-      // Mostra mensagem de sucesso
-      auditForm.style.display = 'none';
-      successMsg.style.display = 'block';
-      
-      setTimeout(() => {
-        auditModal.style.display = 'none';
-        auditForm.style.display = 'flex';
-        successMsg.style.display = 'none';
-        emailInput.value = '';
-        messageInput.value = '';
-      }, 2500);
-    });
-  </script>
   <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
   <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js" type="text/javascript"></script>
  </head>
  <body>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const auditBtn = document.getElementById('auditBtn');
+      const auditModal = document.getElementById('auditModal');
+      const closeBtn = document.getElementById('closeBtn');
+      const auditForm = document.getElementById('auditForm');
+      const successMsg = document.getElementById('successMsg');
+      const emailInput = document.getElementById('emailInput');
+      const messageInput = document.getElementById('messageInput');
+
+      if (auditBtn) {
+        auditBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          auditModal.style.display = 'flex';
+        });
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          auditModal.style.display = 'none';
+          auditForm.style.display = 'flex';
+          successMsg.style.display = 'none';
+          emailInput.value = '';
+          messageInput.value = '';
+        });
+      }
+
+      if (auditModal) {
+        auditModal.addEventListener('click', (e) => {
+          if (e.target === auditModal) {
+            auditModal.style.display = 'none';
+            auditForm.style.display = 'flex';
+            successMsg.style.display = 'none';
+            emailInput.value = '';
+            messageInput.value = '';
+          }
+        });
+      }
+
+      if (auditForm) {
+        auditForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const email = emailInput.value;
+          const message = messageInput.value;
+          
+          const mailtoLink = `mailto:visualstudioandsecurityoficial@gmail.com?subject=Solicitação de Auditoria&body=Email do Cliente: ${encodeURIComponent(email)}%0A%0AMensagem:%0A${encodeURIComponent(message)}`;
+          window.open(mailtoLink, '_blank');
+          
+          auditForm.style.display = 'none';
+          successMsg.style.display = 'block';
+          
+          setTimeout(() => {
+            auditModal.style.display = 'none';
+            auditForm.style.display = 'flex';
+            successMsg.style.display = 'none';
+            emailInput.value = '';
+            messageInput.value = '';
+          }, 2500);
+        });
+      }
+    });
+  </script>
   <header style="padding: 80px 0; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">
    <div class="container">
     <h1 class="glitch-text" style="font-size: 3rem;">Visual Studio And Security</h1>
@@ -161,25 +171,19 @@
    </div>
   </header>
   <main class="container">
-   <section class="threat-intel-box">
-    <span class="threat-label">CRITICAL THREAT DETECTED</span>
+   <section class="threat-intel-box"><span class="threat-label">CRITICAL THREAT DETECTED</span>
     <h2 class="malware-name">FAUX#ELEVATE</h2>
     <p style="color: #ccc; line-height: 1.8;">O <strong>FAUX#ELEVATE</strong> é uma ameaça avançada de exfiltração de dados e mineração. O ataque inicia-se através de currículos falsos (Fake CVs) ofuscados em <strong>VBScript</strong>, desenhados para contornar filtros de rede corporativos e comprometer credenciais empresariais.</p>
     <div class="tech-details">
-     <div class="detail-item">
-      <strong>Vetor de Infeção</strong> VBScript ofuscado em documentos de recrutamento.
+     <div class="detail-item"><strong>Vetor de Infeção</strong> VBScript ofuscado em documentos de recrutamento.
      </div>
-     <div class="detail-item">
-      <strong>Componente: mservice.exe</strong> Implementação do minerador XMRig para exploração de CPU.
+     <div class="detail-item"><strong>Componente: mservice.exe</strong> Implementação do minerador XMRig para exploração de CPU.
      </div>
-     <div class="detail-item">
-      <strong>Componente: mozilla.vbs</strong> Script dedicado ao roubo de credenciais do navegador Firefox.
+     <div class="detail-item"><strong>Componente: mozilla.vbs</strong> Script dedicado ao roubo de credenciais do navegador Firefox.
      </div>
-     <div class="detail-item">
-      <strong>Persistência no Kernel</strong> Uso do driver WinRing0x64.sys para maximizar recursos.
+     <div class="detail-item"><strong>Persistência no Kernel</strong> Uso do driver WinRing0x64.sys para maximizar recursos.
      </div>
-     <div class="detail-item">
-      <strong>Ação Evasiva</strong> Desativação forçada do Microsoft Defender e Controlo de Conta de Utilizador (UAC).
+     <div class="detail-item"><strong>Ação Evasiva</strong> Desativação forçada do Microsoft Defender e Controlo de Conta de Utilizador (UAC).
      </div>
     </div>
     <div class="guide-section">
@@ -225,11 +229,14 @@
     <div style="background: var(--card-gray); border: 1px solid var(--cyber-red); border-radius: 12px; padding: 40px; max-width: 500px; width: 90%; box-shadow: 0 0 40px rgba(255, 0, 60, 0.2);">
      <h2 style="color: var(--cyber-red); font-family: 'JetBrains Mono', monospace; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px;">SOLICITAR AUDITORIA</h2>
      <form id="auditForm" style="display: flex; flex-direction: column; gap: 20px;">
-      <div><label for="emailInput" style="color: var(--cyber-blue); display: block; margin-bottom: 8px; font-weight: bold;">Email</label> <input type="email" id="emailInput" placeholder="seu@email.com" required style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(0, 242, 255, 0.3); border-radius: 6px; color: #fff; font-family: 'Inter', sans-serif; font-size: 1rem; box-sizing: border-box;">
+      <div>
+       <label for="emailInput" style="color: var(--cyber-blue); display: block; margin-bottom: 8px; font-weight: bold;">Email</label> <input type="email" id="emailInput" placeholder="seu@email.com" required style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(0, 242, 255, 0.3); border-radius: 6px; color: #fff; font-family: 'Inter', sans-serif; font-size: 1rem; box-sizing: border-box;">
       </div>
-      <div><label for="messageInput" style="color: var(--cyber-blue); display: block; margin-bottom: 8px; font-weight: bold;">Mensagem</label> <textarea id="messageInput" placeholder="Descreva sua necessidade de auditoria..." required style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(0, 242, 255, 0.3); border-radius: 6px; color: #fff; font-family: 'Inter', sans-serif; font-size: 1rem; min-height: 120px; resize: vertical; box-sizing: border-box;"></textarea>
+      <div>
+       <label for="messageInput" style="color: var(--cyber-blue); display: block; margin-bottom: 8px; font-weight: bold;">Mensagem</label> <textarea id="messageInput" placeholder="Descreva sua necessidade de auditoria..." required style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(0, 242, 255, 0.3); border-radius: 6px; color: #fff; font-family: 'Inter', sans-serif; font-size: 1rem; min-height: 120px; resize: vertical; box-sizing: border-box;"></textarea>
       </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;"><button type="submit" style="padding: 12px 20px; background: var(--cyber-red); color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif;">ENVIAR</button> <button type="button" id="closeBtn" style="padding: 12px 20px; background: transparent; color: var(--cyber-red); border: 1px solid var(--cyber-red); border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif;">CANCELAR</button>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+       <button type="submit" style="padding: 12px 20px; background: var(--cyber-red); color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif;">ENVIAR</button> <button type="button" id="closeBtn" style="padding: 12px 20px; background: transparent; color: var(--cyber-red); border: 1px solid var(--cyber-red); border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif;">CANCELAR</button>
       </div>
      </form>
      <div id="successMsg" style="display: none; color: #00ff41; text-align: center; margin-top: 20px; font-family: 'JetBrains Mono', monospace;">
@@ -256,8 +263,7 @@
      <h3 style="color: var(--cyber-blue); font-family: 'JetBrains Mono', monospace; margin-bottom: 20px;">[ CONTATO ]</h3>
      <p style="color: #888; font-size: 0.9rem;">Email: visualstudioandsecurityoficial@gmail.com<br>
        Localização: Ji-Paraná, RO</p>
-     <div style="margin-top: 15px;">
-      <span style="color: var(--cyber-red); font-weight: bold; font-size: 0.8rem;">STATUS DO SISTEMA: PROTEGIDO</span>
+     <div style="margin-top: 15px;"><span style="color: var(--cyber-red); font-weight: bold; font-size: 0.8rem;">STATUS DO SISTEMA: PROTEGIDO</span>
      </div>
     </div>
    </div>
@@ -265,5 +271,5 @@
     <p style="color: #555; font-size: 0.8rem;">© 2026 Visual Studio And Security Protocol. All Rights Reserved. Desenvolvido por Guilherme Kovaliosky.</p>
    </div>
   </footer>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e2ef76bb51493a8',t:'MTc3NDYyMDQ5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e2efd84765393a8',t:'MTc3NDYyMDc0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
