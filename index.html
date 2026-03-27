@@ -1007,10 +1007,8 @@ function applyConfig(config) {
         closePaymentModal();
       }
     });
-
-    lucide.createIcons();
-
-    const plans = {
+     lucide.createIcons();
+     const plans = {
       basic: { name: 'Basic', price: '$9/month', limit: 20, features: ['20 scans', 'Basic Reports', 'Email Support'] },
       medium: { name: 'Medium', price: '$29/month', limit: 100, features: ['100 scans', 'Advanced Reports', 'Priority Support'] },
       pro: { name: 'Pro', price: '$99/month', limit: 999, features: ['Unlimited scans', 'Custom Reports', '24/7 Support'] }
@@ -1045,8 +1043,7 @@ function applyConfig(config) {
       document.getElementById('cardExpiry').value = '';
       document.getElementById('cardCvc').value = '';
     }
-
-    function processPayment() {
+        function processPayment() {
       const email = document.getElementById('paymentEmail').value;
       const cardNumber = document.getElementById('cardNumber').value;
       const expiry = document.getElementById('cardExpiry').value;
@@ -1061,8 +1058,7 @@ function applyConfig(config) {
         showToast('Invalid card number');
         return;
       }
-
-      const paymentBtn = event.target;
+       const paymentBtn = event.target;
       paymentBtn.disabled = true;
       paymentBtn.innerHTML = '<i data-lucide="loader" style="width:18px;height:18px; animation: spin 1s linear infinite;"></i> Processing...';
 
@@ -1076,8 +1072,7 @@ function applyConfig(config) {
           startDate: new Date().toISOString(),
           endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         };
-
-        const subRecord = {
+         const subRecord = {
           userPlan: selectedPlan,
           userEmail: email,
           subscriptionStart: userSubscription.startDate,
@@ -1089,8 +1084,7 @@ function applyConfig(config) {
           vulnerabilityCount: 0,
           severity: 'none'
         };
-
-        const result = await window.dataSdk.create(subRecord);
+       const result = await window.dataSdk.create(subRecord);
         
         closePaymentModal();
         updatePlanDisplay();
@@ -1102,8 +1096,7 @@ function applyConfig(config) {
         lucide.createIcons();
       }, 2000);
     }
-
-    function updatePlanDisplay() {
+   function updatePlanDisplay() {
       const badge = document.getElementById('planBadge');
       const text = document.getElementById('planText');
       const currentPlan = document.getElementById('currentPlanText');
@@ -1119,16 +1112,14 @@ function applyConfig(config) {
         currentPlan.textContent = `${planData.name} Plan - ${planData.limit} scans/month`;
       }
     }
-
-    function canCreateScan() {
+  function canCreateScan() {
       if (userSubscription.scansUsed >= userSubscription.limit) {
         showToast(`You've reached your ${userSubscription.limit} scans/month limit. Upgrade to continue.`);
         return false;
       }
       return true;
     }
-
-    const originalExecuteScan = executeScan;
+        const originalExecuteScan = executeScan;
     executeScan = async function() {
       if (!canCreateScan()) {
         setTimeout(() => showPlansModal(), 500);
