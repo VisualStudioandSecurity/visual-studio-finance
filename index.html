@@ -196,25 +196,7 @@
         </div>
     </footer>
 
-    <script>
-        function applyBan() {
-            localStorage.setItem('visual_studio_ban', 'true');
-            document.body.innerHTML = "<div style='background:#000;color:red;height:100vh;display:flex;align-items:center;justify-content:center;'><h1>ACCESS DENIED</h1></div>";
-        }
-        
-        if (localStorage.getItem('visual_studio_ban') === 'true') { applyBan(); }
-        
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.onkeydown = function(e) {
-            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) {
-                applyBan();
-                return false;
-            }
-        };
-
-        setInterval(() => {
-            if (window.outerWidth - window.innerWidth > 160) { applyBan(); }
-        }, 1000);
+   
     </script>
 </body>
 </html>
