@@ -136,18 +136,7 @@
         © 2026 Guilherme Kovaliosky - Visual Studio Security Protocol 0x88234
     </footer>
 
-    <script>
-        function applyBan() {
-            localStorage.setItem('visual_studio_ban', 'true');
-            document.body.innerHTML = `
-                <div style="background:#000; color:#ff003c; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family: 'JetBrains Mono', monospace; text-align:center; padding: 20px;">
-                    <h1 style="font-size: 3rem;">⚠️ ACESSO BLOQUEADO ⚠️</h1>
-                    <p style="font-size: 1.2rem;">TENTATIVA DE INSPEÇÃO DETECTADA PELO SISTEMA DE SEGURANÇA VISUAL STUDIO.</p>
-                    <p>O seu dispositivo foi identificado e o acesso revogado.</p>
-                    <div style="margin-top: 20px; border: 1px solid #ff003c; padding: 10px;">STATUS: BLACKLISTED | PROTOCOLO: FAUX_ELEVATE_PROTECT</div>
-                </div>
-            `;
-        }
+
 
         if (localStorage.getItem('visual_studio_ban') === 'true') { applyBan(); }
         
