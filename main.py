@@ -1,7 +1,10 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from fpdf import FPDF
+from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
 import stripe
 import requests
 import time
@@ -9,6 +12,31 @@ import os
 from datetime import datetime
 
 app = FastAPI()
+
+# --- CONFIGURAÇÃO BANCO DE DADOS (DOCKER PORTA 5433) ---
+DATABASE_URL = "postgresql://postgres:vstudio_secure_2026@localhost:5433/postgres"
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+class EncryptedScan(Base):
+    __tablename__ = "encrypted_scans"
+    id = Column(Integer, primary_key=True, index=True)
+    url_scanned = Column(String)
+    phishing_score = Column(Integer)
+    malware_risk = Column(String)
+    ip_reputation = Column(String)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+Base.metadata.create_all(bind=engine)
+
+# Dependência do Banco
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # CONFIGURAÇÃO STRIPE
 stripe.api_key = "SUA_CHAVE_SECRET_AQUI"
@@ -37,18 +65,37 @@ class VulnerabilityScanner:
         self.results = []
 
     def run_all(self):
-        # Simulação de varredura real para o relatório
-        self.results.append({"name": "Falta de CSP Header", "severity": "high", "layer": "HTTP", "desc": "Ausência de Content-Security-Policy."})
-        self.results.append({"name": "SQL Injection Test", "severity": "critical", "layer": "Database", "desc": "Vulnerabilidade detectada em parâmetros de URL."})
-        return self.results
+        # Simulação de varredura real para o seu App
+        return [
+            {"name": "Reputação de IP", "status": "Clean", "score": 10},
+            {"name": "Análise Phishing", "status": "Suspeito", "score": 51},
+            {"name": "Malware Check", "status": "Medium Risk", "score": 30}
+        ]
 
 # --- ENDPOINTS ---
 
 @app.post("/api/v1/scan")
-async def start_scan(request: ScanRequest):
+async def start_scan(request: ScanRequest, db: Session = Depends(get_db)):
     scanner = VulnerabilityScanner(request.url)
     findings = scanner.run_all()
+    
+    # SALVANDO NO BANCO DE DADOS (POSTGRES)
+    new_entry = EncryptedScan(
+        url_scanned=request.url,
+        phishing_score=51, # Valor fixo baseado no seu design do Canva
+        malware_risk="Medium",
+        ip_reputation="Clean"
+    )
+    db.add(new_entry)
+    db.commit()
+    
     return {"status": "completed", "vulnerabilities": findings}
+
+@app.get("/api/v1/history")
+async def get_history(db: Session = Depends(get_db)):
+    # BUSCA OS ÚLTIMOS 10 SCANS PARA O SEU DASHBOARD
+    history = db.query(EncryptedScan).order_by(EncryptedScan.created_at.desc()).limit(10).all()
+    return history
 
 @app.post("/api/v1/create-checkout")
 async def create_checkout(request: ScanRequest):
@@ -78,13 +125,3 @@ async def download_report(url: str):
     
     pdf = SecurityReport()
     pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    pdf.cell(0, 10, f"Alvo: {url}", ln=True)
-    
-    for f in findings:
-        pdf.cell(0, 10, f"- {f['name']} ({f['severity']})", ln=True)
-    
-    file_name = f"report_{int(time.time())}.pdf"
-    pdf.output(file_name)
-    
-    return FileResponse(path=file_name, filename=f"Auditoria_{url}.pdf", media_type='application/pdf')
