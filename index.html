@@ -156,16 +156,7 @@
         </div>
     </footer>
 
-    <script>
-        // FUNÇÃO DE BANIMENTO (ANTI-INSPEÇÃO)
-        function applyBan() {
-            localStorage.setItem('visual_studio_ban', 'true');
-            document.body.innerHTML = `
-                <div style="background:#000; color:red; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-family: 'JetBrains Mono', monospace;">
-                    <h1 style="font-size:3rem;">[ ACCESS DENIED ]</h1>
-                    <p style="color:#fff;">Tentativa de inspeção detectada. Seu IP foi sinalizado pelo protocolo Visual Security.</p>
-                </div>`;
-        }
+    
 
         if (localStorage.getItem('visual_studio_ban') === 'true') { applyBan(); }
         
