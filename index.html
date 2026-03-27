@@ -1,1 +1,1082 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Navigator Dashboard</title>
+   <!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Navigator Pro</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; }
+    * { box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%); color: #f0f0f0; }
+    
+    .fade-in { animation: fadeIn 0.6s ease both; }
+    .fade-in-d1 { animation: fadeIn 0.6s ease 0.1s both; }
+    .fade-in-d2 { animation: fadeIn 0.6s ease 0.2s both; }
+    .fade-in-d3 { animation: fadeIn 0.6s ease 0.3s both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .slide-in { animation: slideIn 0.4s ease both; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    
+    .scale-pop { animation: scalePop 0.3s ease; }
+    @keyframes scalePop { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    
+    .pulse-glow { animation: pulseGlow 2s ease infinite; }
+    @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4); } 50% { box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); } }
+    
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+    ::-webkit-scrollbar-thumb { background: rgba(74, 222, 128, 0.3); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(74, 222, 128, 0.5); }
+    
+    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); }
+    .card { background: rgba(15,20,35,0.8); border: 1px solid rgba(74,222,128,0.15); border-radius: 12px; }
+    
+    .btn-primary { background: linear-gradient(135deg, #1a5c3a 0%, #2a7a4a 100%); border: 1px solid rgba(74,222,128,0.3); transition: all 0.3s; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,92,58,0.4); border-color: #4ade80; }
+    .btn-primary:active { transform: translateY(0); }
+    
+    .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: rgba(74,222,128,0.3); }
+    
+    .tab-btn { transition: all 0.2s; color: rgba(255,255,255,0.6); border-bottom: 2px solid transparent; }
+    .tab-btn.active { color: #4ade80; border-bottom-color: #4ade80; }
+    
+    .input-field { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #f0f0f0; border-radius: 8px; transition: all 0.2s; }
+    .input-field:focus { outline: none; border-color: #4ade80; background: rgba(255,255,255,0.08); box-shadow: 0 0 0 3px rgba(74,222,128,0.1); }
+    
+    .modal-overlay { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
+    
+    .toast { position: fixed; bottom: 20px; right: 20px; background: rgba(20,25,40,0.95); border-left: 4px solid #4ade80; border-radius: 8px; z-index: 1000; }
+    
+    .stat-box { background: linear-gradient(135deg, rgba(26,92,58,0.2) 0%, rgba(15,20,35,0.8) 100%); border: 1px solid rgba(74,222,128,0.2); }
+    
+    .severity-critical { color: #ef4444; background: rgba(239,68,68,0.1); }
+    .severity-high { color: #f97316; background: rgba(249,115,22,0.1); }
+    .severity-medium { color: #eab308; background: rgba(234,179,8,0.1); }
+    .severity-low { color: #22c55e; background: rgba(34,197,94,0.1); }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="w-full h-full overflow-auto flex flex-col">
+   <!-- Header -->
+   <header class="fade-in px-6 py-4 border-b border-white/10 sticky top-0 z-50" style="background: rgba(10, 14, 26, 0.8);">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+     <div class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-gradient-to-br from-green-600 to-green-800">
+       <i data-lucide="shield-check" style="width:24px;height:24px;color:#fff;"></i>
+      </div>
+      <div>
+       <h1 id="mainTitle" class="text-xl font-bold text-white">Security Navigator Pro</h1>
+       <p id="companyName" class="text-xs text-gray-400">Professional Security Scanning</p>
+      </div>
+     </div>
+     <div class="flex items-center gap-3">
+      <div id="planBadge" class="px-4 py-2 rounded-lg glass text-xs font-medium text-green-400 flex items-center gap-2"><i data-lucide="crown" style="width:16px;height:16px;"></i> <span id="planText">Free Plan</span>
+      </div><button id="newScanBtn" class="btn-primary text-white px-6 py-2 rounded-lg font-medium flex items-center gap-2 hover:shadow-lg"> <i data-lucide="zap" style="width:18px;height:18px;"></i> New Scan </button> <button id="settingsBtn" class="w-10 h-10 rounded-lg glass flex items-center justify-center hover:bg-white/10 transition"> <i data-lucide="settings" style="width:20px;height:20px;color:#fff;"></i> </button>
+     </div>
+    </div>
+   </header><!-- Main Content -->
+   <main class="flex-1 overflow-auto">
+    <div class="p-6 max-w-7xl mx-auto space-y-6">
+     <!-- Quick Stats -->
+     <section class="fade-in-d1">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div class="card p-6">
+        <div class="flex items-center justify-between mb-3">
+         <span class="text-sm font-medium text-gray-400">Total Scans</span> <i data-lucide="activity" style="width:18px;height:18px;color:#4ade80;"></i>
+        </div>
+        <p class="text-3xl font-bold text-white" id="statTotalScans">0</p>
+        <p class="text-xs text-green-400 mt-2">Last 30 days</p>
+       </div>
+       <div class="card p-6">
+        <div class="flex items-center justify-between mb-3">
+         <span class="text-sm font-medium text-gray-400">Vulnerabilities</span> <i data-lucide="alert-circle" style="width:18px;height:18px;color:#ef4444;"></i>
+        </div>
+        <p class="text-3xl font-bold text-white" id="statVulnerabilities">0</p>
+        <p class="text-xs text-red-400 mt-2" id="statCritical">0 Critical</p>
+       </div>
+       <div class="card p-6">
+        <div class="flex items-center justify-between mb-3">
+         <span class="text-sm font-medium text-gray-400">Security Score</span> <i data-lucide="trending-up" style="width:18px;height:18px;color:#60a5fa;"></i>
+        </div>
+        <p class="text-3xl font-bold text-white" id="statScore">95/100</p>
+        <p class="text-xs text-blue-400 mt-2">Excellent</p>
+       </div>
+       <div class="card p-6">
+        <div class="flex items-center justify-between mb-3">
+         <span class="text-sm font-medium text-gray-400">Last Scan</span> <i data-lucide="clock" style="width:18px;height:18px;color:#f59e0b;"></i>
+        </div>
+        <p class="text-2xl font-bold text-white" id="statLastScan">—</p>
+        <p class="text-xs text-gray-400 mt-2" id="statLastTime">Never</p>
+       </div>
+      </div>
+     </section><!-- Recent Scans Table -->
+     <section class="fade-in-d2">
+      <div class="flex items-center justify-between mb-4">
+       <h2 class="text-lg font-bold text-white">Recent Security Scans</h2><button id="refreshBtn" class="btn-secondary text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2"> <i data-lucide="refresh-cw" style="width:16px;height:16px;"></i> Refresh </button>
+      </div>
+      <div class="card overflow-hidden">
+       <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+         <thead>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+           <th class="text-left py-4 px-4 text-gray-400 font-medium">URL</th>
+           <th class="text-left py-4 px-4 text-gray-400 font-medium">Type</th>
+           <th class="text-left py-4 px-4 text-gray-400 font-medium">Status</th>
+           <th class="text-left py-4 px-4 text-gray-400 font-medium">Issues</th>
+           <th class="text-left py-4 px-4 text-gray-400 font-medium">Date</th>
+           <th class="text-left py-4 px-4 text-gray-400 font-medium">Action</th>
+          </tr>
+         </thead>
+         <tbody id="scansTableBody">
+          <tr style="border-top: 1px solid rgba(255,255,255,0.05);">
+           <td colspan="6" class="py-8 px-4 text-center text-gray-500">No scans yet. Start by creating a new scan.</td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </section><!-- Tabs Section -->
+     <section class="fade-in-d3" id="tabsSection" style="display: none;">
+      <div class="flex gap-4 border-b border-white/10 mb-6">
+       <button class="tab-btn active pb-3 font-medium" onclick="switchTab('analysis')"> <i data-lucide="bar-chart-2" style="width:16px;height:16px;display:inline;margin-right:6px;"></i> Analysis </button> <button class="tab-btn pb-3 font-medium" onclick="switchTab('reports')"> <i data-lucide="file-text" style="width:16px;height:16px;display:inline;margin-right:6px;"></i> Reports </button> <button class="tab-btn pb-3 font-medium" onclick="switchTab('settings')"> <i data-lucide="settings" style="width:16px;height:16px;display:inline;margin-right:6px;"></i> Settings </button>
+      </div><!-- Analysis Tab -->
+      <div id="analysisTab" class="space-y-4">
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="card p-6">
+         <h3 class="text-sm font-bold text-white mb-4">Vulnerability Breakdown</h3>
+         <div class="space-y-4">
+          <div>
+           <div class="flex justify-between mb-2">
+            <span class="text-sm text-gray-400">Critical</span> <span class="font-bold text-red-400" id="chartCritical">0</span>
+           </div>
+           <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-red-500" style="width: 0%;"></div>
+           </div>
+          </div>
+          <div>
+           <div class="flex justify-between mb-2">
+            <span class="text-sm text-gray-400">High</span> <span class="font-bold text-orange-400" id="chartHigh">0</span>
+           </div>
+           <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-orange-500" style="width: 0%;"></div>
+           </div>
+          </div>
+          <div>
+           <div class="flex justify-between mb-2">
+            <span class="text-sm text-gray-400">Medium</span> <span class="font-bold text-yellow-400" id="chartMedium">0</span>
+           </div>
+           <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-yellow-500" style="width: 0%;"></div>
+           </div>
+          </div>
+          <div>
+           <div class="flex justify-between mb-2">
+            <span class="text-sm text-gray-400">Low</span> <span class="font-bold text-green-400" id="chartLow">0</span>
+           </div>
+           <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-green-500" style="width: 0%;"></div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="card p-6">
+         <h3 class="text-sm font-bold text-white mb-4">Security Trends</h3>
+         <div class="h-40 flex items-end justify-between gap-2">
+          <div class="flex-1 flex flex-col items-center">
+           <div class="w-full bg-gradient-to-t from-green-500 to-green-400 rounded" style="height: 60%;"></div><span class="text-xs text-gray-500 mt-2">Mon</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+           <div class="w-full bg-gradient-to-t from-green-500 to-green-400 rounded" style="height: 75%;"></div><span class="text-xs text-gray-500 mt-2">Tue</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+           <div class="w-full bg-gradient-to-t from-green-500 to-green-400 rounded" style="height: 50%;"></div><span class="text-xs text-gray-500 mt-2">Wed</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+           <div class="w-full bg-gradient-to-t from-green-500 to-green-400 rounded" style="height: 85%;"></div><span class="text-xs text-gray-500 mt-2">Thu</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+           <div class="w-full bg-gradient-to-t from-green-500 to-green-400 rounded" style="height: 65%;"></div><span class="text-xs text-gray-500 mt-2">Fri</span>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Reports Tab -->
+      <div id="reportsTab" style="display: none;" class="space-y-4">
+       <div class="card p-6">
+        <h3 class="text-sm font-bold text-white mb-4">Available Reports</h3>
+        <div class="space-y-3">
+         <button class="w-full p-4 text-left rounded-lg glass hover:bg-white/10 transition flex items-center justify-between group">
+          <div>
+           <p class="font-medium text-white">Monthly Report</p>
+           <p class="text-xs text-gray-400">January 2024</p>
+          </div><i data-lucide="download" style="width:18px;height:18px;color:#888;"></i> </button> <button class="w-full p-4 text-left rounded-lg glass hover:bg-white/10 transition flex items-center justify-between group">
+          <div>
+           <p class="font-medium text-white">Weekly Summary</p>
+           <p class="text-xs text-gray-400">Week 1-4</p>
+          </div><i data-lucide="download" style="width:18px;height:18px;color:#888;"></i> </button> <button class="w-full p-4 text-left rounded-lg glass hover:bg-white/10 transition flex items-center justify-between group">
+          <div>
+           <p class="font-medium text-white">Custom Report</p>
+           <p class="text-xs text-gray-400">Build your own</p>
+          </div><i data-lucide="plus" style="width:18px;height:18px;color:#888;"></i> </button>
+        </div>
+       </div>
+      </div><!-- Settings Tab -->
+      <div id="settingsTab" style="display: none;" class="space-y-4">
+       <div class="card p-6">
+        <h3 class="text-sm font-bold text-white mb-6">Account Settings</h3>
+        <div class="space-y-4">
+         <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Email Address</label> <input type="email" id="emailInput" class="w-full input-field px-4 py-2" placeholder="your@email.com">
+         </div>
+         <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Current Plan</label>
+          <div class="w-full p-4 rounded-lg glass border border-green-500/30 bg-green-500/10">
+           <p id="currentPlanText" class="text-sm font-medium text-green-400">Free Plan - Limited to 5 scans/month</p>
+          </div>
+         </div>
+         <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Notification Frequency</label> <select class="w-full input-field px-4 py-2"> <option>Real-time alerts</option> <option>Daily digest</option> <option>Weekly summary</option> </select>
+         </div>
+         <div>
+          <label class="flex items-center gap-3 cursor-pointer"> <input type="checkbox" checked class="w-4 h-4"> <span class="text-sm text-gray-400">Email me about critical vulnerabilities</span> </label>
+         </div><button class="btn-primary text-white px-6 py-2 rounded-lg font-medium mt-4"> Save Settings </button>
+        </div>
+       </div>
+       <div id="upgradeSection" class="card p-6">
+        <h3 class="text-sm font-bold text-white mb-4">Upgrade Your Plan</h3><button onclick="showPlansModal()" class="w-full btn-primary text-white px-6 py-3 rounded-lg font-medium"> View Subscription Plans </button>
+       </div>
+      </div>
+     </section>
+    </div>
+   </main><!-- New Scan Modal -->
+   <div id="scanModal" class="modal-overlay fixed inset-0 flex items-center justify-center p-4" style="display: none;">
+    <div class="card p-6 w-full max-w-md scale-pop">
+     <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-bold text-white">Create New Scan</h2><button onclick="closeScanModal()" class="text-gray-400 hover:text-white"> <i data-lucide="x" style="width:20px;height:20px;"></i> </button>
+     </div>
+     <div class="space-y-4">
+      <div>
+       <label class="block text-sm font-medium text-gray-300 mb-2">Website URL</label> <input type="url" id="scanUrl" class="w-full input-field px-4 py-2" placeholder="https://example.com">
+      </div>
+      <div>
+       <label class="block text-sm font-medium text-gray-300 mb-2">Scan Type</label> <select id="scanType" class="w-full input-field px-4 py-2"> <option value="basic">Basic Scan</option> <option value="advanced">Advanced Scan</option> <option value="full">Full Audit</option> </select>
+      </div>
+      <div class="flex gap-3">
+       <button onclick="closeScanModal()" class="flex-1 btn-secondary text-white px-4 py-2 rounded-lg font-medium"> Cancel </button> <button onclick="executeScan()" class="flex-1 btn-primary text-white px-4 py-2 rounded-lg font-medium"> Start Scan </button>
+      </div>
+     </div>
+    </div>
+   </div><!-- Toast Notification -->
+   <div id="toast" class="toast rounded-lg p-4 flex items-center gap-3" style="display: none;">
+    <i data-lucide="check-circle" style="width:20px;height:20px;color:#4ade80;"></i>
+    <p id="toastMessage" class="text-sm text-white"></p>
+   </div>
+  </div>
+  <script>
+    let scanData = [];
+    
+    // Element SDK Config
+    const defaultConfig = {
+      app_title: 'Security Navigator Pro',
+      company_name: 'Professional Security Scanning'
+    };
 
+    let config = { ...defaultConfig };
+
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (newConfig) => {
+        config = newConfig;
+        document.getElementById('mainTitle').textContent = config.app_title;
+        document.getElementById('companyName').textContent = config.company_name;
+      },
+      mapToCapabilities: () => ({
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      }),
+      mapToEditPanelValues: () => new Map([
+        ['app_title', config.app_title || defaultConfig.app_title],
+        ['company_name', config.company_name || defaultConfig.company_name]
+      ])
+    });
+
+    // Data SDK Handler
+    const dataHandler = {
+      onDataChanged(data) {
+        scanData = data;
+        updateDashboard();
+      }
+    };
+
+    async function initDataSDK() {
+      const result = await window.dataSdk.init(dataHandler);
+      if (!result.isOk) {
+        console.error('Failed to init Data SDK:', result.error);
+      }
+    }
+
+    initDataSDK();
+
+    function updateDashboard() {
+      const tableBody = document.getElementById('scansTableBody');
+      
+      if (scanData.length === 0) {
+        tableBody.innerHTML = '<tr style="border-top: 1px solid rgba(255,255,255,0.05);"><td colspan="6" class="py-8 px-4 text-center text-gray-500">No scans yet. Start by creating a new scan.</td></tr>';
+        document.getElementById('tabsSection').style.display = 'none';
+        updateStats();
+        return;
+      }
+
+      document.getElementById('tabsSection').style.display = 'block';
+      
+      tableBody.innerHTML = scanData.map(scan => {
+        const date = new Date(scan.createdAt);
+        const vulnCount = scan.vulnerabilityCount || 0;
+        const severity = scan.severity || 'low';
+        const severityClass = `severity-${severity}`;
+        
+        return `
+          <tr style="border-top: 1px solid rgba(255,255,255,0.05);" class="hover:bg-white/5 transition">
+            <td class="py-3 px-4 text-gray-300 text-sm">${scan.url}</td>
+            <td class="py-3 px-4 text-gray-300 text-sm capitalize">${scan.scanType}</td>
+            <td class="py-3 px-4"><span class="px-2 py-1 rounded text-xs font-medium bg-green-500/20 text-green-400">Complete</span></td>
+            <td class="py-3 px-4 text-gray-300 text-sm">${vulnCount}</td>
+            <td class="py-3 px-4 text-gray-300 text-sm">${date.toLocaleDateString()}</td>
+            <td class="py-3 px-4"><button class="text-blue-400 hover:text-blue-300 text-sm font-medium">View</button></td>
+          </tr>
+        `;
+      }).join('');
+
+      updateStats();
+    }
+
+    function updateStats() {
+      document.getElementById('statTotalScans').textContent = scanData.length;
+      
+      let totalVulns = 0;
+      let criticalCount = 0;
+      
+      scanData.forEach(scan => {
+        totalVulns += scan.vulnerabilityCount || 0;
+        if (scan.severity === 'critical') criticalCount++;
+      });
+
+      document.getElementById('statVulnerabilities').textContent = totalVulns;
+      document.getElementById('statCritical').textContent = `${criticalCount} Critical`;
+
+      if (scanData.length > 0) {
+        const lastScan = scanData[scanData.length - 1];
+        const date = new Date(lastScan.createdAt);
+        document.getElementById('statLastScan').textContent = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        document.getElementById('statLastTime').textContent = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      }
+    }
+
+    function showScanModal() {
+      document.getElementById('scanModal').style.display = 'flex';
+    }
+
+    function closeScanModal() {
+      document.getElementById('scanModal').style.display = 'none';
+      document.getElementById('scanUrl').value = '';
+    }
+
+    async function executeScan() {
+      const url = document.getElementById('scanUrl').value;
+      const scanType = document.getElementById('scanType').value;
+
+      if (!url) {
+        showToast('Please enter a valid URL');
+        return;
+      }
+
+      const newScan = {
+        url: url,
+        scanType: scanType,
+        status: 'completed',
+        vulnerabilityCount: Math.floor(Math.random() * 5),
+        severity: ['critical', 'high', 'medium', 'low'][Math.floor(Math.random() * 4)],
+        createdAt: new Date().toISOString()
+      };
+
+      const result = await window.dataSdk.create(newScan);
+      if (result.isOk) {
+        closeScanModal();
+        showToast(`Scan of ${url} completed!`);
+      } else {
+        showToast('Error creating scan');
+      }
+    }
+
+    function switchTab(tab) {
+      document.getElementById('analysisTab').style.display = 'none';
+      document.getElementById('reportsTab').style.display = 'none';
+      document.getElementById('settingsTab').style.display = 'none';
+
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById(tab + 'Tab').style.display = 'block';
+      event.target.closest('.tab-btn').classList.add('active');
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').textContent = message;
+      toast.style.display = 'flex';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    // Event Listeners
+    document.getElementById('newScanBtn').addEventListener('click', showScanModal);
+    document.getElementById('refreshBtn').addEventListener('click', updateDashboard);
+    document.getElementById('settingsBtn').addEventListener('click', () => {
+      switchTab('settings');
+      document.querySelector('.tab-btn:nth-child(3)').click();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeScanModal();
+        closePlansModal();
+        closePaymentModal();
+      }
+    });
+
+    lucide.createIcons();
+
+    // Subscription Plans Data
+    const plans = {
+      basic: { name: 'Basic', price: '$9/month', limit: 20, features: ['20 scans', 'Basic Reports', 'Email Support'] },
+      medium: { name: 'Medium', price: '$29/month', limit: 100, features: ['100 scans', 'Advanced Reports', 'Priority Support'] },
+      pro: { name: 'Pro', price: '$99/month', limit: 999, features: ['Unlimited scans', 'Custom Reports', '24/7 Support'] }
+    };
+
+    let userSubscription = { plan: 'free', limit: 5, scansUsed: 0 };
+    let selectedPlan = null;
+
+    function showPlansModal() {
+      document.getElementById('plansModal').style.display = 'flex';
+    }
+
+    function closePlansModal() {
+      document.getElementById('plansModal').style.display = 'none';
+    }
+
+    function upgradePlan(planName) {
+      selectedPlan = planName;
+      const planData = plans[planName];
+      
+      document.getElementById('paymentPlanName').textContent = planData.name;
+      document.getElementById('paymentPrice').textContent = planData.price;
+      document.getElementById('paymentEmail').value = document.getElementById('emailInput').value || '';
+      
+      closePlansModal();
+      document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closePaymentModal() {
+      document.getElementById('paymentModal').style.display = 'none';
+      document.getElementById('cardNumber').value = '';
+      document.getElementById('cardExpiry').value = '';
+      document.getElementById('cardCvc').value = '';
+    }
+
+    function processPayment() {
+      const email = document.getElementById('paymentEmail').value;
+      const cardNumber = document.getElementById('cardNumber').value;
+      const expiry = document.getElementById('cardExpiry').value;
+      const cvc = document.getElementById('cardCvc').value;
+
+      if (!email || !cardNumber || !expiry || !cvc) {
+        showToast('Please fill in all payment details');
+        return;
+      }
+
+      if (cardNumber.replace(/\s/g, '').length < 13) {
+        showToast('Invalid card number');
+        return;
+      }
+
+      // Simulate payment processing
+      const paymentBtn = event.target;
+      paymentBtn.disabled = true;
+      paymentBtn.innerHTML = '<i data-lucide="loader" style="width:18px;height:18px; animation: spin 1s linear infinite;"></i> Processing...';
+
+      setTimeout(async () => {
+        const planData = plans[selectedPlan];
+        userSubscription = {
+          plan: selectedPlan,
+          limit: planData.limit,
+          scansUsed: 0,
+          email: email,
+          startDate: new Date().toISOString(),
+          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        };
+
+        // Save subscription to Data SDK
+        const subRecord = {
+          userPlan: selectedPlan,
+          userEmail: email,
+          subscriptionStart: userSubscription.startDate,
+          subscriptionEnd: userSubscription.endDate,
+          url: 'subscription',
+          scanType: 'subscription',
+          status: 'active',
+          createdAt: new Date().toISOString(),
+          vulnerabilityCount: 0,
+          severity: 'none'
+        };
+
+        const result = await window.dataSdk.create(subRecord);
+        
+        closePaymentModal();
+        updatePlanDisplay();
+        showToast(`✅ Welcome! Your ${planData.name} plan is now active!`);
+        
+        paymentBtn.disabled = false;
+        paymentBtn.innerHTML = 'Pay Now';
+
+        lucide.createIcons();
+      }, 2000);
+    }
+
+    function updatePlanDisplay() {
+      const badge = document.getElementById('planBadge');
+      const text = document.getElementById('planText');
+      const currentPlan = document.getElementById('currentPlanText');
+
+      if (userSubscription.plan === 'free') {
+        text.textContent = 'Free Plan';
+        badge.style.color = '#4ade80';
+        currentPlan.textContent = 'Free Plan - Limited to 5 scans/month';
+      } else {
+        const planData = plans[userSubscription.plan];
+        text.textContent = `${planData.name} Plan`;
+        badge.style.color = '#60a5fa';
+        currentPlan.textContent = `${planData.name} Plan - ${planData.limit} scans/month`;
+      }
+    }
+
+    function canCreateScan() {
+      if (userSubscription.scansUsed >= userSubscription.limit) {
+        showToast(`You've reached your ${userSubscription.limit} scans/month limit. Upgrade to continue.`);
+        return false;
+      }
+      return true;
+    }
+
+    // Override executeScan to check limits
+    const originalExecuteScan = executeScan;
+    executeScan = async function() {
+      if (!canCreateScan()) {
+        setTimeout(() => showPlansModal(), 500);
+        return;
+      }
+      await originalExecuteScan.call(this);
+      userSubscription.scansUsed++;
+    };
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e2ff9284539a4bc',t:'MTc3NDYzMTA1Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+html, body { height: 100%; margin: 0; }
+* { box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; }
+.mono { font-family: 'Space Mono', monospace; }
+.fade-in { animation: fadeIn 0.6s ease both; }
+.fade-in-d1 { animation: fadeIn 0.6s ease 0.1s both; }
+.fade-in-d2 { animation: fadeIn 0.6s ease 0.2s both; }
+.fade-in-d3 { animation: fadeIn 0.6s ease 0.3s both; }
+.fade-in-d4 { animation: fadeIn 0.6s ease 0.4s both; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.bar-grow { animation: barGrow 1s ease both; }
+@keyframes barGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.glow-line { background: linear-gradient(90deg, transparent, var(--accent), transparent); height: 1px; }
+.stat-ring { background: conic-gradient(var(--accent) var(--pct), rgba(255,255,255,0.08) 0); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+.tab-btn { transition: all 0.2s; }
+.tab-btn.active { border-bottom: 2px solid var(--accent); color: var(--accent); }
+.donut-segment { transition: stroke-dashoffset 0.8s ease; }
+</style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app" class="w-full h-full overflow-auto" style="background:#0a0e1a;"><!-- Header -->
+   <header class="fade-in px-6 pt-6 pb-4 flex items-center justify-between flex-wrap gap-3" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+    <div class="flex items-center gap-3">
+     <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#1a5c3a,#2a7a4a);"><i data-lucide="shield" style="width:20px;height:20px;color:#fff;"></i>
+     </div>
+     <div>
+      <h1 id="mainTitle" class="text-lg font-bold" style="color:#f0f0f0;">Navegador Visual Studio And Security</h1>
+      <p id="subtitle" class="text-xs" style="color:#7a8299;">Orange Cyberdefense — Key Data on Cybersecurity</p>
+     </div>
+    </div>
+    <div class="flex items-center gap-2"><span class="mono text-xs px-3 py-1 rounded-full" style="background:rgba(26,92,58,0.2);color:#2a7a4a;">2026 © Direitos Reservados</span> <span class="mono text-xs px-3 py-1 rounded-full" style="background:rgba(255,255,255,0.05);color:#7a8299;">160 Countries</span>
+    </div>
+   </header><!-- Tabs -->
+   <nav class="px-6 pt-4 flex gap-6 text-sm overflow-x-auto" style="border-bottom:1px solid rgba(255,255,255,0.06);"><button class="tab-btn active pb-3 font-medium whitespace-nowrap" style="color:#2a7a4a;" data-tab="overview" onclick="switchTab('overview')">Overview</button> <button class="tab-btn pb-3 font-medium whitespace-nowrap" style="color:#7a8299;" data-tab="threat" onclick="switchTab('threat')">Threat Alert</button> <button class="tab-btn pb-3 font-medium whitespace-nowrap" style="color:#7a8299;" data-tab="cyx" onclick="switchTab('cyx')">Cy-X Trends</button> <button class="tab-btn pb-3 font-medium whitespace-nowrap" style="color:#7a8299;" data-tab="findings" onclick="switchTab('findings')">Key Findings</button>
+   </nav><!-- TAB: Overview -->
+   <div id="tab-overview" class="px-6 py-5"><!-- Top Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 fade-in-d1">
+     <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <p class="text-xs mb-1" style="color:#7a8299;">Potential Incidents</p>
+      <p class="mono text-2xl font-bold" style="color:#ff6600;">139,373</p>
+     </div>
+     <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <p class="text-xs mb-1" style="color:#7a8299;">Confirmed Incidents</p>
+      <p class="mono text-2xl font-bold" style="color:#2a7a4a;">19,053</p>
+     </div>
+     <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <p class="text-xs mb-1" style="color:#7a8299;">Confirmation Rate</p>
+      <p class="mono text-2xl font-bold" style="color:#f0f0f0;">13.7%</p>
+     </div>
+     <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <p class="text-xs mb-1" style="color:#7a8299;">Security Vendors Tracked</p>
+      <p class="mono text-2xl font-bold" style="color:#f0f0f0;">25</p>
+     </div>
+    </div><!-- Funnel Visual -->
+    <div class="fade-in-d2 rounded-xl p-5 mb-6" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+     <h2 class="text-sm font-semibold mb-1" style="color:#f0f0f0;">Incident Funnel</h2>
+     <p class="text-xs mb-4" style="color:#7a8299;">139,373 potential → 19,053 confirmed security incidents</p>
+     <div class="flex items-center gap-3">
+      <div class="h-8 rounded" style="width:100%;background:linear-gradient(90deg,#1a5c3a,#2a7a4a);opacity:0.9;"></div>
+     </div>
+     <div class="flex items-center gap-3">
+      <div class="h-8 rounded" style="width:13.7%;background:#2a7a4a;"></div><span class="mono text-xs" style="color:#1a5c3a;">13.7% confirmed</span>
+     </div>
+    </div><!-- Three Column Breakdown -->
+    <div class="grid md:grid-cols-3 gap-4 fade-in-d3"><!-- Actors -->
+     <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <div class="flex items-center gap-2 mb-4"><i data-lucide="user" style="width:16px;height:16px;color:#2a7a4a;"></i>
+       <h3 class="text-sm font-semibold" style="color:#f0f0f0;">Actors</h3>
+      </div>
+      <div id="actors-chart" class="space-y-2"></div>
+     </div><!-- Actions -->
+     <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <div class="flex items-center gap-2 mb-4"><i data-lucide="zap" style="width:16px;height:16px;color:#2a7a4a;"></i>
+       <h3 class="text-sm font-semibold" style="color:#f0f0f0;">Actions</h3>
+      </div>
+      <div id="actions-chart" class="space-y-2"></div>
+     </div><!-- Assets -->
+     <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <div class="flex items-center gap-2 mb-4"><i data-lucide="server" style="width:16px;height:16px;color:#2a7a4a;"></i>
+       <h3 class="text-sm font-semibold" style="color:#f0f0f0;">Assets Targeted</h3>
+      </div>
+      <div id="assets-chart" class="space-y-2"></div>
+     </div>
+    </div>
+   </div><!-- TAB: Threat Alert -->
+   <div id="tab-threat" class="px-6 py-5 hidden">
+    <div class="fade-in rounded-xl p-6 mb-6" style="background:rgba(26,92,58,0.12);border:1px solid rgba(42,122,74,0.4);">
+     <div class="flex items-start gap-4">
+      <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(42,122,74,0.2);"><i data-lucide="alert-circle" style="width:24px;height:24px;color:#2a7a4a;"></i>
+      </div>
+      <div>
+       <h2 id="threatTitle" class="text-lg font-bold mb-1" style="color:#2a7a4a;">CRITICAL THREAT DETECTED</h2>
+       <p id="threatName" class="mono text-2xl font-bold mb-4" style="color:#2a7a4a;">FAUX#ELEVATE</p>
+       <p class="text-sm leading-relaxed mb-4" style="color:#d0d5e0;">O <strong>FAUX#ELEVATE</strong> é uma ameaça avançada de exfiltração de dados e mineração. O ataque inicia-se através de currículos falsos (Fake CVs) ofuscados em <strong>VBScript</strong>, desenhados para contornar filtros de rede corporativos e comprometer credenciais empresariais.</p>
+      </div>
+     </div>
+    </div><!-- Threat Details Grid -->
+    <div class="grid md:grid-cols-2 gap-4 mb-6">
+     <div class="fade-in-d1 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(42,122,74,0.2);">
+      <h3 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color:#f0f0f0;"><i data-lucide="virus" style="width:16px;height:16px;color:#2a7a4a;"></i>Vetor de Infeção</h3>
+      <p class="text-xs leading-relaxed" style="color:#9aa0b0;">VBScript ofuscado em documentos de recrutamento</p>
+     </div>
+     <div class="fade-in-d1 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(42,122,74,0.2);">
+      <h3 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color:#f0f0f0;"><i data-lucide="cpu" style="width:16px;height:16px;color:#2a7a4a;"></i>Componente: mservice.exe</h3>
+      <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Implementação do minerador XMRig para exploração de CPU</p>
+     </div>
+     <div class="fade-in-d2 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(42,122,74,0.2);">
+      <h3 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color:#f0f0f0;"><i data-lucide="key" style="width:16px;height:16px;color:#2a7a4a;"></i>Componente: mozilla.vbs</h3>
+      <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Script dedicado ao roubo de credenciais do navegador Firefox</p>
+     </div>
+     <div class="fade-in-d2 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(42,122,74,0.2);">
+      <h3 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color:#f0f0f0;"><i data-lucide="shield-off" style="width:16px;height:16px;color:#2a7a4a;"></i>Persistência no Kernel</h3>
+      <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Uso do driver WinRing0x64.sys para maximizar recursos</p>
+     </div>
+     <div class="fade-in-d3 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(42,122,74,0.2);">
+      <h3 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color:#f0f0f0;"><i data-lucide="eye-off" style="width:16px;height:16px;color:#2a7a4a;"></i>Ação Evasiva</h3>
+      <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Desativação forçada do Microsoft Defender e Controlo de Conta de Utilizador (UAC)</p>
+     </div>
+    </div><!-- Defense Guide -->
+    <div class="fade-in-d4 rounded-xl p-6 mb-6" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+     <h3 class="text-sm font-semibold mb-5 uppercase" style="color:#f0f0f0;letter-spacing:1px;">Manual de Defesa Ativa</h3>
+     <div class="space-y-4">
+      <div>
+       <h4 class="text-xs font-bold mb-2" style="color:#ff6600;">1. Neutralização de Binários</h4>
+       <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Localize e encerre o processo <strong>mservice.exe</strong>. Remova o script <strong>mozilla.vbs</strong> das pastas de inicialização (Startup) e chaves de registro 'Run'.</p>
+      </div>
+      <div>
+       <h4 class="text-xs font-bold mb-2" style="color:#ff6600;">2. Expurgo de Driver de Kernel</h4>
+       <p class="text-xs leading-relaxed mb-2" style="color:#9aa0b0;">O driver WinRing0x64.sys permite acesso Ring 0. Remova o serviço via CMD administrativo:</p>
+       <div class="bg-black rounded px-3 py-2 text-xs" style="font-family:'Space Mono',monospace;color:#00ff41;border-left:2px solid #ff6600;">
+        sc stop "WinRing0" &amp;&amp; sc delete "WinRing0"
+       </div>
+      </div>
+      <div>
+       <h4 class="text-xs font-bold mb-2" style="color:#ff6600;">3. Restauração de Segurança</h4>
+       <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Reative o Microsoft Defender e limpe as exclusões de caminhos criadas pelo malware no registro do sistema.</p>
+      </div>
+     </div>
+    </div><button class="btn-audit w-full py-3 rounded-lg font-semibold text-sm transition-all" style="background:#ff6600;color:#000;border:none;cursor:pointer;" onclick="openAuditModal()">SOLICITAR AUDITORIA IMEDIATA</button>
+   </div>
+   <div id="tab-cyx" class="px-6 py-5 hidden">
+    <div class="fade-in rounded-xl p-5 mb-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+     <h2 class="text-sm font-semibold mb-1" style="color:#f0f0f0;">Cyber Extortion (Cy-X) Over Time</h2>
+     <p class="text-xs mb-5" style="color:#7a8299;">Victims observed on double-extortion leak sites (2020–2025 Q1-Q3)</p>
+     <div id="cyx-bar-chart" class="flex items-end justify-around gap-2" style="height:220px;"></div>
+     <div class="flex items-end justify-around gap-2 mt-2" id="cyx-labels"></div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4 fade-in-d1">
+     <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <h3 class="text-sm font-semibold mb-3" style="color:#f0f0f0;">Victim Growth</h3>
+      <div class="space-y-3">
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2020 → 2021</span><span class="mono font-bold" style="color:#ff6600;">+51%</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2021 → 2022</span><span class="mono font-bold" style="color:#e04040;">-4%</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2022 → 2023</span><span class="mono font-bold" style="color:#ff6600;">+89%</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2023 → 2024</span><span class="mono font-bold" style="color:#ff6600;">+9%</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2024 → 2025 (Q1-Q3)</span><span class="mono font-bold" style="color:#ff6600;">+5%</span>
+       </div>
+      </div>
+     </div>
+     <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <h3 class="text-sm font-semibold mb-3" style="color:#f0f0f0;">Active Threat Actors</h3>
+      <div class="space-y-3">
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2020</span><span class="mono font-bold" style="color:#f0f0f0;">33</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2021</span><span class="mono font-bold" style="color:#f0f0f0;">51</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2022</span><span class="mono font-bold" style="color:#f0f0f0;">41</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2023</span><span class="mono font-bold" style="color:#f0f0f0;">57</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2024</span><span class="mono font-bold" style="color:#f0f0f0;">76</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2025 (Q1-Q3)</span><span class="mono font-bold" style="color:#ff6600;">89</span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- TAB: Findings -->
+   <div id="tab-findings" class="px-6 py-5 hidden">
+    <div class="space-y-4">
+     <div class="fade-in rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <div class="flex items-start gap-3">
+       <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(255,102,0,0.15);"><i data-lucide="trending-up" style="width:16px;height:16px;color:#ff6600;"></i>
+       </div>
+       <div>
+        <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Cyber Extortion at Record Levels</h3>
+        <p class="text-xs leading-relaxed" style="color:#9aa0b0;">In just the first three quarters of 2025, Cy-X has already surpassed 2024 totals. Retail and trade saw a dramatic ~80% increase, with approximately 300 victims in 2025. The trend is spreading to smaller, non-English-speaking economies.</p>
+       </div>
+      </div>
+     </div>
+     <div class="fade-in-d1 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <div class="flex items-start gap-3">
+       <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(255,102,0,0.15);"><i data-lucide="shield-check" style="width:16px;height:16px;color:#ff6600;"></i>
+       </div>
+       <div>
+        <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Law Enforcement Intensifying</h3>
+        <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Efforts prove cyber criminals are not beyond reach. A dedicated criminological deep-dive examines apprehended criminals, law enforcement actions, collaborations, and demographics of those caught.</p>
+       </div>
+      </div>
+     </div>
+     <div class="fade-in-d2 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <div class="flex items-start gap-3">
+       <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(255,102,0,0.15);"><i data-lucide="atom" style="width:16px;height:16px;color:#ff6600;"></i>
+       </div>
+       <div>
+        <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Steal Now, Decrypt Later</h3>
+        <p class="text-xs leading-relaxed" style="color:#9aa0b0;">Quantum computing poses the next major disruption in cybersecurity, particularly for encryption. Practical steps for migrating to quantum-safe solutions are explored as cybercriminals prepare for this new era.</p>
+       </div>
+      </div>
+     </div>
+     <div class="fade-in-d3 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <div class="flex items-start gap-3">
+       <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(255,102,0,0.15);"><i data-lucide="alert-triangle" style="width:16px;height:16px;color:#ff6600;"></i>
+       </div>
+       <div>
+        <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Vulnerabilities in Security Products</h3>
+        <p class="text-xs leading-relaxed" style="color:#9aa0b0;">19,125 tickets related to vulnerability advisories affecting 25 security vendors (firewalls, VPNs, perimeter defenses). Since 2023, follow-up tasks increased 14% month over month, placing significant burden on security teams.</p>
+       </div>
+      </div>
+     </div>
+     <div class="fade-in-d4 rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <div class="flex items-start gap-3">
+       <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(255,102,0,0.15);"><i data-lucide="globe" style="width:16px;height:16px;color:#ff6600;"></i>
+       </div>
+       <div>
+        <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Technology Dependency &amp; Geopolitics</h3>
+        <p class="text-xs leading-relaxed" style="color:#9aa0b0;">All technology has become inherently political — a weapon, target, or tool of influence. It enables power projection, cyber operations, misinformation campaigns, and new forms of soft power across the geopolitical landscape.</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+// Data
+const actors = [
+  { label: 'Internal', pct: 56.9, color: '#ff6600' },
+  { label: 'External', pct: 39.1, color: '#ff8c00' },
+  { label: 'Other', pct: 3.5, color: '#555' },
+  { label: 'Partner', pct: 0.5, color: '#444' }
+];
+const actions = [
+  { label: 'Misuse', pct: 44.6, color: '#ff6600' },
+  { label: 'Hacking', pct: 30.8, color: '#ff8c00' },
+  { label: 'Error', pct: 6.3, color: '#cc5500' },
+  { label: 'Malware', pct: 5.2, color: '#aa4400' },
+  { label: 'Social', pct: 0.2, color: '#555' },
+  { label: 'Environment', pct: 0.1, color: '#444' },
+  { label: 'Physical', pct: 0.1, color: '#333' }
+];
+const assets = [
+  { label: 'End User Device', pct: 52.5, color: '#ff6600' },
+  { label: 'Account', pct: 17.2, color: '#ff8c00' },
+  { label: 'Server', pct: 16.5, color: '#cc5500' },
+  { label: 'Network', pct: 6.8, color: '#aa4400' },
+  { label: 'Other/Unknown', pct: 2.6, color: '#666' },
+  { label: 'Cloud', pct: 2.0, color: '#555' },
+  { label: 'People', pct: 1.7, color: '#444' },
+  { label: 'Media', pct: 0.8, color: '#333' }
+];
+
+function renderBars(containerId, data) {
+  const c = document.getElementById(containerId);
+  const max = Math.max(...data.map(d => d.pct));
+  c.innerHTML = data.map(d => `
+    <div class="flex items-center gap-2">
+      <span class="text-xs w-24 flex-shrink-0" style="color:#9aa0b0;">${d.label}</span>
+      <div class="flex-1 h-5 rounded-sm overflow-hidden" style="background:rgba(255,255,255,0.04);">
+        <div class="h-full rounded-sm bar-grow" style="width:${(d.pct/max)*100}%;background:${d.color};transform-origin:left;"></div>
+      </div>
+      <span class="mono text-xs w-12 text-right flex-shrink-0" style="color:#f0f0f0;">${d.pct}%</span>
+    </div>
+  `).join('');
+}
+
+const cyxData = [
+  { year: '2020', victims: 1497, actors: 33 },
+  { year: '2021', victims: 2268, actors: 51 },
+  { year: '2022', victims: 2169, actors: 41 },
+  { year: '2023', victims: 4092, actors: 57 },
+  { year: '2024', victims: 4478, actors: 76 },
+  { year: '2025*', victims: 4685, actors: 89 }
+];
+
+function renderCyxChart() {
+  const chart = document.getElementById('cyx-bar-chart');
+  const labels = document.getElementById('cyx-labels');
+  const maxV = Math.max(...cyxData.map(d => d.victims));
+  chart.innerHTML = cyxData.map((d, i) => `
+    <div class="flex-1 flex flex-col items-center gap-1">
+      <span class="mono text-xs" style="color:#ff8c00;">${d.actors}</span>
+      <div class="w-full flex flex-col items-center justify-end" style="height:180px;">
+        <div class="w-full max-w-12 rounded-t bar-grow" style="height:${(d.victims/maxV)*100}%;background:linear-gradient(180deg,#ff6600,#ff8c00);transform-origin:bottom;animation-delay:${i*0.1}s;"></div>
+      </div>
+      <span class="mono text-xs" style="color:#f0f0f0;">${d.victims.toLocaleString()}</span>
+    </div>
+  `).join('');
+  labels.innerHTML = cyxData.map(d => `<div class="flex-1 text-center"><span class="text-xs" style="color:#7a8299;">${d.year}</span></div>`).join('');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden'));
+  document.getElementById('tab-' + tab).classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+    btn.style.color = '#7a8299';
+    btn.style.borderBottom = '2px solid transparent';
+  });
+  const activeBtn = document.querySelector(`[data-tab="${tab}"]`);
+  activeBtn.classList.add('active');
+  activeBtn.style.color = '#ff6600';
+  activeBtn.style.borderBottom = '2px solid #ff6600';
+  if (tab === 'cyx') renderCyxChart();
+}
+
+function openAuditModal() {
+  const modal = document.createElement('div');
+  modal.id = 'audit-modal';
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  `;
+  
+  modal.innerHTML = `
+    <div style="background:#1a1f2e;border:1px solid rgba(255,102,0,0.3);border-radius:12px;padding:32px;max-width:420px;text-align:center;">
+      <div style="width:48px;height:48px;background:rgba(255,102,0,0.15);border-radius:8px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;">
+        <i data-lucide="check-circle" style="width:24px;height:24px;color:#ff6600;"></i>
+      </div>
+      <h2 style="color:#f0f0f0;font-size:18px;font-weight:600;margin:0 0 12px;">Auditoria Solicitada com Sucesso!</h2>
+      <p style="color:#9aa0b0;font-size:13px;margin:0 0 20px;line-height:1.5;">Obrigado por solicitar uma auditoria de segurança. Nossa equipe entrará em contato em breve.</p>
+      <p style="color:#7a8299;font-size:12px;margin:0 0 24px;font-family:'Space Mono',monospace;">visualstudioandsecurityoficial@gmail.com</p>
+      <button onclick="document.getElementById('audit-modal').remove()" style="background:#ff6600;color:#000;border:none;padding:12px 24px;border-radius:6px;font-weight:600;cursor:pointer;font-size:13px;transition:all 0.2s;">
+        Fechar
+      </button>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  lucide.createIcons();
+}
+
+// Init charts
+renderBars('actors-chart', actors);
+renderBars('actions-chart', actions);
+renderBars('assets-chart', assets);
+
+lucide.createIcons();
+
+// Data SDK
+let allThreats = [];
+
+const dataHandler = {
+  onDataChanged(data) {
+    allThreats = data || [];
+    updateThreatAlerts();
+  }
+};
+
+async function initDataSDK() {
+  const result = await window.dataSdk.init(dataHandler);
+  if (!result.isOk) {
+    console.error('Failed to init Data SDK:', result.error);
+  }
+}
+
+function updateThreatAlerts() {
+  if (allThreats.length > 0) {
+    const latest = allThreats[allThreats.length - 1];
+    document.getElementById('threatTitle').textContent = latest.title || 'CRITICAL THREAT DETECTED';
+    document.getElementById('threatName').textContent = latest.description || 'FAUX#ELEVATE';
+  }
+}
+
+async function createNewThreat() {
+  const threatData = {
+    title: 'CRITICAL THREAT DETECTED',
+    description: 'NEW THREAT ALERT',
+    severity: 'critical',
+    status: 'active',
+    createdAt: new Date().toISOString()
+  };
+  
+  const result = await window.dataSdk.create(threatData);
+  if (result.isOk) {
+    console.log('Threat created successfully');
+  } else {
+    console.error('Error creating threat:', result.error);
+  }
+}
+
+// Element SDK
+const defaultConfig = {
+  main_title: 'Security Navigator 2026',
+  subtitle: 'Orange Cyberdefense',
+  background_color: '#0a0e1a',
+  surface_color: 'rgba(255,255,255,0.03)',
+  text_color: '#f0f0f0',
+  accent_color: '#ff6600',
+  muted_color: '#7a8299',
+  font_family: 'DM Sans',
+  font_size: 14
+};
+
+function applyConfig(config) {
+  const t = (k) => config[k] || defaultConfig[k];
+  document.getElementById('mainTitle').textContent = t('main_title');
+  document.getElementById('subtitle').textContent = t('subtitle') + ' — Key Data on Cybersecurity';
+
+  const app = document.getElementById('app');
+  app.style.background = t('background_color');
+
+  const font = t('font_family');
+  const baseSize = t('font_size');
+  document.body.style.fontFamily = `${font}, DM Sans, sans-serif`;
+
+  document.getElementById('mainTitle').style.fontSize = `${baseSize * 1.3}px`;
+  document.getElementById('subtitle').style.fontSize = `${baseSize * 0.85}px`;
+
+  // Apply text color to headings
+  document.querySelectorAll('h1, h2, h3').forEach(el => el.style.color = t('text_color'));
+  document.querySelectorAll('.mono').forEach(el => {
+    el.style.fontFamily = `Space Mono, ${font}, monospace`;
+  });
+}
+
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => applyConfig(config),
+  mapToCapabilities: (config) => {
+    const c = (key) => ({
+      get: () => config[key] || defaultConfig[key],
+      set: (v) => { config[key] = v; window.elementSdk.setConfig({ [key]: v }); }
+    });
+    return {
+      recolorables: [c('background_color'), c('surface_color'), c('text_color'), c('accent_color'), c('muted_color')],
+      borderables: [],
+      fontEditable: c('font_family'),
+      fontSizeable: c('font_size')
+    };
+  },
+  mapToEditPanelValues: (config) => new Map([
+    ['main_title', config.main_title || defaultConfig.main_title],
+    ['subtitle', config.subtitle || defaultConfig.subtitle]
+  ])
+});
+
+// Initialize Data SDK
+initDataSDK();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e2ff48d020ca4bc',t:'MTc3NDYzMDg2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
