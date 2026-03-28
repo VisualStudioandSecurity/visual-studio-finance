@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <script src="/_sdk/data_sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
@@ -353,14 +354,44 @@
   </div><!-- PAYMENT MODAL -->
   <div id="paymentModal" class="modal-overlay">
    <div class="modal-content">
-    <div class="flex justify-between items-center mb-6">
-     <h2 class="text-lg font-bold" style="color:#ff6600;">Proceder ao Pagamento</h2><button onclick="closePaymentModal()" style="background:none;border:none;color:#7a8299;cursor:pointer;font-size:24px;">×</button>
-    </div>
-    <div class="rounded-lg p-4 mb-6" style="background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.2);">
-     <p class="text-sm" style="color:#f0f0f0;margin-bottom:8px;">Email para pagamento:</p>
-     <p class="text-sm font-bold" style="color:#ff6600;word-break:break-all;">visualstudioandsecurityoficial@gmail.com</p>
-    </div>
-    <div class="flex gap-2"><button onclick="copyEmailToClipboard()" class="btn-primary flex-1">📋 Copiar Email</button> <button onclick="closePaymentModal()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f0f0f0;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.2s;">Fechar</button>
+    <!-- STEP 1: COPY EMAIL -->
+    <div id="paymentStep1">
+     <div class="flex justify-between items-center mb-6">
+      <h2 class="text-lg font-bold" style="color:#ff6600;">Proceder ao Pagamento</h2><button onclick="closePaymentModal()" style="background:none;border:none;color:#7a8299;cursor:pointer;font-size:24px;">×</button>
+     </div>
+     <div class="rounded-lg p-4 mb-6" style="background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.2);">
+      <p class="text-sm" style="color:#f0f0f0;margin-bottom:8px;">Email para pagamento:</p>
+      <p class="text-sm font-bold" style="color:#ff6600;word-break:break-all;">visualstudioandsecurityoficial@gmail.com</p>
+     </div>
+     <div class="flex gap-2"><button onclick="copyEmailToClipboard()" class="btn-primary flex-1">📋 Copiar Email</button> <button onclick="closePaymentModal()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f0f0f0;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.2s;">Fechar</button>
+     </div>
+    </div><!-- STEP 2: UPLOAD PROOF -->
+    <div id="paymentStep2" style="display:none;">
+     <div class="flex justify-between items-center mb-6">
+      <h2 class="text-lg font-bold" style="color:#ff6600;">Enviar Comprovante de Pagamento</h2><button onclick="backToPayment()" style="background:none;border:none;color:#7a8299;cursor:pointer;font-size:24px;">×</button>
+     </div>
+     <p class="text-sm mb-4" style="color:#d0d5e0;">Após concluir o pagamento, envie o comprovante abaixo:</p>
+     <div id="uploadArea" style="border:2px dashed rgba(255,102,0,0.4);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.3s;background:rgba(255,102,0,0.02);">
+      <i data-lucide="upload-cloud" style="width:32px;height:32px;color:#ff6600;margin-bottom:8px;margin-left:auto;margin-right:auto;display:block;"></i>
+      <p class="text-sm" style="color:#f0f0f0;margin-bottom:4px;">Arraste o arquivo aqui ou clique para selecionar</p>
+      <p class="text-xs" style="color:#7a8299;">Suporte: JPG, PNG, PDF (máx 10MB)</p><input type="file" id="proofUpload" style="display:none;" accept=".jpg,.jpeg,.png,.pdf">
+     </div>
+     <div id="fileName" style="display:none;margin-top:12px;padding:12px;background:rgba(34,197,94,0.08);border-radius:8px;color:#22c55e;font-size:12px;font-weight:bold;text-align:center;"></div><button id="submitProofBtn" style="display:none;width:100%;margin-top:12px;background:#ff6600;color:#000;border:none;cursor:pointer;padding:12px 16px;border-radius:8px;font-weight:600;font-size:14px;transition:all 0.2s;" onclick="submitProof()">✅ Enviar Comprovante</button> <button onclick="backToPayment()" style="width:100%;margin-top:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f0f0f0;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.2s;">Voltar</button>
+    </div><!-- STEP 3: TIMER & RELEASE -->
+    <div id="paymentStep3" style="display:none;">
+     <div class="text-center">
+      <h2 class="text-lg font-bold mb-2" style="color:#ff6600;">Liberando Assinatura PRO</h2>
+      <p id="activationStatus" class="text-sm mb-8" style="color:#7a8299;">⏳ Validando comprovante...</p>
+      <div style="position:relative;width:120px;height:120px;margin:0 auto 24px;">
+       <svg style="width:100%;height:100%;transform:rotate(-90deg);">
+        <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"></circle> <circle id="timerCircle" cx="60" cy="60" r="54" fill="none" stroke="#ff6600" stroke-width="8" style="stroke-dasharray:339.3;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear;stroke-linecap:round;"></circle>
+       </svg>
+       <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+        <p id="timerText" style="font-size:32px;font-weight:bold;color:#ff6600;margin:0;">10:00</p>
+        <p style="font-size:10px;color:#7a8299;margin:4px 0 0 0;">minutos</p>
+       </div>
+      </div><button onclick="backToPayment()" style="width:100%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f0f0f0;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.2s;">Voltar</button>
+     </div>
     </div>
    </div>
   </div>
@@ -1328,20 +1359,19 @@
       modal.classList.remove('active');
     }
 
+    let currentProofFile = null;
+
     function copyEmailToClipboard() {
       const email = 'visualstudioandsecurityoficial@gmail.com';
       
-      // Tentar usando Clipboard API
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(email).then(() => {
           showNotification('✅ Email copiado com sucesso!', 'success');
-          closePaymentModal();
+          transitionToStep2();
         }).catch(() => {
-          // Fallback: método alternativo
           copyEmailFallback(email);
         });
       } else {
-        // Fallback para browsers antigos
         copyEmailFallback(email);
       }
     }
@@ -1357,10 +1387,355 @@
         document.execCommand('copy');
         document.body.removeChild(textArea);
         showNotification('✅ Email copiado com sucesso!', 'success');
-        closePaymentModal();
+        transitionToStep2();
       } catch (err) {
         showNotification('Erro ao copiar. Copie manualmente.', 'error');
       }
+    }
+
+    function transitionToStep2() {
+      document.getElementById('paymentStep1').style.display = 'none';
+      document.getElementById('paymentStep2').style.display = 'block';
+      lucide.createIcons();
+      setupFileUpload();
+    }
+
+    function backToPayment() {
+      document.getElementById('paymentStep2').style.display = 'none';
+      document.getElementById('paymentStep3').style.display = 'none';
+      document.getElementById('paymentStep1').style.display = 'block';
+      currentProofFile = null;
+      document.getElementById('proofUpload').value = '';
+      document.getElementById('fileName').style.display = 'none';
+      document.getElementById('submitProofBtn').style.display = 'none';
+    }
+
+    function validateProofFile(file) {
+      // Tipos de arquivo permitidos: PDF e imagens de documentos
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+      const maxSizeBytes = 10 * 1024 * 1024; // 10MB
+      
+      // Validar tipo de arquivo
+      if (!allowedTypes.includes(file.type)) {
+        showNotification('❌ Tipo inválido. Aceito: PDF, JPG, PNG', 'error');
+        return false;
+      }
+      
+      // Validar tamanho do arquivo
+      if (file.size > maxSizeBytes) {
+        showNotification('❌ Arquivo muito grande. Máximo: 10MB', 'error');
+        return false;
+      }
+      
+      // Validar tamanho mínimo (pelo menos 50KB para ser um comprovante real)
+      const minSizeBytes = 50 * 1024; // 50KB
+      if (file.size < minSizeBytes) {
+        showNotification('❌ Arquivo muito pequeno. Selecione um comprovante legítimo (mín. 50KB)', 'error');
+        return false;
+      }
+      
+      // Validar nome do arquivo (deve ter extensão válida)
+      const validExtensions = ['.pdf', '.jpg', '.jpeg', '.png'];
+      const fileName = file.name.toLowerCase();
+      const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
+      
+      if (!hasValidExtension) {
+        showNotification('❌ Extensão inválida. Use: PDF, JPG, PNG', 'error');
+        return false;
+      }
+      
+      // Análise de dimensões para imagens (rejeita fotos muito quadradas ou muito alongadas)
+      if (file.type.startsWith('image/')) {
+        return validateImageDimensions(file);
+      }
+      
+      return true;
+    }
+
+    function validateImageDimensions(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const width = img.width;
+            const height = img.height;
+            const aspectRatio = width / height;
+            
+            // Comprovantes tipicamente têm proporção 0.6 a 0.9 (mais altos que largos) ou 1.0 a 1.4 (aproximadamente quadrado)
+            // Fotos aleatórias geralmente têm proporção muito diferente (muito amplas ou muito altas)
+            const isValidAspectRatio = (aspectRatio > 0.5 && aspectRatio < 1.5);
+            
+            // Comprovantes geralmente têm resolução moderada (não muito baixa, não muito alta)
+            const pixelCount = width * height;
+            const isValidResolution = (pixelCount > 100000 && pixelCount < 15000000); // Entre 100k e 15M pixels
+            
+            if (!isValidAspectRatio) {
+              showNotification('❌ Proporção inválida. Envie um comprovante (não uma foto panorâmica ou muito estreita)', 'error');
+              resolve(false);
+            } else if (!isValidResolution) {
+              showNotification('❌ Resolução inválida. A imagem parece ser uma foto aleatória, não um comprovante', 'error');
+              resolve(false);
+            } else {
+              // Validar conteúdo do comprovante via OCR básico
+              validateProofContent(e.target.result, file).then(isValidContent => {
+                resolve(isValidContent);
+              });
+            }
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }).then(isValid => {
+        if (!isValid) {
+          currentProofFile = null;
+          document.getElementById('proofUpload').value = '';
+          document.getElementById('fileName').style.display = 'none';
+          document.getElementById('submitProofBtn').style.display = 'none';
+        }
+        return isValid;
+      });
+    }
+
+    function validateProofContent(imageDataUrl, file) {
+      return new Promise((resolve) => {
+        // Validações de conteúdo esperado no comprovante
+        const requiredName = "Guilherme Abadio Rodrigues da Silva".toLowerCase();
+        const requiredPix = "visualstudioandsecurityoficial@gmail.com".toLowerCase();
+        
+        // Criar canvas para análise de cores e padrões
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          
+          // Analisar imagem para detectar texto e padrões de comprovante PIX
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+          
+          // Verificar se há padrões de texto visíveis (contraste de cores)
+          let hasTextPatterns = false;
+          let darkPixels = 0;
+          let lightPixels = 0;
+          
+          for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            const brightness = (r + g + b) / 3;
+            
+            if (brightness < 100) darkPixels++;
+            if (brightness > 200) lightPixels++;
+          }
+          
+          // Comprovantes têm bom contraste (muitos pixels claros e escuros)
+          hasTextPatterns = (darkPixels > data.length / 20) && (lightPixels > data.length / 20);
+          
+          if (!hasTextPatterns) {
+            showNotification('❌ Comprovante não legível. Certifique-se de que é uma imagem clara de um comprovante PIX', 'error');
+            resolve(false);
+            return;
+          }
+          
+          // Usar Tesseract.js para OCR - extrair texto da imagem
+          showNotification('🔍 Analisando conteúdo do comprovante...', 'success');
+          
+          Tesseract.recognize(imageDataUrl, 'por', {
+            logger: m => console.log('OCR Progress:', m)
+          }).then(({ data: { text } }) => {
+            const extractedText = text.toLowerCase();
+            
+            console.log('Texto extraído:', extractedText);
+            
+            // Verificar se contém o nome completo
+            const hasName = extractedText.includes('guilherme') && 
+                           extractedText.includes('abadio') && 
+                           extractedText.includes('rodrigues') && 
+                           extractedText.includes('silva');
+            
+            // Verificar se contém a chave PIX correta
+            const hasPix = extractedText.includes('visualstudioandsecurityoficial@gmail.com') ||
+                          extractedText.includes('visualstudioandsecurity');
+            
+            if (!hasName) {
+              showNotification('❌ Comprovante não contém o nome: Guilherme Abadio Rodrigues da Silva', 'error');
+              resolve(false);
+              return;
+            }
+            
+            if (!hasPix) {
+              showNotification('❌ Comprovante não contém a chave PIX: visualstudioandsecurityoficial@gmail.com', 'error');
+              resolve(false);
+              return;
+            }
+            
+            // Se passou em todas as validações
+            showNotification('✅ Comprovante PIX verificado com sucesso!', 'success');
+            resolve(true);
+          }).catch(error => {
+            console.error('Erro na análise OCR:', error);
+            showNotification('⚠️ Erro ao analisar comprovante. Tente novamente.', 'error');
+            resolve(false);
+          });
+        };
+        
+        img.src = imageDataUrl;
+      });
+    }
+
+    function setupFileUpload() {
+      const uploadInput = document.getElementById('proofUpload');
+      const uploadArea = document.getElementById('uploadArea');
+      const fileNameDisplay = document.getElementById('fileName');
+
+      uploadInput.addEventListener('change', async (e) => {
+        if (e.target.files.length > 0) {
+          const file = e.target.files[0];
+          
+          const isValid = await validateProofFile(file);
+          if (isValid) {
+            currentProofFile = file;
+            const sizeKB = (file.size / 1024).toFixed(2);
+            fileNameDisplay.innerHTML = `✅ <strong>${file.name}</strong><br><span style="font-size:11px;color:#7a8299;">${sizeKB} KB • ${file.type || 'Documento'}</span>`;
+            fileNameDisplay.style.display = 'block';
+            document.getElementById('submitProofBtn').style.display = 'block';
+          }
+        }
+      });
+
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.background = 'rgba(255,102,0,0.1)';
+        uploadArea.style.borderColor = 'rgba(255,102,0,0.6)';
+      });
+
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.background = 'rgba(255,102,0,0.02)';
+        uploadArea.style.borderColor = 'rgba(255,102,0,0.4)';
+      });
+
+      uploadArea.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        uploadArea.style.background = 'rgba(255,102,0,0.02)';
+        uploadArea.style.borderColor = 'rgba(255,102,0,0.4)';
+        
+        if (e.dataTransfer.files.length > 0) {
+          const file = e.dataTransfer.files[0];
+          
+          const isValid = await validateProofFile(file);
+          if (isValid) {
+            currentProofFile = file;
+            uploadInput.files = e.dataTransfer.files;
+            const sizeKB = (file.size / 1024).toFixed(2);
+            fileNameDisplay.innerHTML = `✅ <strong>${file.name}</strong><br><span style="font-size:11px;color:#7a8299;">${sizeKB} KB • ${file.type || 'Documento'}</span>`;
+            fileNameDisplay.style.display = 'block';
+            document.getElementById('submitProofBtn').style.display = 'block';
+          }
+        }
+      });
+    }
+
+    function submitProof() {
+      if (!currentProofFile) {
+        showNotification('Por favor, selecione um comprovante', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('submitProofBtn');
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = 'Enviar Comprovante';
+        transitionToStep3();
+        startReleaseTimer();
+      }, 1500);
+    }
+
+    function transitionToStep3() {
+      document.getElementById('paymentStep2').style.display = 'none';
+      document.getElementById('paymentStep3').style.display = 'block';
+      lucide.createIcons();
+    }
+
+    let timerInterval = null;
+    function startReleaseTimer() {
+      let timeRemaining = 600; // 10 minutos em segundos
+
+      const updateTimer = () => {
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+        
+        document.getElementById('timerText').textContent = 
+          `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        // Atualizar circle progress
+        const totalCircumference = 339.3;
+        const progress = (timeRemaining / 600) * 100;
+        const dashOffset = totalCircumference * (1 - progress / 100);
+        document.getElementById('timerCircle').style.strokeDashoffset = dashOffset;
+
+        // Atualizar status text
+        if (timeRemaining > 300) {
+          document.getElementById('activationStatus').textContent = '⏳ Validando comprovante...';
+        } else if (timeRemaining > 60) {
+          document.getElementById('activationStatus').textContent = '🔄 Processando pagamento...';
+        } else {
+          document.getElementById('activationStatus').textContent = '🎉 Quase pronto...';
+        }
+
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          completePayment();
+        } else {
+          timeRemaining--;
+        }
+      };
+
+      updateTimer();
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function completePayment() {
+      document.getElementById('timerText').textContent = '00:00';
+      document.getElementById('activationStatus').innerHTML = '✅ <span style="color:#22c55e;">Assinatura PRO Ativada!</span>';
+      
+      showNotification('🎉 Assinatura PRO ativada com sucesso!', 'success');
+      
+      updateScanPlan('pro');
+      localStorage.setItem('subscription_status', 'pro');
+      localStorage.setItem('subscription_date', new Date().toISOString());
+
+      if (window.dataSdk) {
+        window.dataSdk.create({
+          title: 'PAGAMENTO PROCESSADO',
+          description: 'Assinatura PRO ativada com sucesso após confirmação de comprovante',
+          severity: 'info',
+          status: 'completed',
+          createdAt: new Date().toISOString(),
+          scan_type: 'payment',
+          plan_used: 'pro',
+          scan_url: 'payment_confirmed',
+          payment_status: 'confirmed',
+          proof_submitted: currentProofFile?.name || 'proof.pdf',
+          scan_result: JSON.stringify({ 
+            payment_status: 'confirmed', 
+            plan: 'pro', 
+            activated: true,
+            proof_submitted: true,
+            timestamp: new Date().toISOString()
+          })
+        });
+      }
+
+      setTimeout(() => {
+        closePaymentModal();
+      }, 2000);
     }
 
     // Close modal when clicking outside
@@ -1391,5 +1766,5 @@
       }
     }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e33361bb0a43522',t:'MTc3NDY2NTAxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e3365e356bae732',t:'MTc3NDY2Njk2Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
