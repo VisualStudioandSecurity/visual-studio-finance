@@ -3,9 +3,10 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Security Navigator Dashboard</title>
+  <title>Painel de Segurança Criptografado</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <script src="/_sdk/data_sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
@@ -24,6 +25,9 @@
     .btn-primary:active { background: #e55a00; }
     .btn-success { background: #22c55e; color: #000; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: all 0.2s; }
     .btn-success:hover { background: #16a34a; }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 10000; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: #0a0e1a; border-radius: 12px; padding: 32px; max-width: 400px; width: 90%; border: 1px solid rgba(255,255,255,0.1); }
   </style>
   <style>body { box-sizing: border-box; }</style>
  </head>
@@ -42,48 +46,54 @@
       </div>
      </div>
      <div class="flex gap-2">
-      <span class="text-xs px-3 py-1 rounded-full" style="background:rgba(26,92,58,0.2);color:#2a7a4a;">2026 © Direitos Reservados</span> <span class="text-xs px-3 py-1 rounded-full" style="background:rgba(255,255,255,0.05);color:#7a8299;">160 Countries</span>
+      <span class="text-xs px-3 py-1 rounded-full" style="background:rgba(26,92,58,0.2);color:#2a7a4a;">2026 © Direitos Reservados</span> <span class="text-xs px-3 py-1 rounded-full" style="background:rgba(255,255,255,0.05);color:#7a8299;">160 Países</span>
      </div>
     </div>
    </header><!-- NAVIGATION TABS -->
    <nav class="px-6 pt-4 flex gap-8 overflow-x-auto" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-    <button class="tab-btn active" onclick="switchTab('overview', this)" style="color:#ff6600;">Overview</button> <button class="tab-btn" onclick="switchTab('threat', this)" style="color:#7a8299;">Threat Alert</button> <button class="tab-btn" onclick="switchTab('cyx', this)" style="color:#7a8299;">Cy-X Trends</button> <button class="tab-btn" onclick="switchTab('scanner', this)" style="color:#7a8299;">URL Scanner</button> <button class="tab-btn" onclick="switchTab('claim', this)" style="color:#7a8299;">Premium</button> <button class="tab-btn" onclick="switchTab('findings', this)" style="color:#7a8299;">Findings</button>
+    <button class="tab-btn active" onclick="switchTab('overview', this)" style="color:#ff6600;">Visão Geral</button> <button class="tab-btn" onclick="switchTab('threat', this)" style="color:#7a8299;">Alerta de Ameaça</button> <button class="tab-btn" onclick="switchTab('cyx', this)" style="color:#7a8299;">Tendências Cy-X</button> <button class="tab-btn" onclick="switchTab('scanner', this)" style="color:#7a8299;">Scanner de URL</button> <button class="tab-btn" onclick="switchTab('claim', this)" style="color:#7a8299;">Premium</button> <button class="tab-btn" onclick="switchTab('findings', this)" style="color:#7a8299;">Descobertas</button>
    </nav><!-- CONTENT AREA -->
    <main class="flex-1 px-6 py-5 overflow-y-auto">
     <!-- TAB: OVERVIEW -->
     <div id="overview" class="tab-content active">
      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
       <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-       <p class="text-xs mb-1" style="color:#7a8299;">Potential Incidents</p>
+       <p class="text-xs mb-1" style="color:#7a8299;">Incidentes Potenciais</p>
        <p class="text-2xl font-bold" style="color:#ff6600;">139,373</p>
       </div>
       <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-       <p class="text-xs mb-1" style="color:#7a8299;">Confirmed Incidents</p>
+       <p class="text-xs mb-1" style="color:#7a8299;">Incidentes Confirmados</p>
        <p class="text-2xl font-bold" style="color:#2a7a4a;">19,053</p>
       </div>
       <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-       <p class="text-xs mb-1" style="color:#7a8299;">Confirmation Rate</p>
+       <p class="text-xs mb-1" style="color:#7a8299;">Taxa de Confirmação</p>
        <p class="text-2xl font-bold" style="color:#f0f0f0;">13.7%</p>
       </div>
       <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-       <p class="text-xs mb-1" style="color:#7a8299;">Vendors Tracked</p>
+       <p class="text-xs mb-1" style="color:#7a8299;">Fornecedores Rastreados</p>
        <p class="text-2xl font-bold" style="color:#f0f0f0;">25</p>
       </div>
      </div>
      <div class="grid gap-4">
       <div class="rounded-xl p-5" style="background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.2);">
-       <h3 class="text-sm font-semibold mb-2" style="color:#ff6600;">Global Threat Index</h3>
+       <h3 class="text-sm font-semibold mb-2" style="color:#ff6600;">Índice Global de Ameaças</h3>
        <div class="flex items-center gap-3">
         <div class="text-3xl font-bold" style="color:#ff6600;">
          7.8
         </div>
         <div class="text-xs" style="color:#9aa0b0;">
-         Risk level on scale 1-10 | Increased 0.2 from last week
+         Nível de risco numa escala de 1-10 | Aumentou 0.2 desde a semana passada
         </div>
        </div>
       </div>
       <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-       <h3 class="text-sm font-semibold mb-3" style="color:#f0f0f0;">Top Attack Vectors</h3>
+       <h3 class="text-sm font-semibold mb-4" style="color:#f0f0f0;">Distribuição de Ameaças (últimos 30 dias)</h3>
+       <div style="height:250px;position:relative;">
+        <canvas id="threatChart"></canvas>
+       </div>
+      </div>
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+       <h3 class="text-sm font-semibold mb-3" style="color:#f0f0f0;">Principais Vetores de Ataque</h3>
        <div class="space-y-2">
         <div class="flex justify-between items-center text-xs">
          <div style="color:#9aa0b0;">
@@ -103,7 +113,7 @@
         </div>
         <div class="flex justify-between items-center text-xs">
          <div style="color:#9aa0b0;">
-          Data Exfiltration
+          Exfiltração de Dados
          </div>
          <div style="color:#ff6600; font-bold;">
           22%
@@ -111,7 +121,7 @@
         </div>
         <div class="flex justify-between items-center text-xs">
          <div style="color:#9aa0b0;">
-          Zero-Day Exploits
+          Explorações de Zero-Day
          </div>
          <div style="color:#ff6600; font-bold;">
           15%
@@ -124,52 +134,72 @@
     <div id="threat" class="tab-content">
      <div class="rounded-xl p-6 mb-6" style="background:rgba(26,92,58,0.12);border:1px solid rgba(42,122,74,0.4);">
       <div class="flex items-start gap-4">
-       <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(42,122,74,0.2);">
+       <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 threat-pulse" style="background:rgba(42,122,74,0.2);">
         <i data-lucide="alert-circle" style="width:24px;height:24px;color:#2a7a4a;"></i>
        </div>
        <div>
-        <h2 class="text-lg font-bold mb-1" style="color:#2a7a4a;">CRITICAL THREAT DETECTED</h2>
+        <h2 class="text-lg font-bold mb-1" style="color:#2a7a4a;">AMEAÇA CRÍTICA DETECTADA</h2>
         <p class="text-2xl font-bold mb-4" style="color:#2a7a4a;">FAUX#ELEVATE</p>
-        <p class="text-sm leading-relaxed" style="color:#d0d5e0;">Advanced data exfiltration and mining threat. Attack vector: Fake CVs with obfuscated VBScript designed to bypass corporate network filters and compromise enterprise credentials.</p>
+        <p class="text-sm leading-relaxed" style="color:#d0d5e0;">Ameaça avançada de exfiltração e mineração de dados. Vetor de ataque: CVs falsos com VBScript ofuscado projetados para contornar filtros de rede corporativa e comprometer credenciais empresariais.</p>
        </div>
       </div>
      </div>
      <div class="grid gap-4">
       <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Threat Properties</h3>
+       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Propriedades da Ameaça</h3>
        <div class="space-y-2 text-xs">
         <div class="flex justify-between">
-         <span style="color:#7a8299;">Discovered:</span><span style="color:#f0f0f0;">2025-11-15</span>
+         <span style="color:#7a8299;">Descoberto:</span><span style="color:#f0f0f0;">2025-11-15</span>
         </div>
         <div class="flex justify-between">
-         <span style="color:#7a8299;">Severity:</span><span style="color:#ff4d4d;">CRITICAL</span>
+         <span style="color:#7a8299;">Severidade:</span><span style="color:#ff4d4d;">CRÍTICA</span>
         </div>
         <div class="flex justify-between">
-         <span style="color:#7a8299;">Type:</span><span style="color:#f0f0f0;">APT / Trojan</span>
+         <span style="color:#7a8299;">Tipo:</span><span style="color:#f0f0f0;">APT / Trojan</span>
         </div>
         <div class="flex justify-between">
-         <span style="color:#7a8299;">Target Sectors:</span><span style="color:#f0f0f0;">Finance, Tech, Govt</span>
+         <span style="color:#7a8299;">Setores Alvo:</span><span style="color:#f0f0f0;">Finanças, Tecnologia, Governo</span>
         </div>
        </div>
       </div>
       <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Mitigation Steps</h3>
-       <ul class="space-y-2 text-xs" style="color:#9aa0b0;list-style:none;padding:0;">
-        <li>• Block CVs from untrusted sources</li>
-        <li>• Enable macro sandboxing in Office</li>
-        <li>• Deploy EDR solutions</li>
-        <li>• Monitor network egress traffic</li>
-       </ul>
+       <h3 class="text-sm font-semibold mb-4" style="color:#f0f0f0;">Evolução da Ameaça</h3>
+       <div style="height:200px;position:relative;margin-bottom:15px;">
+        <canvas id="threatEvolutionChart"></canvas>
+       </div>
       </div>
+      <div class="rounded-xl p-6" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.4);">
+       <div class="flex items-center gap-2 mb-4">
+        <i data-lucide="shield-check" style="width:24px;height:24px;color:#22c55e;"></i>
+        <h3 class="text-lg font-semibold" style="color:#22c55e;">PLANO DE MITIGAÇÃO</h3>
+       </div>
+       <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-bottom:16px;">
+        <div class="flex justify-between items-center text-xs mb-2">
+         <span style="color:#7a8299;">Progresso:</span> <span id="progressPercent" style="color:#22c55e;font-weight:bold;">0%</span>
+        </div>
+        <div style="background:rgba(255,255,255,0.05);border-radius:4px;height:6px;overflow:hidden;">
+         <div id="progressBar" style="background:linear-gradient(90deg,#22c55e,#4ade80);height:100%;width:0%;transition:width 0.3s ease;border-radius:4px;"></div>
+        </div>
+       </div>
+       <div id="mitigationSteps" class="space-y-3"></div><button onclick="resetMitigation()" class="mt-4 w-full px-3 py-2 rounded-lg text-xs font-semibold" style="background:rgba(255,255,255,0.1);color:#7a8299;border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:all 0.2s;">Reiniciar Checklist</button>
+      </div>
+     </div>
+    </div><!-- MITIGATION GUIDE MODAL -->
+    <div id="guidanceModal" class="modal-overlay">
+     <div class="modal-content" style="max-width:600px;max-height:80vh;overflow-y:auto;">
+      <div class="flex justify-between items-center mb-6">
+       <h2 id="guideTitle" class="text-lg font-bold" style="color:#ff6600;"></h2><button onclick="closeGuidance()" style="background:none;border:none;color:#7a8299;cursor:pointer;font-size:24px;">×</button>
+      </div>
+      <div id="guideContent" class="space-y-4"></div><button onclick="completeStep()" id="completeStepBtn" class="btn-success w-full mt-6">✓ Marcar como Completo</button>
      </div>
     </div><!-- TAB: CY-X TRENDS -->
     <div id="cyx" class="tab-content">
      <div class="rounded-xl p-5 mb-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <h2 class="text-sm font-semibold mb-1" style="color:#f0f0f0;">Cyber Extortion Over Time</h2>
-      <p class="text-xs mb-5" style="color:#7a8299;">Double-extortion leak sites victims (2020–2025)</p>
+      <h2 class="text-sm font-semibold mb-1" style="color:#f0f0f0;">Extorsão Cibernética ao Longo do Tempo</h2>
+      <p class="text-xs mb-5" style="color:#7a8299;">Vítimas de sites de vazamento de extorsão dupla (2020–2025)</p>
       <div class="space-y-2">
        <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2020:</span><span style="color:#ff6600;">1,497 victims</span>
+        <span style="color:#7a8299;">2020:</span><span style="color:#ff6600;">1.497 vítimas</span>
        </div>
        <div class="flex justify-between text-xs">
         <span style="color:#7a8299;">2021:</span><span style="color:#ff6600;">2,268 victims (+51%)</span>
@@ -189,11 +219,11 @@
       </div>
      </div>
      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <h3 class="text-sm font-semibold mb-3" style="color:#f0f0f0;">Hardest Hit Industries</h3>
+      <h3 class="text-sm font-semibold mb-3" style="color:#f0f0f0;">Setores Mais Afetados</h3>
       <div class="space-y-2">
        <div class="flex justify-between items-center text-xs">
         <div style="color:#9aa0b0;">
-         Healthcare
+         Saúde
         </div>
         <div style="color:#ff6600; font-bold;">
          18%
@@ -201,7 +231,7 @@
        </div>
        <div class="flex justify-between items-center text-xs">
         <div style="color:#9aa0b0;">
-         Retail
+         Varejo
         </div>
         <div style="color:#ff6600; font-bold;">
          16%
@@ -209,7 +239,7 @@
        </div>
        <div class="flex justify-between items-center text-xs">
         <div style="color:#9aa0b0;">
-         Manufacturing
+         Manufatura
         </div>
         <div style="color:#ff6600; font-bold;">
          14%
@@ -217,7 +247,7 @@
        </div>
        <div class="flex justify-between items-center text-xs">
         <div style="color:#9aa0b0;">
-         Finance
+         Finanças
         </div>
         <div style="color:#ff6600; font-bold;">
          12%
@@ -228,65 +258,73 @@
     </div><!-- TAB: URL SCANNER -->
     <div id="scanner" class="tab-content">
      <div class="rounded-xl p-6 mb-6" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-      <h2 class="text-sm font-semibold mb-1" style="color:#f0f0f0;">URL Security Scanner</h2>
-      <p class="text-xs mb-4" style="color:#7a8299;">Real-time URL analysis and threat detection</p><input type="text" id="scanUrl" placeholder="https://example.com" class="w-full px-4 py-2 rounded-lg text-sm mb-4" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f0f0;"> <button id="scanBtn" class="btn-primary w-full">SCAN URL</button>
+      <h2 class="text-sm font-semibold mb-1" style="color:#f0f0f0;">Scanner de Segurança de URL</h2>
+      <p class="text-xs mb-4" style="color:#7a8299;">Análise de URL em tempo real e detecção de ameaças</p><input type="text" id="scanUrl" placeholder="https://example.com" class="w-full px-4 py-2 rounded-lg text-sm mb-4" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f0f0;"> <button id="scanBtn" class="btn-primary w-full">ANALISAR URL</button>
      </div>
      <div id="scanResults"></div>
     </div><!-- TAB: PREMIUM -->
     <div id="claim" class="tab-content">
      <div class="mb-6">
-      <h2 class="text-lg font-bold mb-4" style="color:#f0f0f0;">Choose Your Plan</h2>
+      <h2 class="text-lg font-bold mb-4" style="color:#f0f0f0;">Escolha seu Plano</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
        <div class="rounded-xl p-6 fade-in" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-        <h3 class="text-sm font-bold mb-1" style="color:#f0f0f0;">BASIC</h3>
-        <p class="text-xs mb-4" style="color:#7a8299;">Essential threat monitoring</p>
-        <p class="text-2xl font-bold mb-4" style="color:#ff6600;">€99<span style="font-size:12px;color:#7a8299;">/month</span></p>
+        <h3 class="text-sm font-bold mb-1" style="color:#f0f0f0;">BÁSICO</h3>
+        <p class="text-xs mb-4" style="color:#7a8299;">Monitoramento essencial de ameaças</p>
+        <p class="text-2xl font-bold mb-4" style="color:#ff6600;">R$ 49,99/mês<span style="font-size:12px;color:#7a8299;"> | $24,99 USD/mês</span></p>
         <ul style="color:#9aa0b0;list-style:none;padding:0;margin-bottom:12px;" class="text-xs space-y-2">
-         <li>✓ Real-time alerts</li>
-         <li>✓ Basic analytics</li>
-         <li>✓ Email support</li>
-        </ul><button class="btn-primary w-full">Select Plan</button>
+         <li>✓ Alertas em tempo real</li>
+         <li>✓ Análise básica</li>
+         <li>✓ Suporte por email</li>
+        </ul><button class="btn-primary w-full" onclick="openPaymentModal()">Selecionar Plano</button>
        </div>
        <div class="rounded-xl p-6 fade-in" style="background:rgba(255,102,0,0.12);border:2px solid rgba(255,102,0,0.4);">
-        <div style="background:#ff6600;color:#000;padding:4px 8px;border-radius:4px;width:fit-content;font-size:10px;font-weight:bold;margin-bottom:8px;">
-         POPULAR
+        <div class="flex gap-2 mb-2">
+         <div style="background:#ff6600;color:#000;padding:4px 8px;border-radius:4px;width:fit-content;font-size:10px;font-weight:bold;">
+          POPULAR
+         </div>
+         <div style="background:rgba(34,197,94,0.2);color:#22c55e;padding:4px 8px;border-radius:4px;width:fit-content;font-size:10px;font-weight:bold;">
+          VITALÍCIO
+         </div>
         </div>
         <h3 class="text-sm font-bold mb-1" style="color:#ff6600;">PRO</h3>
-        <p class="text-xs mb-4" style="color:#7a8299;">Advanced threat intelligence</p>
-        <p class="text-2xl font-bold mb-4" style="color:#ff6600;">€299<span style="font-size:12px;color:#7a8299;">/month</span></p>
+        <p class="text-xs mb-4" style="color:#7a8299;">Inteligência avançada de ameaças</p>
+        <p class="text-2xl font-bold mb-4" style="color:#ff6600;">R$ 1,00<span style="font-size:12px;color:#7a8299;"> | $0,50 USD</span></p>
         <ul style="color:#9aa0b0;list-style:none;padding:0;margin-bottom:12px;" class="text-xs space-y-2">
-         <li>✓ Advanced analytics</li>
-         <li>✓ Historical data</li>
-         <li>✓ Custom rules</li>
-         <li>✓ Priority support</li>
-        </ul><button class="btn-primary w-full">Select Plan</button>
+         <li>✓ Análise avançada</li>
+         <li>✓ Dados históricos</li>
+         <li>✓ Regras personalizadas</li>
+         <li>✓ Suporte prioritário</li>
+        </ul><button class="btn-primary w-full" onclick="openPaymentModal()">Selecionar Plano</button>
        </div>
        <div class="rounded-xl p-6 fade-in" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-        <h3 class="text-sm font-bold mb-1" style="color:#f0f0f0;">ENTERPRISE</h3>
-        <p class="text-xs mb-4" style="color:#7a8299;">Full security suite</p>
-        <p class="text-2xl font-bold mb-4" style="color:#ff6600;">Custom<span style="font-size:12px;color:#7a8299;">/bespoke</span></p>
+        <div style="background:rgba(34,197,94,0.2);color:#22c55e;padding:4px 8px;border-radius:4px;width:fit-content;font-size:10px;font-weight:bold;margin-bottom:8px;">
+         VITALÍCIO
+        </div>
+        <h3 class="text-sm font-bold mb-1" style="color:#f0f0f0;">CORPORATIVO</h3>
+        <p class="text-xs mb-4" style="color:#7a8299;">Suite completa de segurança</p>
+        <p class="text-2xl font-bold mb-4" style="color:#ff6600;">R$ 99,99<span style="font-size:12px;color:#7a8299;"> | $49,99 USD</span></p>
         <ul style="color:#9aa0b0;list-style:none;padding:0;margin-bottom:12px;" class="text-xs space-y-2">
-         <li>✓ All features included</li>
-         <li>✓ API access</li>
-         <li>✓ Dedicated support</li>
-         <li>✓ Custom integrations</li>
-        </ul><button class="btn-primary w-full">Contact Sales</button>
+         <li>✓ Todos os recursos inclusos</li>
+         <li>✓ Acesso à API</li>
+         <li>✓ Suporte dedicado</li>
+         <li>✓ Integrações personalizadas</li>
+        </ul><button class="btn-primary w-full" onclick="openPaymentModal()">Contactar Vendas</button>
        </div>
       </div>
      </div>
      <div class="rounded-xl p-6" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.4);">
-      <h2 class="text-lg font-bold mb-2" style="color:#22c55e;">Activate Premium</h2>
-      <p class="text-sm mb-4" style="color:#d0d5e0;">Enter your ticket number to unlock advanced threat intelligence features</p>
+      <h2 class="text-lg font-bold mb-2" style="color:#22c55e;">Ativar Premium</h2>
+      <p class="text-sm mb-4" style="color:#d0d5e0;">Insira seu número de ticket para desbloquear recursos avançados de inteligência de ameaças</p>
       <div class="flex gap-3 mb-4">
-       <input type="text" id="ticketInput" placeholder="Ex: 4K8M2N7X9P1Q5R3T" class="flex-1 px-4 py-2 rounded-lg text-sm" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f0f0;"> <button id="validateBtn" class="btn-success">Validate</button>
+       <input type="text" id="ticketInput" placeholder="Ex: 4K8M2N7X9P1Q5R3T" class="flex-1 px-4 py-2 rounded-lg text-sm" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f0f0;"> <button id="validateBtn" class="btn-success">Validar</button>
       </div>
       <div class="rounded-lg p-4 text-xs" style="background:rgba(34,197,94,0.1);">
-       <p style="color:#22c55e;font-weight:bold;margin-bottom:8px;">Premium Features Include:</p>
+       <p style="color:#22c55e;font-weight:bold;margin-bottom:8px;">Recursos Premium Incluem:</p>
        <ul style="color:#9aa0b0;list-style:none;padding:0;">
-        <li>✓ Advanced threat analytics</li>
-        <li>✓ Historical incident data</li>
-        <li>✓ Predictive AI models</li>
-        <li>✓ Custom alert rules</li>
+        <li>✓ Análise avançada de ameaças</li>
+        <li>✓ Dados históricos de incidentes</li>
+        <li>✓ Modelos de IA preditivos</li>
+        <li>✓ Regras de alerta personalizadas</li>
        </ul>
       </div>
      </div>
@@ -294,24 +332,37 @@
     <div id="findings" class="tab-content">
      <div class="space-y-4">
       <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Key Findings</h3>
-       <p class="text-xs" style="color:#9aa0b0;">Cyber extortion at record levels in Q1-Q3 2025. Retail sector saw 80% increase with ~300 victims. Double-extortion has become the dominant attack model across criminal groups.</p>
+       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Principais Descobertas</h3>
+       <p class="text-xs" style="color:#9aa0b0;">Extorsão cibernética em níveis recordes no Q1-Q3 2025. Setor de varejo viu aumento de 80% com ~300 vítimas. A extorsão dupla tornou-se o modelo de ataque dominante entre grupos criminosos.</p>
       </div>
       <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Law Enforcement</h3>
-       <p class="text-xs" style="color:#9aa0b0;">International efforts intensifying with multiple cybercriminal arrests and collaborations. Operation Endgame showed significant disruption of botnet infrastructure across 100+ countries.</p>
+       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Forças de Segurança</h3>
+       <p class="text-xs" style="color:#9aa0b0;">Esforços internacionais intensificando com múltiplas prisões de cibercriminosos e colaborações. A Operação Endgame mostrou disrupção significativa da infraestrutura de botnet em mais de 100 países.</p>
       </div>
       <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Quantum Threat</h3>
-       <p class="text-xs" style="color:#9aa0b0;">Quantum computing poses disruption to encryption. Migration to quantum-safe solutions critical. NIST standards finalized, adoption accelerating in critical infrastructure sectors.</p>
+       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Ameaça Quântica</h3>
+       <p class="text-xs" style="color:#9aa0b0;">A computação quântica representa disrupção para encriptação. A migração para soluções resistentes a quântica é crítica. Padrões NIST finalizados, adoção acelerada em setores críticos de infraestrutura.</p>
       </div>
       <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
-       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">AI-Powered Attacks</h3>
-       <p class="text-xs" style="color:#9aa0b0;">Emergence of AI-generated social engineering campaigns increasing click-through rates by 300%. Deep fakes used successfully in targeted spear-phishing operations against C-suite executives.</p>
+       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Ataques Baseados em IA</h3>
+       <p class="text-xs" style="color:#9aa0b0;">Emergência de campanhas de engenharia social geradas por IA aumentando taxa de cliques em 300%. Deepfakes usados com sucesso em operações de phishing direcionado contra executivos C-suite.</p>
       </div>
      </div>
     </div>
    </main>
+  </div><!-- PAYMENT MODAL -->
+  <div id="paymentModal" class="modal-overlay">
+   <div class="modal-content">
+    <div class="flex justify-between items-center mb-6">
+     <h2 class="text-lg font-bold" style="color:#ff6600;">Proceder ao Pagamento</h2><button onclick="closePaymentModal()" style="background:none;border:none;color:#7a8299;cursor:pointer;font-size:24px;">×</button>
+    </div>
+    <div class="rounded-lg p-4 mb-6" style="background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.2);">
+     <p class="text-sm" style="color:#f0f0f0;margin-bottom:8px;">Email para pagamento:</p>
+     <p class="text-sm font-bold" style="color:#ff6600;word-break:break-all;">visualstudioandsecurityoficial@gmail.com</p>
+    </div>
+    <div class="flex gap-2"><button onclick="copyEmailToClipboard()" class="btn-primary flex-1">📋 Copiar Email</button> <button onclick="closePaymentModal()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f0f0f0;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.2s;">Fechar</button>
+    </div>
+   </div>
   </div>
   <script>
     // ============ TAB SWITCHING ============
@@ -351,48 +402,48 @@
     // Update plan based on ticket validation
     function updateScanPlan(newPlan) {
       currentPlan = newPlan;
-      showNotification(`Scan plan updated to: ${newPlan.toUpperCase()}`, 'success');
+      showNotification(`Plano de análise atualizado para: ${newPlan.toUpperCase()}`, 'success');
     }
 
     async function startScan() {
       const url = document.getElementById('scanUrl').value.trim();
       if (!url) {
-        showNotification('Please enter a URL', 'error');
+        showNotification('Por favor, insira uma URL', 'error');
         return;
       }
 
       const btn = document.getElementById('scanBtn');
       btn.disabled = true;
-      btn.textContent = 'Scanning...';
+      btn.textContent = 'Analisando...';
 
       const resultsDiv = document.getElementById('scanResults');
       
       // Define scan modes by plan
       const scanModes = {
         free: [
-          { icon: 'database', text: 'Scanning reputation databases...', time: 800 },
-          { icon: 'globe', text: 'Checking threat intelligence...', time: 800 },
-          { icon: 'check-circle', text: 'Finalizing analysis...', time: 600 }
+          { icon: 'database', text: 'Analisando bases de dados de reputação...', time: 800 },
+          { icon: 'globe', text: 'Verificando inteligência de ameaças...', time: 800 },
+          { icon: 'check-circle', text: 'Finalizando análise...', time: 600 }
         ],
         medium: [
-          { icon: 'database', text: 'Scanning reputation databases...', time: 1000 },
-          { icon: 'globe', text: 'Checking global threat intelligence...', time: 1000 },
-          { icon: 'shield', text: 'Analyzing SSL/TLS certificate...', time: 1000 },
-          { icon: 'code', text: 'Inspecting page content & scripts...', time: 1000 },
-          { icon: 'wifi-alert', text: 'Detecting malware signatures...', time: 800 },
-          { icon: 'check-circle', text: 'Finalizing analysis...', time: 600 }
+          { icon: 'database', text: 'Analisando bases de dados de reputação...', time: 1000 },
+          { icon: 'globe', text: 'Verificando inteligência global de ameaças...', time: 1000 },
+          { icon: 'shield', text: 'Analisando certificado SSL/TLS...', time: 1000 },
+          { icon: 'code', text: 'Inspecionando conteúdo e scripts da página...', time: 1000 },
+          { icon: 'wifi-alert', text: 'Detectando assinaturas de malware...', time: 800 },
+          { icon: 'check-circle', text: 'Finalizando análise...', time: 600 }
         ],
         pro: [
-          { icon: 'database', text: 'Scanning reputation databases...', time: 1200 },
-          { icon: 'globe', text: 'Checking global threat intelligence...', time: 1200 },
-          { icon: 'shield', text: 'Analyzing SSL/TLS certificate...', time: 1000 },
-          { icon: 'code', text: 'Inspecting page content & scripts...', time: 1200 },
-          { icon: 'wifi-alert', text: 'Detecting malware signatures...', time: 1000 },
-          { icon: 'lock', text: 'Cross-referencing security lists...', time: 1100 },
-          { icon: 'zap', text: 'Running behavioral analysis...', time: 1100 },
-          { icon: 'cpu', text: 'Executing sandboxed environment...', time: 1300 },
-          { icon: 'eye', text: 'Analyzing suspicious patterns...', time: 1000 },
-          { icon: 'check-circle', text: 'Finalizing comprehensive analysis...', time: 800 }
+          { icon: 'database', text: 'Analisando bases de dados de reputação...', time: 1200 },
+          { icon: 'globe', text: 'Verificando inteligência global de ameaças...', time: 1200 },
+          { icon: 'shield', text: 'Analisando certificado SSL/TLS...', time: 1000 },
+          { icon: 'code', text: 'Inspecionando conteúdo e scripts da página...', time: 1200 },
+          { icon: 'wifi-alert', text: 'Detectando assinaturas de malware...', time: 1000 },
+          { icon: 'lock', text: 'Comparando com listas de segurança...', time: 1100 },
+          { icon: 'zap', text: 'Executando análise comportamental...', time: 1100 },
+          { icon: 'cpu', text: 'Executando ambiente isolado...', time: 1300 },
+          { icon: 'eye', text: 'Analisando padrões suspeitos...', time: 1000 },
+          { icon: 'check-circle', text: 'Finalizando análise abrangente...', time: 800 }
         ]
       };
 
@@ -499,7 +550,7 @@
       }
 
       btn.disabled = false;
-      btn.textContent = 'SCAN URL';
+      btn.textContent = 'ANALISAR URL';
       lucide.createIcons();
     }
 
@@ -512,13 +563,13 @@
     async function validateTicket() {
       const ticket = document.getElementById('ticketInput').value.trim();
       if (!ticket) {
-        showNotification('Please enter a ticket number', 'error');
+        showNotification('Por favor, insira um número de ticket', 'error');
         return;
       }
 
       const btn = document.getElementById('validateBtn');
       btn.disabled = true;
-      btn.textContent = 'Validating...';
+      btn.textContent = 'Validando...';
 
       await new Promise(r => setTimeout(r, 1000));
 
@@ -531,13 +582,13 @@
       }
 
       updateScanPlan(plan);
-      showNotification(`✅ ${plan.toUpperCase()} Plan Activated!`, 'success');
+      showNotification(`✅ Plano ${plan.toUpperCase()} Ativado!`, 'success');
       document.getElementById('ticketInput').value = '';
 
       if (window.dataSdk) {
         await window.dataSdk.create({
-          title: 'PREMIUM ACTIVATED',
-          description: `Plan: ${plan.toUpperCase()} - Ticket: ${ticket}`,
+          title: 'PREMIUM ATIVADO',
+          description: `Plano: ${plan.toUpperCase()} - Ticket: ${ticket}`,
           severity: 'info',
           status: 'active',
           createdAt: new Date().toISOString(),
@@ -549,7 +600,7 @@
       }
 
       btn.disabled = false;
-      btn.textContent = 'Validate';
+      btn.textContent = 'Validar';
     }
 
     // ============ NOTIFICATION HELPER ============
@@ -588,7 +639,7 @@
     // ============ BACKEND API HISTORY ============
     async function carregarHistorico() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/v1/history');
+        const response = await fetch('http://127.0.0.1:8001/api/v1/history');
         const dados = await response.json();
         
         const tabela = document.getElementById('tabela-historico');
@@ -597,7 +648,7 @@
         tabela.innerHTML = '';
 
         if (!dados || dados.length === 0) {
-          tabela.innerHTML = '<tr><td colspan="4" class="p-3 text-center" style="color:#7a8299;">No scan history available</td></tr>';
+          tabela.innerHTML = '<tr><td colspan="4" class="p-3 text-center" style="color:#7a8299;">Nenhum histórico de análise disponível</td></tr>';
           return;
         }
 
@@ -611,7 +662,7 @@
               <td class="p-3 text-sm font-bold" style="color:#ff6600;">${scan.phishing_score || 0}%</td>
               <td class="p-3">
                 <span class="px-2 py-1 rounded text-xs" style="background:rgba(${riskBg},0.2);color:${riskColor};">
-                  ${scan.malware_risk || 'Unknown'}
+                  ${scan.malware_risk || 'Desconhecido'}
                 </span>
               </td>
               <td class="p-3 text-slate-500 text-xs">${new Date(scan.created_at).toLocaleDateString('pt-PT')}</td>
@@ -621,7 +672,7 @@
       } catch (error) {
         const tabela = document.getElementById('tabela-historico');
         if (tabela) {
-          tabela.innerHTML = '<tr><td colspan="4" class="p-3 text-center" style="color:#7a8299;">Backend API not available</td></tr>';
+          tabela.innerHTML = '<tr><td colspan="4" class="p-3 text-center" style="color:#7a8299;">API Backend indisponível</td></tr>';
         }
         console.error("Erro ao conectar com o backend:", error);
       }
@@ -672,8 +723,673 @@
     initDataSDK();
     carregarHistorico();
     
+    // ============ MITIGATION PLAN MANAGEMENT ============
+    const mitigationSteps = [
+      {
+        id: 'block-cv',
+        title: 'Bloquear CVs de fontes não confiáveis',
+        description: 'Configure filtros de email e gateways para detectar e bloquear anexos CVs suspeitos',
+        icon: 'ban',
+        severity: 'critical',
+        guide: {
+          overview: 'Configure seu gateway de email e filtros para detectar CVs com VBScript ofuscado e bloquear automaticamente. Esta é a primeira linha de defesa contra FAUX#ELEVATE.',
+          timeEstimate: '2-4 horas',
+          tools: ['Microsoft Exchange', 'Proofpoint', 'Mimecast', 'ou seu gateway atual'],
+          steps: [
+            {
+              title: '1️⃣ Configurar Filtros de Extensão',
+              details: [
+                '• No seu gateway, crie regras para bloquear anexos .doc/.docx que contenham macros',
+                '• Configure detecção de scripts VBScript ofuscado usando padrões regex',
+                '• Teste com exemplos de malware sandboxed (não reais)',
+                '• Implemente quarentena automática com notificação ao administrador'
+              ]
+            },
+            {
+              title: '2️⃣ Implementar Análise de Conteúdo',
+              details: [
+                '• Ative análise profunda de conteúdo (DCP) no gateway',
+                '• Configure scanning de macros em documentos Office',
+                '• Integre com sandbox dinâmico para detonação de amostras suspeitas',
+                '• Defina políticas de ação: quarentena, bloqueio ou notificação'
+              ]
+            },
+            {
+              title: '3️⃣ Configurar Notificações',
+              details: [
+                '• Configure alertas em tempo real para CVs bloqueados suspeitos',
+                '• Implemente notificações por email para a equipe de segurança',
+                '• Crie dashboards para visualizar tentativas de ataque bloqueadas',
+                '• Registre todos os eventos para auditoria e análise posterior'
+              ]
+            },
+            {
+              title: '4️⃣ Testar e Validar',
+              details: [
+                '• Crie CV de teste com macro segura (não maliciosa)',
+                '• Valide que filtros funcionam corretamente',
+                '• Teste falsos positivos com CVs legítimos',
+                '• Implemente gradualmente para minimizar impacto nos usuários'
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'macro-isolation',
+        title: 'Ativar isolamento de macros no Office',
+        description: 'Desabilite execução de macros por padrão ou use Attack Surface Reduction',
+        icon: 'lock',
+        severity: 'critical',
+        guide: {
+          overview: 'Implemente isolação de macros em toda a organização através do Windows Defender Attack Surface Reduction (ASR) e políticas de grupo. Esto bloqueia a execução de macros maliciosas.',
+          timeEstimate: '1-2 horas',
+          tools: ['Group Policy Editor', 'Windows Defender', 'Microsoft 365 Defender', 'Intune'],
+          steps: [
+            {
+              title: '1️⃣ Configurar Política de Grupo (GPO)',
+              details: [
+                '• Abra "Group Policy Editor" (gpedit.msc) no domain controller',
+                '• Navegue para: User Configuration > Administrative Templates > Microsoft Office',
+                '• Defina "Disable macros from untrusted sources" como "Enabled"',
+                '• Implemente política em unidades organizacionais apropriadas'
+              ]
+            },
+            {
+              title: '2️⃣ Ativar Attack Surface Reduction (ASR) Rules',
+              details: [
+                '• No Intune ou GPO, ative a regra ASR para bloqueio de macros',
+                '• Use o GUID: d4f940ab-401b-4efc-aadc-ad5f3c50688a',
+                '• Configure modo: "Enabled" (bloquear) ou "Audit" (testar primeiro)',
+                '• Comece com auditoria, depois passe para bloqueio após validação'
+              ]
+            },
+            {
+              title: '3️⃣ Configurar Exceções (Se Necessário)',
+              details: [
+                '• Identifique aplicações legítimas que necessitam macros',
+                '• Crie lista de exceções por caminho de arquivo ou hash',
+                '• Configure trusted locations para documentos autorizados',
+                '• Documente todas as exceções e revise regularmente'
+              ]
+            },
+            {
+              title: '4️⃣ Monitorar e Auditar',
+              details: [
+                '• Monitore eventos bloqueados via Windows Event Viewer',
+                '• Crie alertas para tentativas de execução de macros bloqueadas',
+                '• Revise logs em Microsoft 365 Defender',
+                '• Treine usuários sobre avisos de macros desabilitadas'
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'edr-solution',
+        title: 'Implementar soluções EDR',
+        description: 'Deploy Endpoint Detection & Response tools para monitorar comportamento suspeito',
+        icon: 'radar',
+        severity: 'high',
+        guide: {
+          overview: 'Implemente uma solução EDR (Endpoint Detection & Response) como Microsoft Defender for Endpoint, CrowdStrike ou Sentinel One. Fornece visibilidade e detecção de ameaças avançadas.',
+          timeEstimate: '3-5 horas',
+          tools: ['Microsoft Defender for Endpoint', 'CrowdStrike Falcon', 'Sentinel One', 'Sophos EDR'],
+          steps: [
+            {
+              title: '1️⃣ Selecionar Solução EDR',
+              details: [
+                '• Avalie opções: Microsoft Defender (integrado com 365), CrowdStrike, Sentinel One',
+                '• Considere compatibilidade com infraestrutura existente',
+                '• Valide suporte para sistemas Windows, macOS e Linux',
+                '• Analise relatórios de custo-benefício e capacidades de detecção'
+              ]
+            },
+            {
+              title: '2️⃣ Implementar Piloto',
+              details: [
+                '• Selecione grupo piloto de 50-100 endpoints',
+                '• Implante agente EDR gradualmente',
+                '• Monitore performance do sistema e falsos positivos',
+                '• Colete feedback da equipe de TI e segurança'
+              ]
+            },
+            {
+              title: '3️⃣ Configurar Regras de Detecção',
+              details: [
+                '• Crie regras personalizadas para FAUX#ELEVATE indicators',
+                '• Configure detecção de comportamento suspeito (VBScript, ofuscação)',
+                '• Implemente correlação de eventos para detecção de cadeia de ataque',
+                '• Teste regras com amostras de sandbox (não reais)'
+              ]
+            },
+            {
+              title: '4️⃣ Rollout e Monitoramento',
+              details: [
+                '• Implante em todos os endpoints após validação piloto',
+                '• Configure alertas em tempo real para atividades suspeitas',
+                '• Integre com SIEM para correlação centralizada',
+                '• Estabeleça SLAs para resposta a alertas de EDR'
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'traffic-monitor',
+        title: 'Monitorar tráfego de saída da rede',
+        description: 'Configure DLP e monitore tentativas de exfiltração de dados',
+        icon: 'eye',
+        severity: 'high',
+        guide: {
+          overview: 'Implemente Data Loss Prevention (DLP) e monitore tráfego de saída para detectar e bloquear tentativas de exfiltração de dados por FAUX#ELEVATE.',
+          timeEstimate: '2-3 horas',
+          tools: ['Microsoft Information Protection', 'Forcepoint DLP', 'Symantec DLP', 'Firewall com DLP'],
+          steps: [
+            {
+              title: '1️⃣ Criar Inventário de Dados Sensíveis',
+              details: [
+                '• Identifique dados críticos: PII, segredos comerciais, credenciais',
+                '• Crie padrões de dados sensíveis (números de conta, SSN, etc)',
+                '• Use classificação de dados automática ou manual',
+                '• Documente políticas de proteção por tipo de dado'
+              ]
+            },
+            {
+              title: '2️⃣ Implementar Políticas DLP',
+              details: [
+                '• Configure regras para detectar transferência de dados sensíveis',
+                '• Monitore canais de saída: email, uploads em nuvem, USB',
+                '• Crie regras específicas para credenciais e arquivos confidenciais',
+                '• Defina ações: notificação, quarentena, bloqueio'
+              ]
+            },
+            {
+              title: '3️⃣ Monitorar Tráfego de Rede',
+              details: [
+                '• Implemente filtragem de tráfego HTTP/HTTPS saindo da rede',
+                '• Configure análise de DNS para detectar C2 conhecido',
+                '• Integre com firewall e proxy para bloqueio de conexões suspeitas',
+                '• Configure alertas para conexões anômalas ou transferências grandes'
+              ]
+            },
+            {
+              title: '4️⃣ Auditoria e Resposta',
+              details: [
+                '• Revise alertas DLP diariamente ou em tempo real',
+                '• Investi gue tentativas de exfiltração bloqueadas',
+                '• Implemente playbooks de resposta automática',
+                '• Mantenha logs para investigação forense e auditoria'
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'threat-intel',
+        title: 'Atualizar inteligência de ameaças',
+        description: 'Integre feeds de threat intel para detecção de IoCs conhecidos',
+        icon: 'database',
+        severity: 'medium',
+        guide: {
+          overview: 'Integre feeds de inteligência de ameaças atualizados para detectar IoCs (Indicators of Compromise) conhecidos e atualizados associados a FAUX#ELEVATE.',
+          timeEstimate: '1-2 horas',
+          tools: ['MISP', 'Threat Stream', 'AlienVault OTX', 'Microsoft Threat Intelligence'],
+          steps: [
+            {
+              title: '1️⃣ Selecionar Feeds de Threat Intel',
+              details: [
+                '• Use feeds públicos: AlienVault OTX, Abuse.ch, VirusShare',
+                '• Subscribe a feeds comerciais: CrowdStrike, Mandiant, Recorded Future',
+                '• Considere feeds específicos de malware Office e VBScript',
+                '• Priorize feeds com indicadores FAUX#ELEVATE'
+              ]
+            },
+            {
+              title: '2️⃣ Integrar com Ferramentas',
+              details: [
+                '• Configure sincronização automática de IoCs com firewall/proxy',
+                '• Integre com SIEM para correlação centralizada',
+                '• Implemente em EDR para detecção em endpoints',
+                '• Atualize listas de bloqueio a cada 1-4 horas'
+              ]
+            },
+            {
+              title: '3️⃣ Criar Playbooks de Resposta',
+              details: [
+                '• Defina ações automáticas quando IoC é detectado',
+                '• Configure isolamento de endpoint em caso de hit confirmado',
+                '• Implemente notificações imediatas para equipe de resposta',
+                '• Prepare testes regulares com IoCs conhecidos de FAUX#ELEVATE'
+              ]
+            },
+            {
+              title: '4️⃣ Monitoramento Contínuo',
+              details: [
+                '• Revise efetividade dos feeds de threat intel',
+                '• Atualize playbooks baseado em novos indicadores',
+                '• Participe em comunidades de compartilhamento de ameaças',
+                '• Reporte novos IoCs detectados para feeds públicos'
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'training',
+        title: 'Treinar equipe de segurança',
+        description: 'Realize treinamento em identificação e resposta a ameaças FAUX#ELEVATE',
+        icon: 'book',
+        severity: 'medium',
+        guide: {
+          overview: 'Implemente programa de treinamento para equipe de segurança sobre identificação, análise e resposta a ameaças FAUX#ELEVATE e técnicas similares de extorsão dupla.',
+          timeEstimate: '2-3 horas',
+          tools: ['LMS (Learning Management System)', 'Webinars', 'Workshops práticos'],
+          steps: [
+            {
+              title: '1️⃣ Criar Materiais de Treinamento',
+              details: [
+                '• Desenvolva apresentações sobre FAUX#ELEVATE: características, IOCs, cadeia de ataque',
+                '• Crie exemplos reais de CVs maliciosos (sandboxed)',
+                '• Documente assinaturas de detecção e comportamentos suspeitos',
+                '• Prepare guias passo-a-passo de resposta a incidentes'
+              ]
+            },
+            {
+              title: '2️⃣ Realizar Workshops Práticos',
+              details: [
+                '• Conduza workshops hands-on de análise de malware',
+                '• Simule incidentes FAUX#ELEVATE em ambiente seguro',
+                '• Treine uso de ferramentas: Wireshark, procmon, VirusTotal',
+                '• Pratique comunicação com outras equipes durante incidente'
+              ]
+            },
+            {
+              title: '3️⃣ Avaliar Competências',
+              details: [
+                '• Crie quizzes e testes práticos de identificação',
+                '• Valide compreensão de técnicas de ofuscação de VBScript',
+                '• Teste capacidade de distinguir entre legítimo e malicioso',
+                '• Identifique gaps de conhecimento e treine conforme necessário'
+              ]
+            },
+            {
+              title: '4️⃣ Manter Conhecimento Atualizado',
+              details: [
+                '• Organize atualizações trimestrais sobre novas variantes',
+                '• Compartilhe IoCs e indicadores em reuniões regulares',
+                '• Implemente alerts de threat intel recebidos',
+                '• Envolva equipe em análise de incidentes reais'
+              ]
+            }
+          ]
+        }
+      }
+    ];
+
+    let currentStepGuide = null;
+
+    function initMitigationPlan() {
+      const container = document.getElementById('mitigationSteps');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      mitigationSteps.forEach((step, index) => {
+        const isCompleted = localStorage.getItem(`mitigation_${step.id}`) === 'true';
+        
+        const severityColor = step.severity === 'critical' ? '#ff4d4d' : (step.severity === 'high' ? '#ff9500' : '#22c55e');
+        const severityBg = step.severity === 'critical' ? '255,77,77' : (step.severity === 'high' ? '255,149,0' : '34,197,94');
+        
+        const stepEl = document.createElement('div');
+        stepEl.className = 'step-item fade-in';
+        stepEl.style.cssText = `
+          background:rgba(255,255,255,0.03);
+          border:1px solid rgba(255,255,255,0.06);
+          border-radius:8px;
+          padding:16px;
+          cursor:pointer;
+          transition:all 0.3s ease;
+          animation-delay:${index * 50}ms;
+        `;
+        
+        if (isCompleted) {
+          stepEl.style.background = 'rgba(34,197,94,0.08)';
+          stepEl.style.borderColor = 'rgba(34,197,94,0.3)';
+        }
+
+        stepEl.innerHTML = `
+          <div class="flex gap-3 items-start">
+            <div style="width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:${isCompleted ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.05)'};border-radius:6px;border:1px solid ${isCompleted ? 'rgba(34,197,94,0.4)' : 'rgba(255,255,255,0.1)'};transition:all 0.3s;">
+              ${isCompleted 
+                ? '<i data-lucide="check-circle" style="width:14px;height:14px;color:#22c55e;"></i>'
+                : '<i data-lucide="${step.icon}" style="width:14px;height:14px;color:#7a8299;"></i>'
+              }
+            </div>
+            <div style="flex:1;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px;">
+                <h4 class="text-sm font-semibold" style="color:${isCompleted ? '#22c55e' : '#f0f0f0'};flex:1;${isCompleted ? 'text-decoration:line-through;color:#7a8299;' : ''}">${step.title}</h4>
+                <span class="text-xs px-2 py-1 rounded" style="background:rgba(${severityBg},0.2);color:${severityColor};flex-shrink:0;font-weight:bold;">${step.severity.toUpperCase()}</span>
+              </div>
+              <p class="text-xs" style="color:#7a8299;margin:8px 0;">${step.description}</p>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <span class="text-xs" style="color:#7a8299;">${isCompleted ? '✅ Completo' : '⏳ Pendente'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        stepEl.addEventListener('click', () => {
+          currentStepGuide = step;
+          showGuidance(step);
+        });
+
+        container.appendChild(stepEl);
+      });
+
+      lucide.createIcons();
+    }
+
+    function updateMitigationProgress() {
+      const completed = mitigationSteps.filter(step => 
+        localStorage.getItem(`mitigation_${step.id}`) === 'true'
+      ).length;
+      
+      const percentage = Math.round((completed / mitigationSteps.length) * 100);
+      
+      const progressBar = document.getElementById('progressBar');
+      const progressPercent = document.getElementById('progressPercent');
+      
+      if (progressBar) {
+        progressBar.style.width = percentage + '%';
+      }
+      if (progressPercent) {
+        progressPercent.textContent = percentage + '%';
+      }
+
+      // Log to Data SDK when progress changes
+      if (window.dataSdk && percentage > 0 && percentage % 17 === 0) {
+        window.dataSdk.create({
+          title: 'MITIGATION PROGRESS',
+          description: `Plano de mitigação: ${percentage}% completo`,
+          severity: 'info',
+          status: 'in_progress',
+          createdAt: new Date().toISOString(),
+          scan_type: 'mitigation',
+          plan_used: 'mitigation',
+          scan_url: 'mitigation',
+          scan_result: JSON.stringify({ progress: percentage, completedSteps: completed, totalSteps: mitigationSteps.length })
+        });
+      }
+    }
+
+    function resetMitigation() {
+      mitigationSteps.forEach(step => {
+        localStorage.removeItem(`mitigation_${step.id}`);
+      });
+      updateMitigationProgress();
+      initMitigationPlan();
+    }
+
+    // ============ GUIDANCE MODAL FUNCTIONS ============
+    function showGuidance(step) {
+      currentStepGuide = step;
+      const modal = document.getElementById('guidanceModal');
+      const title = document.getElementById('guideTitle');
+      const content = document.getElementById('guideContent');
+
+      title.textContent = step.title;
+
+      let html = `
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-bottom:12px;">
+          <p style="color:#ff6600;font-size:12px;font-weight:bold;margin-bottom:4px;">📋 VISÃO GERAL</p>
+          <p style="color:#d0d5e0;font-size:13px;line-height:1.5;">${step.guide.overview}</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-bottom:12px;">
+          <p style="color:#ff6600;font-size:12px;font-weight:bold;margin-bottom:4px;">⏱️ TEMPO ESTIMADO</p>
+          <p style="color:#d0d5e0;font-size:13px;">${step.guide.timeEstimate}</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-bottom:12px;">
+          <p style="color:#ff6600;font-size:12px;font-weight:bold;margin-bottom:4px;">🛠️ FERRAMENTAS NECESSÁRIAS</p>
+          <p style="color:#d0d5e0;font-size:13px;">${step.guide.tools.join(', ')}</p>
+        </div>
+      `;
+
+      // Add steps
+      step.guide.steps.forEach((stepDetail, idx) => {
+        html += `
+          <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-bottom:12px;">
+            <p style="color:#ff6600;font-size:13px;font-weight:bold;margin-bottom:8px;">${stepDetail.title}</p>
+            <div style="color:#d0d5e0;font-size:12px;line-height:1.6;">
+              ${stepDetail.details.map(d => `<p style="margin:4px 0;">${d}</p>`).join('')}
+            </div>
+          </div>
+        `;
+      });
+
+      content.innerHTML = html;
+      modal.classList.add('active');
+      lucide.createIcons();
+    }
+
+    function closeGuidance() {
+      const modal = document.getElementById('guidanceModal');
+      modal.classList.remove('active');
+    }
+
+    function completeStep() {
+      if (!currentStepGuide) return;
+      
+      localStorage.setItem(`mitigation_${currentStepGuide.id}`, 'true');
+      updateMitigationProgress();
+      initMitigationPlan();
+      closeGuidance();
+      showNotification(`✅ Etapa "${currentStepGuide.title}" marcada como completa!`, 'success');
+    }
+
+    // Initialize mitigation plan on page load
+    setTimeout(() => {
+      initMitigationPlan();
+      updateMitigationProgress();
+    }, 100);
+    let threatChartInstance = null;
+    function initThreatChart() {
+      const ctx = document.getElementById('threatChart');
+      if (!ctx) return;
+      
+      if (threatChartInstance) {
+        threatChartInstance.destroy();
+      }
+      
+      threatChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
+          datasets: [{
+            label: 'Ameaças Detectadas',
+            data: [142, 189, 156, 203, 178, 145, 167],
+            borderColor: '#ff6600',
+            backgroundColor: 'rgba(255, 102, 0, 0.08)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#ff6600',
+            pointBorderColor: '#0a0e1a',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7
+          }, {
+            label: 'Ameaças Críticas',
+            data: [23, 45, 34, 56, 42, 28, 31],
+            borderColor: '#ff4d4d',
+            backgroundColor: 'rgba(255, 77, 77, 0.05)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#ff4d4d',
+            pointBorderColor: '#0a0e1a',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              labels: {
+                color: '#7a8299',
+                font: { size: 12 },
+                usePointStyle: true,
+                padding: 15
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#7a8299', font: { size: 11 } }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#7a8299', font: { size: 11 } }
+            }
+          }
+        }
+      });
+    }
+    
+    setTimeout(initThreatChart, 500);
+    
+    // ============ THREAT EVOLUTION CHART INITIALIZATION ============
+    let threatEvolutionChartInstance = null;
+    function initThreatEvolutionChart() {
+      const ctx = document.getElementById('threatEvolutionChart');
+      if (!ctx) return;
+      
+      if (threatEvolutionChartInstance) {
+        threatEvolutionChartInstance.destroy();
+      }
+      
+      threatEvolutionChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['0-6h', '6-12h', '12-24h', '1-3d', '3-7d', '>7d'],
+          datasets: [{
+            label: 'FAUX#ELEVATE Detecções',
+            data: [12, 28, 45, 67, 89, 102],
+            backgroundColor: ['rgba(255, 102, 0, 0.2)', 'rgba(255, 102, 0, 0.3)', 'rgba(255, 102, 0, 0.4)', 'rgba(255, 102, 0, 0.5)', 'rgba(255, 102, 0, 0.6)', 'rgba(255, 102, 0, 0.8)'],
+            borderColor: '#ff6600',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#7a8299', font: { size: 11 } }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: '#7a8299', font: { size: 11 } }
+            }
+          }
+        }
+      });
+    }
+    
+    setTimeout(() => {
+      initThreatEvolutionChart();
+    }, 800);
+    
     // Recarregar histórico a cada 5 segundos
     setInterval(carregarHistorico, 5000);
+
+    // ============ PAYMENT MODAL FUNCTIONS ============
+    function openPaymentModal() {
+      const modal = document.getElementById('paymentModal');
+      modal.classList.add('active');
+    }
+
+    function closePaymentModal() {
+      const modal = document.getElementById('paymentModal');
+      modal.classList.remove('active');
+    }
+
+    function copyEmailToClipboard() {
+      const email = 'visualstudioandsecurityoficial@gmail.com';
+      
+      // Tentar usando Clipboard API
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(() => {
+          showNotification('✅ Email copiado com sucesso!', 'success');
+          closePaymentModal();
+        }).catch(() => {
+          // Fallback: método alternativo
+          copyEmailFallback(email);
+        });
+      } else {
+        // Fallback para browsers antigos
+        copyEmailFallback(email);
+      }
+    }
+
+    function copyEmailFallback(email) {
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = email;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showNotification('✅ Email copiado com sucesso!', 'success');
+        closePaymentModal();
+      } catch (err) {
+        showNotification('Erro ao copiar. Copie manualmente.', 'error');
+      }
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('paymentModal').addEventListener('click', (e) => {
+      if (e.target.id === 'paymentModal') {
+        closePaymentModal();
+      }
+    });
+
+    // ============ AD BANNER FUNCTIONS ============
+    function closeAdBanner() {
+      const banner = document.getElementById('adBanner');
+      banner.style.opacity = '0';
+      banner.style.transition = 'opacity 0.3s ease';
+      setTimeout(() => {
+        banner.style.display = 'none';
+      }, 300);
+    }
+
+    function closeAdCard(btn) {
+      const card = btn.closest('[style*="rgba(255,102,0"]') || btn.closest('[style*="rgba(34,197,94"]') || btn.closest('[style*="rgba(100,200,255"]');
+      if (card) {
+        card.style.opacity = '0';
+        card.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => {
+          card.style.display = 'none';
+        }, 300);
+      }
+    }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e3264f112f9623c',t:'MTc3NDY1NjQ0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e33361bb0a43522',t:'MTc3NDY2NTAxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
