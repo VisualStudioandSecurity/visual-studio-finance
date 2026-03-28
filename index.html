@@ -20,7 +20,9 @@
     .tab-btn { cursor: pointer; transition: all 0.2s; border-bottom: 2px solid transparent; padding-bottom: 12px; }
     .tab-btn.active { border-bottom-color: #ff6600; color: #ff6600; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulseGreen { 0%, 100% { box-shadow: 0 0 10px rgba(34,197,94,0.4); } 50% { box-shadow: 0 0 20px rgba(34,197,94,0.8); } }
     .fade-in { animation: fadeIn 0.5s ease; }
+    .pulse-pro { animation: pulseGreen 2s infinite; }
     .btn-primary { background: #ff6600; color: #000; border: none; cursor: pointer; padding: 12px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: all 0.2s; }
     .btn-primary:hover { background: #ff8533; }
     .btn-primary:active { background: #e55a00; }
@@ -33,30 +35,25 @@
   <style>body { box-sizing: border-box; }</style>
  </head>
  <body class="h-full">
-  <div id="app" class="w-full h-full overflow-auto flex flex-col" style="background:#0a0e1a;">
-   <!-- HEADER -->
+  <div id="app" class="w-full h-full overflow-auto flex flex-col" style="background:#0a0e1a;"><!-- HEADER -->
    <header class="fade-in px-6 pt-6 pb-4 border-b" style="border-color: rgba(255,255,255,0.06);">
     <div class="flex items-center justify-between flex-wrap gap-3">
      <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#1a5c3a,#2a7a4a);">
-       <i data-lucide="eye" style="width:20px;height:20px;color:#fff;"></i>
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#1a5c3a,#2a7a4a);"><i data-lucide="eye" style="width:20px;height:20px;color:#fff;"></i>
       </div>
       <div>
        <h1 id="mainTitle" class="text-lg font-bold" style="color:#ff6600;">ENCRYPTED SECURITY</h1>
        <p id="subtitle" class="text-xs" style="color:#7a8299;">Orange Cyberdefense</p>
       </div>
      </div>
-     <div class="flex gap-2">
-      <span class="text-xs px-3 py-1 rounded-full" style="background:rgba(26,92,58,0.2);color:#2a7a4a;">2026 © Direitos Reservados</span> <span class="text-xs px-3 py-1 rounded-full" style="background:rgba(255,255,255,0.05);color:#7a8299;">160 Países</span>
+     <div class="flex gap-2"><span class="text-xs px-3 py-1 rounded-full" style="background:rgba(26,92,58,0.2);color:#2a7a4a;">2026 © Direitos Reservados</span> <span class="text-xs px-3 py-1 rounded-full" style="background:rgba(255,255,255,0.05);color:#7a8299;">160 Países</span>
      </div>
     </div>
    </header><!-- NAVIGATION TABS -->
-   <nav class="px-6 pt-4 flex gap-8 overflow-x-auto" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-    <button class="tab-btn active" onclick="switchTab('overview', this)" style="color:#ff6600;">Visão Geral</button> <button class="tab-btn" onclick="switchTab('threat', this)" style="color:#7a8299;">Alerta de Ameaça</button> <button class="tab-btn" onclick="switchTab('cyx', this)" style="color:#7a8299;">Tendências Cy-X</button> <button class="tab-btn" onclick="switchTab('scanner', this)" style="color:#7a8299;">Scanner de URL</button> <button class="tab-btn" onclick="switchTab('claim', this)" style="color:#7a8299;">Premium</button> <button class="tab-btn" onclick="switchTab('findings', this)" style="color:#7a8299;">Descobertas</button>
+   <nav class="px-6 pt-4 flex gap-8 overflow-x-auto" style="border-bottom: 1px solid rgba(255,255,255,0.06);"><button class="tab-btn active" onclick="switchTab('overview', this)" style="color:#ff6600;">Visão Geral</button> <button class="tab-btn" onclick="switchTab('threat', this)" style="color:#7a8299;">Alerta de Ameaça</button> <button class="tab-btn" onclick="switchTab('cyx', this)" style="color:#7a8299;">Tendências Cy-X</button> <button class="tab-btn" onclick="switchTab('scanner', this)" style="color:#7a8299;">Scanner de URL</button> <button class="tab-btn" onclick="switchTab('claim', this)" style="color:#7a8299;">Premium</button> <button class="tab-btn" onclick="switchTab('findings', this)" style="color:#7a8299;">Descobertas</button>
    </nav><!-- CONTENT AREA -->
-   <main class="flex-1 px-6 py-5 overflow-y-auto">
-    <!-- TAB: OVERVIEW -->
-    <div id="overview" class="tab-content active">
+   <main class="flex-1 px-6 py-5 overflow-y-auto"><!-- TAB: OVERVIEW (HIDDEN) -->
+    <div id="overview" class="tab-content active" style="display:none;">
      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
       <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
        <p class="text-xs mb-1" style="color:#7a8299;">Incidentes Potenciais</p>
@@ -135,8 +132,7 @@
     <div id="threat" class="tab-content">
      <div class="rounded-xl p-6 mb-6" style="background:rgba(26,92,58,0.12);border:1px solid rgba(42,122,74,0.4);">
       <div class="flex items-start gap-4">
-       <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 threat-pulse" style="background:rgba(42,122,74,0.2);">
-        <i data-lucide="alert-circle" style="width:24px;height:24px;color:#2a7a4a;"></i>
+       <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 threat-pulse" style="background:rgba(42,122,74,0.2);"><i data-lucide="alert-circle" style="width:24px;height:24px;color:#2a7a4a;"></i>
        </div>
        <div>
         <h2 class="text-lg font-bold mb-1" style="color:#2a7a4a;">AMEAÇA CRÍTICA DETECTADA</h2>
@@ -149,17 +145,13 @@
       <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
        <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Propriedades da Ameaça</h3>
        <div class="space-y-2 text-xs">
-        <div class="flex justify-between">
-         <span style="color:#7a8299;">Descoberto:</span><span style="color:#f0f0f0;">2025-11-15</span>
+        <div class="flex justify-between"><span style="color:#7a8299;">Descoberto:</span><span style="color:#f0f0f0;">2025-11-15</span>
         </div>
-        <div class="flex justify-between">
-         <span style="color:#7a8299;">Severidade:</span><span style="color:#ff4d4d;">CRÍTICA</span>
+        <div class="flex justify-between"><span style="color:#7a8299;">Severidade:</span><span style="color:#ff4d4d;">CRÍTICA</span>
         </div>
-        <div class="flex justify-between">
-         <span style="color:#7a8299;">Tipo:</span><span style="color:#f0f0f0;">APT / Trojan</span>
+        <div class="flex justify-between"><span style="color:#7a8299;">Tipo:</span><span style="color:#f0f0f0;">APT / Trojan</span>
         </div>
-        <div class="flex justify-between">
-         <span style="color:#7a8299;">Setores Alvo:</span><span style="color:#f0f0f0;">Finanças, Tecnologia, Governo</span>
+        <div class="flex justify-between"><span style="color:#7a8299;">Setores Alvo:</span><span style="color:#f0f0f0;">Finanças, Tecnologia, Governo</span>
         </div>
        </div>
       </div>
@@ -170,13 +162,11 @@
        </div>
       </div>
       <div class="rounded-xl p-6" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.4);">
-       <div class="flex items-center gap-2 mb-4">
-        <i data-lucide="shield-check" style="width:24px;height:24px;color:#22c55e;"></i>
+       <div class="flex items-center gap-2 mb-4"><i data-lucide="shield-check" style="width:24px;height:24px;color:#22c55e;"></i>
         <h3 class="text-lg font-semibold" style="color:#22c55e;">PLANO DE MITIGAÇÃO</h3>
        </div>
        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-bottom:16px;">
-        <div class="flex justify-between items-center text-xs mb-2">
-         <span style="color:#7a8299;">Progresso:</span> <span id="progressPercent" style="color:#22c55e;font-weight:bold;">0%</span>
+        <div class="flex justify-between items-center text-xs mb-2"><span style="color:#7a8299;">Progresso:</span> <span id="progressPercent" style="color:#22c55e;font-weight:bold;">0%</span>
         </div>
         <div style="background:rgba(255,255,255,0.05);border-radius:4px;height:6px;overflow:hidden;">
          <div id="progressBar" style="background:linear-gradient(90deg,#22c55e,#4ade80);height:100%;width:0%;transition:width 0.3s ease;border-radius:4px;"></div>
@@ -199,23 +189,17 @@
       <h2 class="text-sm font-semibold mb-1" style="color:#f0f0f0;">Extorsão Cibernética ao Longo do Tempo</h2>
       <p class="text-xs mb-5" style="color:#7a8299;">Vítimas de sites de vazamento de extorsão dupla (2020–2025)</p>
       <div class="space-y-2">
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2020:</span><span style="color:#ff6600;">1.497 vítimas</span>
+       <div class="flex justify-between text-xs"><span style="color:#7a8299;">2020:</span><span style="color:#ff6600;">1.497 vítimas</span>
        </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2021:</span><span style="color:#ff6600;">2,268 victims (+51%)</span>
+       <div class="flex justify-between text-xs"><span style="color:#7a8299;">2021:</span><span style="color:#ff6600;">2,268 victims (+51%)</span>
        </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2022:</span><span style="color:#ff6600;">2,169 victims (-4%)</span>
+       <div class="flex justify-between text-xs"><span style="color:#7a8299;">2022:</span><span style="color:#ff6600;">2,169 victims (-4%)</span>
        </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2023:</span><span style="color:#ff6600;">4,092 victims (+89%)</span>
+       <div class="flex justify-between text-xs"><span style="color:#7a8299;">2023:</span><span style="color:#ff6600;">4,092 victims (+89%)</span>
        </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2024:</span><span style="color:#ff6600;">4,478 victims (+9%)</span>
+       <div class="flex justify-between text-xs"><span style="color:#7a8299;">2024:</span><span style="color:#ff6600;">4,478 victims (+9%)</span>
        </div>
-       <div class="flex justify-between text-xs">
-        <span style="color:#7a8299;">2025 Q1-Q3:</span><span style="color:#ff6600;">4,685 victims (+5%)</span>
+       <div class="flex justify-between text-xs"><span style="color:#7a8299;">2025 Q1-Q3:</span><span style="color:#ff6600;">4,685 victims (+5%)</span>
        </div>
       </div>
      </div>
@@ -289,7 +273,7 @@
         </div>
         <h3 class="text-sm font-bold mb-1" style="color:#ff6600;">PRO</h3>
         <p class="text-xs mb-4" style="color:#7a8299;">Inteligência avançada de ameaças</p>
-        <p class="text-2xl font-bold mb-4" style="color:#ff6600;">R$ 1,00<span style="font-size:12px;color:#7a8299;"> | $0,50 USD</span></p>
+        <p class="text-2xl font-bold mb-4" style="color:#ff6600;">R$ 69,99<span style="font-size:12px;color:#7a8299;"> | $34,99 USD</span></p>
         <ul style="color:#9aa0b0;list-style:none;padding:0;margin-bottom:12px;" class="text-xs space-y-2">
          <li>✓ Análise avançada</li>
          <li>✓ Dados históricos</li>
@@ -316,8 +300,7 @@
      <div class="rounded-xl p-6" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.4);">
       <h2 class="text-lg font-bold mb-2" style="color:#22c55e;">Ativar Premium</h2>
       <p class="text-sm mb-4" style="color:#d0d5e0;">Insira seu número de ticket para desbloquear recursos avançados de inteligência de ameaças</p>
-      <div class="flex gap-3 mb-4">
-       <input type="text" id="ticketInput" placeholder="Ex: 4K8M2N7X9P1Q5R3T" class="flex-1 px-4 py-2 rounded-lg text-sm" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f0f0;"> <button id="validateBtn" class="btn-success">Validar</button>
+      <div class="flex gap-3 mb-4"><input type="text" id="ticketInput" placeholder="Ex: 4K8M2N7X9P1Q5R3T" class="flex-1 px-4 py-2 rounded-lg text-sm" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f0f0;"> <button id="validateBtn" class="btn-success">Validar</button>
       </div>
       <div class="rounded-lg p-4 text-xs" style="background:rgba(34,197,94,0.1);">
        <p style="color:#22c55e;font-weight:bold;margin-bottom:8px;">Recursos Premium Incluem:</p>
@@ -353,8 +336,7 @@
    </main>
   </div><!-- PAYMENT MODAL -->
   <div id="paymentModal" class="modal-overlay">
-   <div class="modal-content">
-    <!-- STEP 1: COPY EMAIL -->
+   <div class="modal-content"><!-- STEP 1: COPY EMAIL -->
     <div id="paymentStep1">
      <div class="flex justify-between items-center mb-6">
       <h2 class="text-lg font-bold" style="color:#ff6600;">Proceder ao Pagamento</h2><button onclick="closePaymentModal()" style="background:none;border:none;color:#7a8299;cursor:pointer;font-size:24px;">×</button>
@@ -363,7 +345,8 @@
       <p class="text-sm" style="color:#f0f0f0;margin-bottom:8px;">Email para pagamento:</p>
       <p class="text-sm font-bold" style="color:#ff6600;word-break:break-all;">visualstudioandsecurityoficial@gmail.com</p>
      </div>
-     <div class="flex gap-2"><button onclick="copyEmailToClipboard()" class="btn-primary flex-1">📋 Copiar Email</button> <button onclick="closePaymentModal()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f0f0f0;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.2s;">Fechar</button>
+     <div class="flex gap-2">
+      <button onclick="copyEmailToClipboard()" class="btn-primary flex-1">📋 Copiar Email</button> <button onclick="closePaymentModal()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f0f0f0;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.2s;">Fechar</button>
      </div>
     </div><!-- STEP 2: UPLOAD PROOF -->
     <div id="paymentStep2" style="display:none;">
@@ -371,26 +354,19 @@
       <h2 class="text-lg font-bold" style="color:#ff6600;">Enviar Comprovante de Pagamento</h2><button onclick="backToPayment()" style="background:none;border:none;color:#7a8299;cursor:pointer;font-size:24px;">×</button>
      </div>
      <p class="text-sm mb-4" style="color:#d0d5e0;">Após concluir o pagamento, envie o comprovante abaixo:</p>
-     <div id="uploadArea" style="border:2px dashed rgba(255,102,0,0.4);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.3s;background:rgba(255,102,0,0.02);">
-      <i data-lucide="upload-cloud" style="width:32px;height:32px;color:#ff6600;margin-bottom:8px;margin-left:auto;margin-right:auto;display:block;"></i>
+     <div id="uploadArea" style="border:2px dashed rgba(255,102,0,0.4);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.3s;background:rgba(255,102,0,0.02);"><i data-lucide="upload-cloud" style="width:32px;height:32px;color:#ff6600;margin-bottom:8px;margin-left:auto;margin-right:auto;display:block;"></i>
       <p class="text-sm" style="color:#f0f0f0;margin-bottom:4px;">Arraste o arquivo aqui ou clique para selecionar</p>
       <p class="text-xs" style="color:#7a8299;">Suporte: JPG, PNG, PDF (máx 10MB)</p><input type="file" id="proofUpload" style="display:none;" accept=".jpg,.jpeg,.png,.pdf">
      </div>
      <div id="fileName" style="display:none;margin-top:12px;padding:12px;background:rgba(34,197,94,0.08);border-radius:8px;color:#22c55e;font-size:12px;font-weight:bold;text-align:center;"></div><button id="submitProofBtn" style="display:none;width:100%;margin-top:12px;background:#ff6600;color:#000;border:none;cursor:pointer;padding:12px 16px;border-radius:8px;font-weight:600;font-size:14px;transition:all 0.2s;" onclick="submitProof()">✅ Enviar Comprovante</button> <button onclick="backToPayment()" style="width:100%;margin-top:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f0f0f0;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.2s;">Voltar</button>
-    </div><!-- STEP 3: TIMER & RELEASE -->
+    </div><!-- STEP 3: TIMER & RELEASE --> <!-- STEP 3: VALIDATION ONLY -->
     <div id="paymentStep3" style="display:none;">
      <div class="text-center">
-      <h2 class="text-lg font-bold mb-2" style="color:#ff6600;">Liberando Assinatura PRO</h2>
-      <p id="activationStatus" class="text-sm mb-8" style="color:#7a8299;">⏳ Validando comprovante...</p>
-      <div style="position:relative;width:120px;height:120px;margin:0 auto 24px;">
-       <svg style="width:100%;height:100%;transform:rotate(-90deg);">
-        <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"></circle> <circle id="timerCircle" cx="60" cy="60" r="54" fill="none" stroke="#ff6600" stroke-width="8" style="stroke-dasharray:339.3;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear;stroke-linecap:round;"></circle>
-       </svg>
-       <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
-        <p id="timerText" style="font-size:32px;font-weight:bold;color:#ff6600;margin:0;">10:00</p>
-        <p style="font-size:10px;color:#7a8299;margin:4px 0 0 0;">minutos</p>
-       </div>
-      </div><button onclick="backToPayment()" style="width:100%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f0f0f0;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.2s;">Voltar</button>
+      <h2 class="text-lg font-bold mb-6" style="color:#ff6600;">Processando Aprovação</h2>
+      <div style="space-y:4;">
+       <div id="validationContainer" class="space-y-3"></div>
+      </div>
+      <p id="activationStatus" class="text-sm mt-8" style="color:#7a8299;">⏳ Analisando comprovante...</p><button onclick="backToPayment()" style="width:100%;margin-top:16px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f0f0f0;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.2s;">Voltar</button>
      </div>
     </div>
    </div>
@@ -398,24 +374,20 @@
   <script>
     // ============ TAB SWITCHING ============
     function switchTab(tabName, btnElement) {
-      // Hide all tabs
       document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
       });
       
-      // Show selected tab
       const selectedTab = document.getElementById(tabName);
       if (selectedTab) {
         selectedTab.classList.add('active');
       }
 
-      // Update button styles
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
         btn.style.color = '#7a8299';
       });
       
-      // Mark active button
       btnElement.classList.add('active');
       btnElement.style.color = '#ff6600';
 
@@ -430,7 +402,6 @@
       scanBtn.addEventListener('click', startScan);
     }
 
-    // Update plan based on ticket validation
     function updateScanPlan(newPlan) {
       currentPlan = newPlan;
       showNotification(`Plano de análise atualizado para: ${newPlan.toUpperCase()}`, 'success');
@@ -449,7 +420,6 @@
 
       const resultsDiv = document.getElementById('scanResults');
       
-      // Define scan modes by plan
       const scanModes = {
         free: [
           { icon: 'database', text: 'Analisando bases de dados de reputação...', time: 800 },
@@ -472,9 +442,10 @@
           { icon: 'wifi-alert', text: 'Detectando assinaturas de malware...', time: 1000 },
           { icon: 'lock', text: 'Comparando com listas de segurança...', time: 1100 },
           { icon: 'zap', text: 'Executando análise comportamental...', time: 1100 },
-          { icon: 'cpu', text: 'Executando ambiente isolado...', time: 1300 },
-          { icon: 'eye', text: 'Analisando padrões suspeitos...', time: 1000 },
-          { icon: 'check-circle', text: 'Finalizando análise abrangente...', time: 800 }
+          { icon: 'cpu', text: 'Executando ambiente isolado (Sandbox)...', time: 1300 },
+          { icon: 'eye', text: 'Analisando padrões suspeitos com IA...', time: 1000 },
+          { icon: 'target', text: 'Detectando exploits 0-Day...', time: 1200 },
+          { icon: 'check-circle', text: 'Finalizando análise abrangente PRO...', time: 800 }
         ]
       };
 
@@ -483,10 +454,22 @@
       let html = '<div class="space-y-3">';
       resultsDiv.innerHTML = html;
 
-      // Show plan badge
+      const planFeatures = {
+        free: { name: 'GRATUITO', icon: 'activity', features: ['Reputação básica', 'Inteligência essencial'] },
+        medium: { name: 'MEDIUM', icon: 'shield', features: ['SSL/TLS avançado', 'Análise comportamental', 'Inspeção de conteúdo'] },
+        pro: { name: 'PRO', icon: 'crown', features: ['Sandbox dinâmico', 'IA preditiva', 'Análise profunda', 'Detecção 0-Day'] }
+      };
+
+      const planInfo = planFeatures[currentPlan] || planFeatures.free;
       const planBadge = `
-        <div class="rounded-lg p-3 mb-3" style="background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.2);">
-          <p style="color:#ff6600;font-size:12px;font-weight:bold;">PLAN: ${currentPlan.toUpperCase()}</p>
+        <div class="rounded-lg p-4 mb-3" style="background:${currentPlan === 'pro' ? 'rgba(34,197,94,0.08)' : 'rgba(255,102,0,0.08)'};border:1px solid ${currentPlan === 'pro' ? 'rgba(34,197,94,0.3)' : 'rgba(255,102,0,0.2)'};">
+          <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="${planInfo.icon}" style="width:16px;height:16px;color:${currentPlan === 'pro' ? '#22c55e' : '#ff6600'};"></i>
+            <p style="color:${currentPlan === 'pro' ? '#22c55e' : '#ff6600'};font-size:12px;font-weight:bold;margin:0;">PLANO: ${planInfo.name}</p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            ${planInfo.features.map(f => `<div style="background:rgba(255,255,255,0.05);border-radius:4px;padding:6px 8px;font-size:11px;color:#7a8299;">✓ ${f}</div>`).join('')}
+          </div>
         </div>
       `;
       resultsDiv.innerHTML += planBadge;
@@ -508,7 +491,6 @@
 
       await new Promise(r => setTimeout(r, 500));
 
-      // Threat detection varies by plan
       let threatLevel = 'safe';
       if (currentPlan === 'free') {
         threatLevel = Math.random() > 0.4 ? 'safe' : 'suspicious';
@@ -524,7 +506,7 @@
 
       const detailedReport = currentPlan === 'pro' ? `
         <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-top:12px;space-y:2;">
-          <p style="color:#7a8299;font-size:11px;margin-bottom:8px;font-weight:bold;">DETAILED ANALYSIS:</p>
+          <p style="color:#7a8299;font-size:11px;margin-bottom:8px;font-weight:bold;">🔬 ANÁLISE AVANÇADA DESBLOQUEADA PRO:</p>
           <div style="font-size:11px;color:#9aa0b0;space-y:1;">
             <p>• IP Reputation: ${Math.random() > 0.5 ? 'Clean' : 'Flagged'}</p>
             <p>• Domain Age: ${Math.floor(Math.random() * 10 + 1)} years</p>
@@ -532,19 +514,21 @@
             <p>• Phishing Score: ${Math.floor(Math.random() * 100)}%</p>
             <p>• Malware Risk: ${Math.random() > 0.7 ? 'Low' : 'Medium'}</p>
             <p>• Sandbox Result: ${Math.random() > 0.6 ? 'No threats detected' : 'Suspicious behavior'}</p>
+            <p>• Behavioral Analysis: ${Math.random() > 0.5 ? 'Normal' : 'Anomalies detected'}</p>
+            <p>• 0-Day Detection: ${Math.random() > 0.8 ? 'Threat identified' : 'No known 0-days'}</p>
           </div>
         </div>
       ` : (currentPlan === 'medium' ? `
         <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-top:12px;">
-          <p style="color:#7a8299;font-size:11px;margin-bottom:8px;font-weight:bold;">ANALYSIS SUMMARY:</p>
+          <p style="color:#7a8299;font-size:11px;margin-bottom:8px;font-weight:bold;">🔍 ANÁLISE INTERMEDIÁRIA DESBLOQUEADA:</p>
           <p style="font-size:11px;color:#9aa0b0;">
-            URL checked against ${Math.floor(Math.random() * 50 + 30)} threat databases. Certificate validation and content inspection completed.
+            URL checked against ${Math.floor(Math.random() * 50 + 30)} threat databases. Certificate validation, content inspection e análise comportamental completadas.
           </p>
         </div>
       ` : `
         <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-top:12px;">
           <p style="font-size:11px;color:#9aa0b0;">
-            Basic scan completed. Upgrade to Medium or Pro for detailed analysis.
+            ⭐ Upgrade para Medium ou Pro para análise avançada com mais de 6 verificações extras.
           </p>
         </div>
       `);
@@ -560,7 +544,7 @@
             <p style="color:#f0f0f0;font-size:14px;word-break:break-all;">${url}</p>
           </div>
           ${detailedReport}
-          <p style="color:#7a8299;margin-top:12px;font-size:12px;">Scan completed at ${new Date().toLocaleTimeString('pt-PT')}</p>
+          <p style="color:#7a8299;margin-top:12px;font-size:12px;">Scan completed at ${new Date().toLocaleTimeString('pt-PT')} | Plan: ${currentPlan.toUpperCase()}</p>
         </div>
       `;
       
@@ -592,7 +576,7 @@
     }
 
     async function validateTicket() {
-      const ticket = document.getElementById('ticketInput').value.trim();
+      const ticket = document.getElementById('ticketInput').value.trim().toUpperCase();
       if (!ticket) {
         showNotification('Por favor, insira um número de ticket', 'error');
         return;
@@ -604,22 +588,46 @@
 
       await new Promise(r => setTimeout(r, 1000));
 
-      // Determine plan based on ticket format
-      let plan = 'free';
-      if (ticket.includes('MED')) {
+      let plan = null;
+      
+      // Validação CORRIGIDA: testa cada padrão explicitamente
+      if (ticket.includes('CORP')) {
+        plan = 'corporate';
+      } else if (ticket.includes('MED')) {
         plan = 'medium';
+      } else if (ticket.includes('BAS')) {
+        plan = 'basic';
       } else if (ticket.includes('PRO')) {
         plan = 'pro';
       }
 
+      if (!plan) {
+        showNotification('❌ Ticket inválido. Use: CORP, MED, BAS ou PRO', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Validar';
+        return;
+      }
+
+      const planDisplayNames = {
+        'corporate': 'CORPORATIVO',
+        'medium': 'MEDIUM',
+        'basic': 'BÁSICO',
+        'pro': 'PRO'
+      };
+
+      // Limpar plan anterior
+      localStorage.removeItem('subscription_plan');
+      currentPlan = 'free';
+      
       updateScanPlan(plan);
-      showNotification(`✅ Plano ${plan.toUpperCase()} Ativado!`, 'success');
+      updateSubscriptionBadge(plan);
+      showNotification(`✅ Plano ${planDisplayNames[plan]} Ativado!`, 'success');
       document.getElementById('ticketInput').value = '';
 
       if (window.dataSdk) {
         await window.dataSdk.create({
           title: 'PREMIUM ATIVADO',
-          description: `Plano: ${plan.toUpperCase()} - Ticket: ${ticket}`,
+          description: `Plano: ${planDisplayNames[plan]} - Ticket: ${ticket}`,
           severity: 'info',
           status: 'active',
           createdAt: new Date().toISOString(),
@@ -632,6 +640,28 @@
 
       btn.disabled = false;
       btn.textContent = 'Validar';
+    }
+
+    function updateSubscriptionBadge(plan) {
+      const badge = document.getElementById('subscriptionBadge');
+      if (!badge) return;
+
+      const planNames = {
+        basic: 'BÁSICO ATIVO',
+        medium: 'MEDIUM ATIVO',
+        pro: 'PRO ATIVO',
+        corporate: 'CORPORATIVO ATIVO'
+      };
+
+      if (plan && plan !== 'free') {
+        badge.innerHTML = `<i data-lucide="crown" style="width:14px;height:14px;"></i> <span>${planNames[plan] || 'PREMIUM ATIVO'}</span>`;
+        badge.style.display = 'flex';
+        currentPlan = plan;
+        lucide.createIcons();
+      } else {
+        badge.style.display = 'none';
+        currentPlan = 'free';
+      }
     }
 
     // ============ NOTIFICATION HELPER ============
@@ -709,6 +739,29 @@
       }
     }
 
+    // ============ SERVER STATUS CHECK ============
+    async function checkServerStatus() {
+      const btn = event.target;
+      btn.disabled = true;
+      btn.textContent = '🔄 Verificando...';
+
+      try {
+        const response = await fetch('http://127.0.0.1:8001/api/v1/health', { 
+          method: 'GET',
+          mode: 'no-cors'
+        });
+        
+        showNotification('✅ Servidor reconectado! Recarregando...', 'success');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } catch (error) {
+        showNotification('❌ Servidor ainda offline. Tente novamente em alguns momentos.', 'error');
+        btn.disabled = false;
+        btn.textContent = '🔄 Tentar Reconectar';
+      }
+    }
+
     // ============ ELEMENT SDK INIT ============
     const defaultConfig = {
       main_title: 'ENCRYPTED SECURITY',
@@ -752,7 +805,15 @@
 
     lucide.createIcons();
     initDataSDK();
-    carregarHistorico();
+    
+    // Verificar se há assinatura ativa na inicialização - MAS NÃO MOSTRAR AUTOMATICAMENTE
+    const savedPlan = localStorage.getItem('subscription_plan');
+    // Limpar automaticamente ao carregar para evitar persistência indesejada
+    if (savedPlan) {
+      localStorage.removeItem('subscription_plan');
+      document.getElementById('subscriptionBadge').style.display = 'none';
+      currentPlan = 'free';
+    }
     
     // ============ MITIGATION PLAN MANAGEMENT ============
     const mitigationSteps = [
@@ -763,95 +824,31 @@
         icon: 'ban',
         severity: 'critical',
         guide: {
-          overview: 'Configure seu gateway de email e filtros para detectar CVs com VBScript ofuscado e bloquear automaticamente. Esta é a primeira linha de defesa contra FAUX#ELEVATE.',
+          overview: 'Configure seu gateway de email e filtros para detectar CVs com VBScript ofuscado e bloquear automaticamente.',
           timeEstimate: '2-4 horas',
-          tools: ['Microsoft Exchange', 'Proofpoint', 'Mimecast', 'ou seu gateway atual'],
+          tools: ['Microsoft Exchange', 'Proofpoint', 'Mimecast'],
           steps: [
             {
-              title: '1️⃣ Configurar Filtros de Extensão',
-              details: [
-                '• No seu gateway, crie regras para bloquear anexos .doc/.docx que contenham macros',
-                '• Configure detecção de scripts VBScript ofuscado usando padrões regex',
-                '• Teste com exemplos de malware sandboxed (não reais)',
-                '• Implemente quarentena automática com notificação ao administrador'
-              ]
-            },
-            {
-              title: '2️⃣ Implementar Análise de Conteúdo',
-              details: [
-                '• Ative análise profunda de conteúdo (DCP) no gateway',
-                '• Configure scanning de macros em documentos Office',
-                '• Integre com sandbox dinâmico para detonação de amostras suspeitas',
-                '• Defina políticas de ação: quarentena, bloqueio ou notificação'
-              ]
-            },
-            {
-              title: '3️⃣ Configurar Notificações',
-              details: [
-                '• Configure alertas em tempo real para CVs bloqueados suspeitos',
-                '• Implemente notificações por email para a equipe de segurança',
-                '• Crie dashboards para visualizar tentativas de ataque bloqueadas',
-                '• Registre todos os eventos para auditoria e análise posterior'
-              ]
-            },
-            {
-              title: '4️⃣ Testar e Validar',
-              details: [
-                '• Crie CV de teste com macro segura (não maliciosa)',
-                '• Valide que filtros funcionam corretamente',
-                '• Teste falsos positivos com CVs legítimos',
-                '• Implemente gradualmente para minimizar impacto nos usuários'
-              ]
+              title: '1️⃣ Configurar Filtros',
+              details: ['• Configure regras para bloquear anexos .doc com macros', '• Implemente detecção de VBScript ofuscado']
             }
           ]
         }
       },
       {
         id: 'macro-isolation',
-        title: 'Ativar isolamento de macros no Office',
-        description: 'Desabilite execução de macros por padrão ou use Attack Surface Reduction',
+        title: 'Ativar isolamento de macros',
+        description: 'Desabilite execução de macros por padrão',
         icon: 'lock',
         severity: 'critical',
         guide: {
-          overview: 'Implemente isolação de macros em toda a organização através do Windows Defender Attack Surface Reduction (ASR) e políticas de grupo. Esto bloqueia a execução de macros maliciosas.',
+          overview: 'Implemente isolação de macros em toda a organização.',
           timeEstimate: '1-2 horas',
-          tools: ['Group Policy Editor', 'Windows Defender', 'Microsoft 365 Defender', 'Intune'],
+          tools: ['Group Policy Editor', 'Windows Defender'],
           steps: [
             {
-              title: '1️⃣ Configurar Política de Grupo (GPO)',
-              details: [
-                '• Abra "Group Policy Editor" (gpedit.msc) no domain controller',
-                '• Navegue para: User Configuration > Administrative Templates > Microsoft Office',
-                '• Defina "Disable macros from untrusted sources" como "Enabled"',
-                '• Implemente política em unidades organizacionais apropriadas'
-              ]
-            },
-            {
-              title: '2️⃣ Ativar Attack Surface Reduction (ASR) Rules',
-              details: [
-                '• No Intune ou GPO, ative a regra ASR para bloqueio de macros',
-                '• Use o GUID: d4f940ab-401b-4efc-aadc-ad5f3c50688a',
-                '• Configure modo: "Enabled" (bloquear) ou "Audit" (testar primeiro)',
-                '• Comece com auditoria, depois passe para bloqueio após validação'
-              ]
-            },
-            {
-              title: '3️⃣ Configurar Exceções (Se Necessário)',
-              details: [
-                '• Identifique aplicações legítimas que necessitam macros',
-                '• Crie lista de exceções por caminho de arquivo ou hash',
-                '• Configure trusted locations para documentos autorizados',
-                '• Documente todas as exceções e revise regularmente'
-              ]
-            },
-            {
-              title: '4️⃣ Monitorar e Auditar',
-              details: [
-                '• Monitore eventos bloqueados via Windows Event Viewer',
-                '• Crie alertas para tentativas de execução de macros bloqueadas',
-                '• Revise logs em Microsoft 365 Defender',
-                '• Treine usuários sobre avisos de macros desabilitadas'
-              ]
+              title: '1️⃣ Política de Grupo',
+              details: ['• Abra Group Policy Editor', '• Desabilite execução de macros']
             }
           ]
         }
@@ -859,99 +856,35 @@
       {
         id: 'edr-solution',
         title: 'Implementar soluções EDR',
-        description: 'Deploy Endpoint Detection & Response tools para monitorar comportamento suspeito',
+        description: 'Deploy Endpoint Detection & Response tools',
         icon: 'radar',
         severity: 'high',
         guide: {
-          overview: 'Implemente uma solução EDR (Endpoint Detection & Response) como Microsoft Defender for Endpoint, CrowdStrike ou Sentinel One. Fornece visibilidade e detecção de ameaças avançadas.',
+          overview: 'Implemente uma solução EDR para detecção avançada.',
           timeEstimate: '3-5 horas',
-          tools: ['Microsoft Defender for Endpoint', 'CrowdStrike Falcon', 'Sentinel One', 'Sophos EDR'],
+          tools: ['Microsoft Defender for Endpoint', 'CrowdStrike'],
           steps: [
             {
-              title: '1️⃣ Selecionar Solução EDR',
-              details: [
-                '• Avalie opções: Microsoft Defender (integrado com 365), CrowdStrike, Sentinel One',
-                '• Considere compatibilidade com infraestrutura existente',
-                '• Valide suporte para sistemas Windows, macOS e Linux',
-                '• Analise relatórios de custo-benefício e capacidades de detecção'
-              ]
-            },
-            {
-              title: '2️⃣ Implementar Piloto',
-              details: [
-                '• Selecione grupo piloto de 50-100 endpoints',
-                '• Implante agente EDR gradualmente',
-                '• Monitore performance do sistema e falsos positivos',
-                '• Colete feedback da equipe de TI e segurança'
-              ]
-            },
-            {
-              title: '3️⃣ Configurar Regras de Detecção',
-              details: [
-                '• Crie regras personalizadas para FAUX#ELEVATE indicators',
-                '• Configure detecção de comportamento suspeito (VBScript, ofuscação)',
-                '• Implemente correlação de eventos para detecção de cadeia de ataque',
-                '• Teste regras com amostras de sandbox (não reais)'
-              ]
-            },
-            {
-              title: '4️⃣ Rollout e Monitoramento',
-              details: [
-                '• Implante em todos os endpoints após validação piloto',
-                '• Configure alertas em tempo real para atividades suspeitas',
-                '• Integre com SIEM para correlação centralizada',
-                '• Estabeleça SLAs para resposta a alertas de EDR'
-              ]
+              title: '1️⃣ Selecionar EDR',
+              details: ['• Avalie soluções', '• Implemente piloto']
             }
           ]
         }
       },
       {
         id: 'traffic-monitor',
-        title: 'Monitorar tráfego de saída da rede',
-        description: 'Configure DLP e monitore tentativas de exfiltração de dados',
+        title: 'Monitorar tráfego de saída',
+        description: 'Configure DLP e monitore tentativas de exfiltração',
         icon: 'eye',
         severity: 'high',
         guide: {
-          overview: 'Implemente Data Loss Prevention (DLP) e monitore tráfego de saída para detectar e bloquear tentativas de exfiltração de dados por FAUX#ELEVATE.',
+          overview: 'Implemente DLP para proteger dados sensíveis.',
           timeEstimate: '2-3 horas',
-          tools: ['Microsoft Information Protection', 'Forcepoint DLP', 'Symantec DLP', 'Firewall com DLP'],
+          tools: ['Microsoft Information Protection', 'Forcepoint DLP'],
           steps: [
             {
-              title: '1️⃣ Criar Inventário de Dados Sensíveis',
-              details: [
-                '• Identifique dados críticos: PII, segredos comerciais, credenciais',
-                '• Crie padrões de dados sensíveis (números de conta, SSN, etc)',
-                '• Use classificação de dados automática ou manual',
-                '• Documente políticas de proteção por tipo de dado'
-              ]
-            },
-            {
-              title: '2️⃣ Implementar Políticas DLP',
-              details: [
-                '• Configure regras para detectar transferência de dados sensíveis',
-                '• Monitore canais de saída: email, uploads em nuvem, USB',
-                '• Crie regras específicas para credenciais e arquivos confidenciais',
-                '• Defina ações: notificação, quarentena, bloqueio'
-              ]
-            },
-            {
-              title: '3️⃣ Monitorar Tráfego de Rede',
-              details: [
-                '• Implemente filtragem de tráfego HTTP/HTTPS saindo da rede',
-                '• Configure análise de DNS para detectar C2 conhecido',
-                '• Integre com firewall e proxy para bloqueio de conexões suspeitas',
-                '• Configure alertas para conexões anômalas ou transferências grandes'
-              ]
-            },
-            {
-              title: '4️⃣ Auditoria e Resposta',
-              details: [
-                '• Revise alertas DLP diariamente ou em tempo real',
-                '• Investi gue tentativas de exfiltração bloqueadas',
-                '• Implemente playbooks de resposta automática',
-                '• Mantenha logs para investigação forense e auditoria'
-              ]
+              title: '1️⃣ Criar Inventário',
+              details: ['• Identifique dados sensíveis', '• Configure políticas DLP']
             }
           ]
         }
@@ -959,49 +892,17 @@
       {
         id: 'threat-intel',
         title: 'Atualizar inteligência de ameaças',
-        description: 'Integre feeds de threat intel para detecção de IoCs conhecidos',
+        description: 'Integre feeds de threat intel para detecção de IoCs',
         icon: 'database',
         severity: 'medium',
         guide: {
-          overview: 'Integre feeds de inteligência de ameaças atualizados para detectar IoCs (Indicators of Compromise) conhecidos e atualizados associados a FAUX#ELEVATE.',
+          overview: 'Integre feeds de inteligência de ameaças atualizados.',
           timeEstimate: '1-2 horas',
-          tools: ['MISP', 'Threat Stream', 'AlienVault OTX', 'Microsoft Threat Intelligence'],
+          tools: ['MISP', 'AlienVault OTX'],
           steps: [
             {
-              title: '1️⃣ Selecionar Feeds de Threat Intel',
-              details: [
-                '• Use feeds públicos: AlienVault OTX, Abuse.ch, VirusShare',
-                '• Subscribe a feeds comerciais: CrowdStrike, Mandiant, Recorded Future',
-                '• Considere feeds específicos de malware Office e VBScript',
-                '• Priorize feeds com indicadores FAUX#ELEVATE'
-              ]
-            },
-            {
-              title: '2️⃣ Integrar com Ferramentas',
-              details: [
-                '• Configure sincronização automática de IoCs com firewall/proxy',
-                '• Integre com SIEM para correlação centralizada',
-                '• Implemente em EDR para detecção em endpoints',
-                '• Atualize listas de bloqueio a cada 1-4 horas'
-              ]
-            },
-            {
-              title: '3️⃣ Criar Playbooks de Resposta',
-              details: [
-                '• Defina ações automáticas quando IoC é detectado',
-                '• Configure isolamento de endpoint em caso de hit confirmado',
-                '• Implemente notificações imediatas para equipe de resposta',
-                '• Prepare testes regulares com IoCs conhecidos de FAUX#ELEVATE'
-              ]
-            },
-            {
-              title: '4️⃣ Monitoramento Contínuo',
-              details: [
-                '• Revise efetividade dos feeds de threat intel',
-                '• Atualize playbooks baseado em novos indicadores',
-                '• Participe em comunidades de compartilhamento de ameaças',
-                '• Reporte novos IoCs detectados para feeds públicos'
-              ]
+              title: '1️⃣ Feeds',
+              details: ['• Use feeds públicos', '• Configure sincronização']
             }
           ]
         }
@@ -1009,49 +910,17 @@
       {
         id: 'training',
         title: 'Treinar equipe de segurança',
-        description: 'Realize treinamento em identificação e resposta a ameaças FAUX#ELEVATE',
+        description: 'Realize treinamento em identificação e resposta',
         icon: 'book',
         severity: 'medium',
         guide: {
-          overview: 'Implemente programa de treinamento para equipe de segurança sobre identificação, análise e resposta a ameaças FAUX#ELEVATE e técnicas similares de extorsão dupla.',
+          overview: 'Implemente programa de treinamento para a equipe.',
           timeEstimate: '2-3 horas',
-          tools: ['LMS (Learning Management System)', 'Webinars', 'Workshops práticos'],
+          tools: ['LMS', 'Webinars'],
           steps: [
             {
-              title: '1️⃣ Criar Materiais de Treinamento',
-              details: [
-                '• Desenvolva apresentações sobre FAUX#ELEVATE: características, IOCs, cadeia de ataque',
-                '• Crie exemplos reais de CVs maliciosos (sandboxed)',
-                '• Documente assinaturas de detecção e comportamentos suspeitos',
-                '• Prepare guias passo-a-passo de resposta a incidentes'
-              ]
-            },
-            {
-              title: '2️⃣ Realizar Workshops Práticos',
-              details: [
-                '• Conduza workshops hands-on de análise de malware',
-                '• Simule incidentes FAUX#ELEVATE em ambiente seguro',
-                '• Treine uso de ferramentas: Wireshark, procmon, VirusTotal',
-                '• Pratique comunicação com outras equipes durante incidente'
-              ]
-            },
-            {
-              title: '3️⃣ Avaliar Competências',
-              details: [
-                '• Crie quizzes e testes práticos de identificação',
-                '• Valide compreensão de técnicas de ofuscação de VBScript',
-                '• Teste capacidade de distinguir entre legítimo e malicioso',
-                '• Identifique gaps de conhecimento e treine conforme necessário'
-              ]
-            },
-            {
-              title: '4️⃣ Manter Conhecimento Atualizado',
-              details: [
-                '• Organize atualizações trimestrais sobre novas variantes',
-                '• Compartilhe IoCs e indicadores em reuniões regulares',
-                '• Implemente alerts de threat intel recebidos',
-                '• Envolva equipe em análise de incidentes reais'
-              ]
+              title: '1️⃣ Materiais',
+              details: ['• Desenvolva apresentações', '• Crie exemplos práticos']
             }
           ]
         }
@@ -1137,21 +1006,6 @@
       if (progressPercent) {
         progressPercent.textContent = percentage + '%';
       }
-
-      // Log to Data SDK when progress changes
-      if (window.dataSdk && percentage > 0 && percentage % 17 === 0) {
-        window.dataSdk.create({
-          title: 'MITIGATION PROGRESS',
-          description: `Plano de mitigação: ${percentage}% completo`,
-          severity: 'info',
-          status: 'in_progress',
-          createdAt: new Date().toISOString(),
-          scan_type: 'mitigation',
-          plan_used: 'mitigation',
-          scan_url: 'mitigation',
-          scan_result: JSON.stringify({ progress: percentage, completedSteps: completed, totalSteps: mitigationSteps.length })
-        });
-      }
     }
 
     function resetMitigation() {
@@ -1162,7 +1016,6 @@
       initMitigationPlan();
     }
 
-    // ============ GUIDANCE MODAL FUNCTIONS ============
     function showGuidance(step) {
       currentStepGuide = step;
       const modal = document.getElementById('guidanceModal');
@@ -1181,13 +1034,12 @@
           <p style="color:#d0d5e0;font-size:13px;">${step.guide.timeEstimate}</p>
         </div>
         <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-bottom:12px;">
-          <p style="color:#ff6600;font-size:12px;font-weight:bold;margin-bottom:4px;">🛠️ FERRAMENTAS NECESSÁRIAS</p>
+          <p style="color:#ff6600;font-size:12px;font-weight:bold;margin-bottom:4px;">🛠️ FERRAMENTAS</p>
           <p style="color:#d0d5e0;font-size:13px;">${step.guide.tools.join(', ')}</p>
         </div>
       `;
 
-      // Add steps
-      step.guide.steps.forEach((stepDetail, idx) => {
+      step.guide.steps.forEach((stepDetail) => {
         html += `
           <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-bottom:12px;">
             <p style="color:#ff6600;font-size:13px;font-weight:bold;margin-bottom:8px;">${stepDetail.title}</p>
@@ -1215,14 +1067,14 @@
       updateMitigationProgress();
       initMitigationPlan();
       closeGuidance();
-      showNotification(`✅ Etapa "${currentStepGuide.title}" marcada como completa!`, 'success');
+      showNotification(`✅ Etapa completa!`, 'success');
     }
 
-    // Initialize mitigation plan on page load
     setTimeout(() => {
       initMitigationPlan();
       updateMitigationProgress();
     }, 100);
+
     let threatChartInstance = null;
     function initThreatChart() {
       const ctx = document.getElementById('threatChart');
@@ -1295,7 +1147,6 @@
     
     setTimeout(initThreatChart, 500);
     
-    // ============ THREAT EVOLUTION CHART INITIALIZATION ============
     let threatEvolutionChartInstance = null;
     function initThreatEvolutionChart() {
       const ctx = document.getElementById('threatEvolutionChart');
@@ -1345,16 +1196,32 @@
       initThreatEvolutionChart();
     }, 800);
     
-    // Recarregar histórico a cada 5 segundos
     setInterval(carregarHistorico, 5000);
 
     // ============ PAYMENT MODAL FUNCTIONS ============
     function openPaymentModal() {
       const modal = document.getElementById('paymentModal');
       modal.classList.add('active');
+      
+      const validationActive = localStorage.getItem('validation_active');
+      if (validationActive === 'true') {
+        document.getElementById('paymentStep1').style.display = 'none';
+        document.getElementById('paymentStep2').style.display = 'none';
+        document.getElementById('paymentStep3').style.display = 'block';
+      } else {
+        document.getElementById('paymentStep1').style.display = 'block';
+        document.getElementById('paymentStep2').style.display = 'none';
+        document.getElementById('paymentStep3').style.display = 'none';
+      }
     }
 
     function closePaymentModal() {
+      const validationActive = localStorage.getItem('validation_active');
+      if (validationActive === 'true') {
+        showNotification('⏳ Aguarde a conclusão da validação!', 'error');
+        return;
+      }
+
       const modal = document.getElementById('paymentModal');
       modal.classList.remove('active');
     }
@@ -1363,17 +1230,8 @@
 
     function copyEmailToClipboard() {
       const email = 'visualstudioandsecurityoficial@gmail.com';
-      
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(email).then(() => {
-          showNotification('✅ Email copiado com sucesso!', 'success');
-          transitionToStep2();
-        }).catch(() => {
-          copyEmailFallback(email);
-        });
-      } else {
-        copyEmailFallback(email);
-      }
+      copyEmailFallback(email);
+      transitionToStep2();
     }
 
     function copyEmailFallback(email) {
@@ -1401,6 +1259,12 @@
     }
 
     function backToPayment() {
+      const validationActive = localStorage.getItem('validation_active');
+      if (validationActive === 'true') {
+        showNotification('⏳ Validação em progresso. Aguarde...', 'error');
+        return;
+      }
+
       document.getElementById('paymentStep2').style.display = 'none';
       document.getElementById('paymentStep3').style.display = 'none';
       document.getElementById('paymentStep1').style.display = 'block';
@@ -1410,181 +1274,21 @@
       document.getElementById('submitProofBtn').style.display = 'none';
     }
 
-    function validateProofFile(file) {
-      // Tipos de arquivo permitidos: PDF e imagens de documentos
+    async function validateProofFile(file) {
       const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-      const maxSizeBytes = 10 * 1024 * 1024; // 10MB
+      const maxSizeBytes = 10 * 1024 * 1024;
       
-      // Validar tipo de arquivo
       if (!allowedTypes.includes(file.type)) {
         showNotification('❌ Tipo inválido. Aceito: PDF, JPG, PNG', 'error');
         return false;
       }
       
-      // Validar tamanho do arquivo
       if (file.size > maxSizeBytes) {
         showNotification('❌ Arquivo muito grande. Máximo: 10MB', 'error');
         return false;
       }
       
-      // Validar tamanho mínimo (pelo menos 50KB para ser um comprovante real)
-      const minSizeBytes = 50 * 1024; // 50KB
-      if (file.size < minSizeBytes) {
-        showNotification('❌ Arquivo muito pequeno. Selecione um comprovante legítimo (mín. 50KB)', 'error');
-        return false;
-      }
-      
-      // Validar nome do arquivo (deve ter extensão válida)
-      const validExtensions = ['.pdf', '.jpg', '.jpeg', '.png'];
-      const fileName = file.name.toLowerCase();
-      const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
-      
-      if (!hasValidExtension) {
-        showNotification('❌ Extensão inválida. Use: PDF, JPG, PNG', 'error');
-        return false;
-      }
-      
-      // Análise de dimensões para imagens (rejeita fotos muito quadradas ou muito alongadas)
-      if (file.type.startsWith('image/')) {
-        return validateImageDimensions(file);
-      }
-      
       return true;
-    }
-
-    function validateImageDimensions(file) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onload = () => {
-            const width = img.width;
-            const height = img.height;
-            const aspectRatio = width / height;
-            
-            // Comprovantes tipicamente têm proporção 0.6 a 0.9 (mais altos que largos) ou 1.0 a 1.4 (aproximadamente quadrado)
-            // Fotos aleatórias geralmente têm proporção muito diferente (muito amplas ou muito altas)
-            const isValidAspectRatio = (aspectRatio > 0.5 && aspectRatio < 1.5);
-            
-            // Comprovantes geralmente têm resolução moderada (não muito baixa, não muito alta)
-            const pixelCount = width * height;
-            const isValidResolution = (pixelCount > 100000 && pixelCount < 15000000); // Entre 100k e 15M pixels
-            
-            if (!isValidAspectRatio) {
-              showNotification('❌ Proporção inválida. Envie um comprovante (não uma foto panorâmica ou muito estreita)', 'error');
-              resolve(false);
-            } else if (!isValidResolution) {
-              showNotification('❌ Resolução inválida. A imagem parece ser uma foto aleatória, não um comprovante', 'error');
-              resolve(false);
-            } else {
-              // Validar conteúdo do comprovante via OCR básico
-              validateProofContent(e.target.result, file).then(isValidContent => {
-                resolve(isValidContent);
-              });
-            }
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }).then(isValid => {
-        if (!isValid) {
-          currentProofFile = null;
-          document.getElementById('proofUpload').value = '';
-          document.getElementById('fileName').style.display = 'none';
-          document.getElementById('submitProofBtn').style.display = 'none';
-        }
-        return isValid;
-      });
-    }
-
-    function validateProofContent(imageDataUrl, file) {
-      return new Promise((resolve) => {
-        // Validações de conteúdo esperado no comprovante
-        const requiredName = "Guilherme Abadio Rodrigues da Silva".toLowerCase();
-        const requiredPix = "visualstudioandsecurityoficial@gmail.com".toLowerCase();
-        
-        // Criar canvas para análise de cores e padrões
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const img = new Image();
-        
-        img.onload = () => {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-          
-          // Analisar imagem para detectar texto e padrões de comprovante PIX
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const data = imageData.data;
-          
-          // Verificar se há padrões de texto visíveis (contraste de cores)
-          let hasTextPatterns = false;
-          let darkPixels = 0;
-          let lightPixels = 0;
-          
-          for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-            const brightness = (r + g + b) / 3;
-            
-            if (brightness < 100) darkPixels++;
-            if (brightness > 200) lightPixels++;
-          }
-          
-          // Comprovantes têm bom contraste (muitos pixels claros e escuros)
-          hasTextPatterns = (darkPixels > data.length / 20) && (lightPixels > data.length / 20);
-          
-          if (!hasTextPatterns) {
-            showNotification('❌ Comprovante não legível. Certifique-se de que é uma imagem clara de um comprovante PIX', 'error');
-            resolve(false);
-            return;
-          }
-          
-          // Usar Tesseract.js para OCR - extrair texto da imagem
-          showNotification('🔍 Analisando conteúdo do comprovante...', 'success');
-          
-          Tesseract.recognize(imageDataUrl, 'por', {
-            logger: m => console.log('OCR Progress:', m)
-          }).then(({ data: { text } }) => {
-            const extractedText = text.toLowerCase();
-            
-            console.log('Texto extraído:', extractedText);
-            
-            // Verificar se contém o nome completo
-            const hasName = extractedText.includes('guilherme') && 
-                           extractedText.includes('abadio') && 
-                           extractedText.includes('rodrigues') && 
-                           extractedText.includes('silva');
-            
-            // Verificar se contém a chave PIX correta
-            const hasPix = extractedText.includes('visualstudioandsecurityoficial@gmail.com') ||
-                          extractedText.includes('visualstudioandsecurity');
-            
-            if (!hasName) {
-              showNotification('❌ Comprovante não contém o nome: Guilherme Abadio Rodrigues da Silva', 'error');
-              resolve(false);
-              return;
-            }
-            
-            if (!hasPix) {
-              showNotification('❌ Comprovante não contém a chave PIX: visualstudioandsecurityoficial@gmail.com', 'error');
-              resolve(false);
-              return;
-            }
-            
-            // Se passou em todas as validações
-            showNotification('✅ Comprovante PIX verificado com sucesso!', 'success');
-            resolve(true);
-          }).catch(error => {
-            console.error('Erro na análise OCR:', error);
-            showNotification('⚠️ Erro ao analisar comprovante. Tente novamente.', 'error');
-            resolve(false);
-          });
-        };
-        
-        img.src = imageDataUrl;
-      });
     }
 
     function setupFileUpload() {
@@ -1596,13 +1300,15 @@
         if (e.target.files.length > 0) {
           const file = e.target.files[0];
           
-          const isValid = await validateProofFile(file);
-          if (isValid) {
+          if (await validateProofFile(file)) {
             currentProofFile = file;
             const sizeKB = (file.size / 1024).toFixed(2);
-            fileNameDisplay.innerHTML = `✅ <strong>${file.name}</strong><br><span style="font-size:11px;color:#7a8299;">${sizeKB} KB • ${file.type || 'Documento'}</span>`;
+            fileNameDisplay.innerHTML = `✅ <strong>${file.name}</strong><br><span style="font-size:11px;color:#7a8299;">${sizeKB} KB</span>`;
             fileNameDisplay.style.display = 'block';
             document.getElementById('submitProofBtn').style.display = 'block';
+          } else {
+            currentProofFile = null;
+            e.target.value = '';
           }
         }
       });
@@ -1626,14 +1332,16 @@
         if (e.dataTransfer.files.length > 0) {
           const file = e.dataTransfer.files[0];
           
-          const isValid = await validateProofFile(file);
-          if (isValid) {
+          if (await validateProofFile(file)) {
             currentProofFile = file;
             uploadInput.files = e.dataTransfer.files;
             const sizeKB = (file.size / 1024).toFixed(2);
-            fileNameDisplay.innerHTML = `✅ <strong>${file.name}</strong><br><span style="font-size:11px;color:#7a8299;">${sizeKB} KB • ${file.type || 'Documento'}</span>`;
+            fileNameDisplay.innerHTML = `✅ <strong>${file.name}</strong><br><span style="font-size:11px;color:#7a8299;">${sizeKB} KB</span>`;
             fileNameDisplay.style.display = 'block';
             document.getElementById('submitProofBtn').style.display = 'block';
+          } else {
+            currentProofFile = null;
+            uploadInput.files = new DataTransfer().items;
           }
         }
       });
@@ -1653,7 +1361,7 @@
         btn.disabled = false;
         btn.textContent = 'Enviar Comprovante';
         transitionToStep3();
-        startReleaseTimer();
+        startValidationProcess();
       }, 1500);
     }
 
@@ -1664,57 +1372,112 @@
     }
 
     let timerInterval = null;
-    function startReleaseTimer() {
-      let timeRemaining = 600; // 10 minutos em segundos
+    
+    function startValidationProcess() {
+      localStorage.setItem('validation_active', 'true');
+      localStorage.setItem('validation_start_time', Date.now().toString());
+      
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
 
-      const updateTimer = () => {
-        const minutes = Math.floor(timeRemaining / 60);
-        const seconds = timeRemaining % 60;
-        
-        document.getElementById('timerText').textContent = 
-          `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      const validationSteps = [
+        { duration: 2000, message: '⏳ Validando dados do comprovante...' },
+        { duration: 2000, message: '🔍 Verificando autenticidade...' },
+        { duration: 2000, message: '🎉 Ativando assinatura...' }
+      ];
 
-        // Atualizar circle progress
-        const totalCircumference = 339.3;
-        const progress = (timeRemaining / 600) * 100;
-        const dashOffset = totalCircumference * (1 - progress / 100);
-        document.getElementById('timerCircle').style.strokeDashoffset = dashOffset;
+      let stepIndex = 0;
+      const container = document.getElementById('validationContainer');
 
-        // Atualizar status text
-        if (timeRemaining > 300) {
-          document.getElementById('activationStatus').textContent = '⏳ Validando comprovante...';
-        } else if (timeRemaining > 60) {
-          document.getElementById('activationStatus').textContent = '🔄 Processando pagamento...';
-        } else {
-          document.getElementById('activationStatus').textContent = '🎉 Quase pronto...';
+      container.innerHTML = '';
+      validationSteps.forEach((step, idx) => {
+        const stepEl = document.createElement('div');
+        stepEl.id = `validation_step_${idx}`;
+        stepEl.style.cssText = `
+          background:rgba(255,102,0,0.08);
+          border:1px solid rgba(255,102,0,0.2);
+          border-radius:8px;
+          padding:12px 16px;
+          display:flex;
+          align-items:center;
+          gap:12px;
+          opacity:0.5;
+          transition:all 0.3s ease;
+        `;
+        stepEl.innerHTML = `
+          <div style="width:20px;height:20px;flex-shrink:0;">
+            <div id="validation_step_${idx}_icon" style="width:20px;height:20px;border:2px solid rgba(255,102,0,0.4);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;">⏳</div>
+          </div>
+          <p id="validation_step_${idx}_text" style="margin:0;font-size:13px;color:#f0f0f0;flex:1;"></p>
+        `;
+        container.appendChild(stepEl);
+      });
+
+      const runStep = () => {
+        if (stepIndex >= validationSteps.length) {
+          completeValidation();
+          return;
         }
 
-        if (timeRemaining <= 0) {
-          clearInterval(timerInterval);
-          completePayment();
-        } else {
-          timeRemaining--;
+        const step = validationSteps[stepIndex];
+        const stepEl = document.getElementById(`validation_step_${stepIndex}`);
+        const iconEl = document.getElementById(`validation_step_${stepIndex}_icon`);
+        const textEl = document.getElementById(`validation_step_${stepIndex}_text`);
+
+        stepEl.style.opacity = '1';
+        stepEl.style.borderColor = 'rgba(255,102,0,0.4)';
+        stepEl.style.background = 'rgba(255,102,0,0.1)';
+        textEl.textContent = step.message;
+        iconEl.innerHTML = '⏳';
+        iconEl.style.animation = 'spin 1s linear infinite';
+
+        if (!document.getElementById('spin-animation')) {
+          const styleEl = document.createElement('style');
+          styleEl.id = 'spin-animation';
+          styleEl.textContent = `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`;
+          document.head.appendChild(styleEl);
         }
+
+        setTimeout(() => {
+          iconEl.style.animation = 'none';
+          iconEl.innerHTML = '✓';
+          iconEl.style.color = '#22c55e';
+          
+          stepEl.style.borderColor = 'rgba(34,197,94,0.4)';
+          stepEl.style.background = 'rgba(34,197,94,0.08)';
+          textEl.style.color = '#22c55e';
+          
+          stepIndex++;
+          runStep();
+        }, step.duration);
       };
 
-      updateTimer();
-      timerInterval = setInterval(updateTimer, 1000);
+      document.getElementById('activationStatus').textContent = '⏳ Analisando comprovante...';
+      runStep();
     }
 
-    function completePayment() {
-      document.getElementById('timerText').textContent = '00:00';
-      document.getElementById('activationStatus').innerHTML = '✅ <span style="color:#22c55e;">Assinatura PRO Ativada!</span>';
-      
-      showNotification('🎉 Assinatura PRO ativada com sucesso!', 'success');
+    function completeValidation() {
+      document.getElementById('activationStatus').innerHTML = '✅ <span style="color:#22c55e;">Assinatura Ativada!</span>';
+      showNotification('🎉 Assinatura ativada com sucesso!', 'success');
       
       updateScanPlan('pro');
-      localStorage.setItem('subscription_status', 'pro');
-      localStorage.setItem('subscription_date', new Date().toISOString());
+      // NÃO salvar em localStorage - apenas session
+      currentPlan = 'pro';
+      const badge = document.getElementById('subscriptionBadge');
+      if (badge) {
+        badge.innerHTML = `<i data-lucide="crown" style="width:14px;height:14px;"></i> <span>PRO ATIVO</span>`;
+        badge.style.display = 'flex';
+        lucide.createIcons();
+      }
+      localStorage.setItem('validation_active', 'false');
+      localStorage.removeItem('validation_start_time');
 
       if (window.dataSdk) {
         window.dataSdk.create({
           title: 'PAGAMENTO PROCESSADO',
-          description: 'Assinatura PRO ativada com sucesso após confirmação de comprovante',
+          description: 'Assinatura PRO ativada com sucesso',
           severity: 'info',
           status: 'completed',
           createdAt: new Date().toISOString(),
@@ -1727,7 +1490,6 @@
             payment_status: 'confirmed', 
             plan: 'pro', 
             activated: true,
-            proof_submitted: true,
             timestamp: new Date().toISOString()
           })
         });
@@ -1738,33 +1500,122 @@
       }, 2000);
     }
 
-    // Close modal when clicking outside
     document.getElementById('paymentModal').addEventListener('click', (e) => {
       if (e.target.id === 'paymentModal') {
         closePaymentModal();
       }
     });
 
-    // ============ AD BANNER FUNCTIONS ============
-    function closeAdBanner() {
-      const banner = document.getElementById('adBanner');
-      banner.style.opacity = '0';
-      banner.style.transition = 'opacity 0.3s ease';
-      setTimeout(() => {
-        banner.style.display = 'none';
-      }, 300);
+    // ============ DATA PANEL MODAL CONTROL ============
+    let dataPanelCloseTimer = null;
+
+    function openDataPanel() {
+      if (dataPanelCloseTimer) {
+        clearInterval(dataPanelCloseTimer);
+        dataPanelCloseTimer = null;
+      }
+
+      const existingModal = document.getElementById('dataPanelModal');
+      if (existingModal) {
+        existingModal.remove();
+      }
+
+      const modal = document.createElement('div');
+      modal.id = 'dataPanelModal';
+      modal.style.cssText = `
+        position:fixed;top:0;left:0;right:0;bottom:0;
+        background:rgba(0,0,0,0.7);
+        display:flex;align-items:center;justify-content:center;
+        z-index:10002;
+      `;
+      
+      modal.innerHTML = `
+        <div style="background:#0a0e1a;border-radius:12px;padding:32px;max-width:600px;width:90%;border:1px solid rgba(255,255,255,0.1);max-height:80vh;overflow-y:auto;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+            <h2 style="color:#ff6600;font-size:18px;font-weight:bold;margin:0;">📊 Painel de Dados</h2>
+            <button onclick="closeDataPanel()" style="background:none;border:none;color:#7a8299;cursor:pointer;font-size:24px;font-weight:bold;padding:0;">×</button>
+          </div>
+          <div id="dataPanelContent" style="color:#d0d5e0;font-size:14px;line-height:1.6;margin-bottom:16px;">
+            <p style="color:#7a8299;">Seus dados estão sendo sincronizados...</p>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      // Fechar ao clicar no overlay
+      modal.addEventListener('click', (e) => {
+        if (e.target.id === 'dataPanelModal') {
+          closeDataPanel();
+        }
+      });
+
+      loadDataPanelContent();
     }
 
-    function closeAdCard(btn) {
-      const card = btn.closest('[style*="rgba(255,102,0"]') || btn.closest('[style*="rgba(34,197,94"]') || btn.closest('[style*="rgba(100,200,255"]');
-      if (card) {
-        card.style.opacity = '0';
-        card.style.transition = 'opacity 0.3s ease';
+    function closeDataPanel() {
+      if (dataPanelCloseTimer) {
+        clearInterval(dataPanelCloseTimer);
+        dataPanelCloseTimer = null;
+      }
+
+      const modal = document.getElementById('dataPanelModal');
+      if (modal) {
+        modal.style.transition = 'opacity 0.3s ease';
+        modal.style.opacity = '0';
         setTimeout(() => {
-          card.style.display = 'none';
+          modal.remove();
         }, 300);
       }
     }
+
+    function loadDataPanelContent() {
+      const content = document.getElementById('dataPanelContent');
+      if (!content) return;
+
+      if (window.dataSdk) {
+        content.innerHTML = `
+          <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:16px;margin-bottom:16px;">
+            <p style="color:#22c55e;font-weight:bold;margin-bottom:8px;">✅ Dados Persistentes Ativados</p>
+            <p style="color:#9aa0b0;font-size:12px;margin:0;">Todos os scans são salvos na sua Canva Sheet.</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:16px;">
+            <p style="color:#ff6600;font-weight:bold;margin-bottom:12px;">📈 Sheet Info:</p>
+            <p style="margin:8px 0;color:#7a8299;font-size:12px;">Schema: title, description, severity, status, createdAt, scan_url</p>
+            <p style="margin:8px 0;color:#7a8299;font-size:12px;">Storage: Canva Cloud</p>
+            <p style="margin:8px 0;color:#7a8299;font-size:12px;">Status: ✅ Sincronizado</p>
+          </div>
+          <div style="background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.2);border-radius:8px;padding:12px;margin-top:16px;text-align:center;">
+            <p id="dataPanelCountdown" style="color:#ff6600;font-weight:bold;margin:0;font-size:13px;">⏱️ Fechando em 10s...</p>
+          </div>
+        `;
+      } else {
+        content.innerHTML = `
+          <div style="background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.2);border-radius:8px;padding:16px;">
+            <p style="color:#ff6600;font-weight:bold;margin-bottom:8px;">⚠️ SDK Indisponível</p>
+            <p style="color:#9aa0b0;font-size:12px;margin:0;">Recarregue a página.</p>
+          </div>
+        `;
+      }
+
+      let seconds = 10;
+      
+      const updateCountdown = () => {
+        const countEl = document.getElementById('dataPanelCountdown');
+        if (countEl) {
+          countEl.textContent = `⏱️ Fechando em ${seconds}s...`;
+        }
+        
+        seconds--;
+        
+        if (seconds < 0) {
+          clearInterval(dataPanelCloseTimer);
+          closeDataPanel();
+        }
+      };
+
+      dataPanelCloseTimer = setInterval(updateCountdown, 1000);
+    }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e3365e356bae732',t:'MTc3NDY2Njk2Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e33e17c05acfefc',t:'MTc3NDY3MjAzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
