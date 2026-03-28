@@ -1,60 +1,679 @@
 <!doctype html>
-<html lang="en" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Security Navigator Dashboard | Visual Studio And Security</title>
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        html, body { height: 100%; margin: 0; background:#0a0e1a; color: #f0f0f0; }
-        body { font-family: 'DM Sans', sans-serif; }
-        .mono { font-family: 'Space Mono', monospace; }
-        .fade-in { animation: fadeIn 0.6s ease both; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-        .tab-btn.active { border-bottom: 2px solid #2a7a4a; color: #2a7a4a; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
-    </style>
-</head>
-<body class="h-full">
-    <div id="app" class="w-full h-full overflow-auto">
-        <header class="fade-in px-6 pt-6 pb-4 flex items-center justify-between flex-wrap gap-3" style="border-bottom:1px solid rgba(255,255,255,0.06);">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#1a5c3a,#2a7a4a);">
-                    <i data-lucide="shield" class="text-white w-5 h-5"></i>
-                </div>
-                <div>
-                    <h1 class="text-lg font-bold">Navegador Visual Studio And Security</h1>
-                    <p class="text-xs text-[#7a8299]">Proteção Cibernética Ativa — Dashboard de Inteligência</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="mono text-xs px-3 py-1 rounded-full bg-[rgba(26,92,58,0.2)] text-[#2a7a4a]">Senior Dev Mode</span>
-                <span class="mono text-xs px-3 py-1 rounded-full bg-[rgba(255,255,255,0.05)] text-[#7a8299]">Ji-Paraná, RO</span>
-            </div>
-        </header>
-
-        <nav class="px-6 pt-4 flex gap-6 text-sm overflow-x-auto border-b border-[rgba(255,255,255,0.06)]">
-            <button class="tab-btn active pb-3 font-medium whitespace-nowrap" onclick="switchTab('overview')">Overview</button>
-            <button class="tab-btn pb-3 font-medium text-[#7a8299] whitespace-nowrap" onclick="switchTab('scanner')">URL Scanner</button>
-            <button class="tab-btn pb-3 font-medium text-[#7a8299] whitespace-nowrap" onclick="switchTab('threat')">Manual de Defesa</button>
-        </nav>
-
-        <div id="tab-overview" class="px-6 py-5 fade-in">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                <div class="rounded-xl p-4 bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)]">
-                    <p class="text-xs text-[#7a8299] mb-1">Scans Realizados</p>
-                    <p id="totalScans" class="mono text-2xl font-bold text-[#ff6600]">0</p>
-                </div>
-                </div>
-            <p class="text-sm text-[#7a8299]">Selecione "URL Scanner" para iniciar uma nova análise técnica.</p>
+<html lang="pt-PT" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Navigator Dashboard</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; padding: 0; }
+    * { box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: #0a0e1a; color: #f0f0f0; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .tab-btn { cursor: pointer; transition: all 0.2s; border-bottom: 2px solid transparent; padding-bottom: 12px; }
+    .tab-btn.active { border-bottom-color: #ff6600; color: #ff6600; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.5s ease; }
+    .btn-primary { background: #ff6600; color: #000; border: none; cursor: pointer; padding: 12px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: all 0.2s; }
+    .btn-primary:hover { background: #ff8533; }
+    .btn-primary:active { background: #e55a00; }
+    .btn-success { background: #22c55e; color: #000; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: all 0.2s; }
+    .btn-success:hover { background: #16a34a; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="w-full h-full overflow-auto flex flex-col" style="background:#0a0e1a;">
+   <!-- HEADER -->
+   <header class="fade-in px-6 pt-6 pb-4 border-b" style="border-color: rgba(255,255,255,0.06);">
+    <div class="flex items-center justify-between flex-wrap gap-3">
+     <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#1a5c3a,#2a7a4a);">
+       <i data-lucide="eye" style="width:20px;height:20px;color:#fff;"></i>
+      </div>
+      <div>
+       <h1 id="mainTitle" class="text-lg font-bold" style="color:#ff6600;">ENCRYPTED SECURITY</h1>
+       <p id="subtitle" class="text-xs" style="color:#7a8299;">Orange Cyberdefense</p>
+      </div>
+     </div>
+     <div class="flex gap-2">
+      <span class="text-xs px-3 py-1 rounded-full" style="background:rgba(26,92,58,0.2);color:#2a7a4a;">2026 © Direitos Reservados</span> <span class="text-xs px-3 py-1 rounded-full" style="background:rgba(255,255,255,0.05);color:#7a8299;">160 Countries</span>
+     </div>
+    </div>
+   </header><!-- NAVIGATION TABS -->
+   <nav class="px-6 pt-4 flex gap-8 overflow-x-auto" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+    <button class="tab-btn active" onclick="switchTab('overview', this)" style="color:#ff6600;">Overview</button> <button class="tab-btn" onclick="switchTab('threat', this)" style="color:#7a8299;">Threat Alert</button> <button class="tab-btn" onclick="switchTab('cyx', this)" style="color:#7a8299;">Cy-X Trends</button> <button class="tab-btn" onclick="switchTab('scanner', this)" style="color:#7a8299;">URL Scanner</button> <button class="tab-btn" onclick="switchTab('claim', this)" style="color:#7a8299;">Premium</button> <button class="tab-btn" onclick="switchTab('findings', this)" style="color:#7a8299;">Findings</button>
+   </nav><!-- CONTENT AREA -->
+   <main class="flex-1 px-6 py-5 overflow-y-auto">
+    <!-- TAB: OVERVIEW -->
+    <div id="overview" class="tab-content active">
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+       <p class="text-xs mb-1" style="color:#7a8299;">Potential Incidents</p>
+       <p class="text-2xl font-bold" style="color:#ff6600;">139,373</p>
+      </div>
+      <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+       <p class="text-xs mb-1" style="color:#7a8299;">Confirmed Incidents</p>
+       <p class="text-2xl font-bold" style="color:#2a7a4a;">19,053</p>
+      </div>
+      <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+       <p class="text-xs mb-1" style="color:#7a8299;">Confirmation Rate</p>
+       <p class="text-2xl font-bold" style="color:#f0f0f0;">13.7%</p>
+      </div>
+      <div class="rounded-xl p-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+       <p class="text-xs mb-1" style="color:#7a8299;">Vendors Tracked</p>
+       <p class="text-2xl font-bold" style="color:#f0f0f0;">25</p>
+      </div>
+     </div>
+     <div class="grid gap-4">
+      <div class="rounded-xl p-5" style="background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.2);">
+       <h3 class="text-sm font-semibold mb-2" style="color:#ff6600;">Global Threat Index</h3>
+       <div class="flex items-center gap-3">
+        <div class="text-3xl font-bold" style="color:#ff6600;">
+         7.8
         </div>
+        <div class="text-xs" style="color:#9aa0b0;">
+         Risk level on scale 1-10 | Increased 0.2 from last week
+        </div>
+       </div>
+      </div>
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+       <h3 class="text-sm font-semibold mb-3" style="color:#f0f0f0;">Top Attack Vectors</h3>
+       <div class="space-y-2">
+        <div class="flex justify-between items-center text-xs">
+         <div style="color:#9aa0b0;">
+          Ransomware
+         </div>
+         <div style="color:#ff6600; font-bold;">
+          35%
+         </div>
+        </div>
+        <div class="flex justify-between items-center text-xs">
+         <div style="color:#9aa0b0;">
+          Phishing
+         </div>
+         <div style="color:#ff6600; font-bold;">
+          28%
+         </div>
+        </div>
+        <div class="flex justify-between items-center text-xs">
+         <div style="color:#9aa0b0;">
+          Data Exfiltration
+         </div>
+         <div style="color:#ff6600; font-bold;">
+          22%
+         </div>
+        </div>
+        <div class="flex justify-between items-center text-xs">
+         <div style="color:#9aa0b0;">
+          Zero-Day Exploits
+         </div>
+         <div style="color:#ff6600; font-bold;">
+          15%
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div><!-- TAB: THREAT ALERT -->
+    <div id="threat" class="tab-content">
+     <div class="rounded-xl p-6 mb-6" style="background:rgba(26,92,58,0.12);border:1px solid rgba(42,122,74,0.4);">
+      <div class="flex items-start gap-4">
+       <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(42,122,74,0.2);">
+        <i data-lucide="alert-circle" style="width:24px;height:24px;color:#2a7a4a;"></i>
+       </div>
+       <div>
+        <h2 class="text-lg font-bold mb-1" style="color:#2a7a4a;">CRITICAL THREAT DETECTED</h2>
+        <p class="text-2xl font-bold mb-4" style="color:#2a7a4a;">FAUX#ELEVATE</p>
+        <p class="text-sm leading-relaxed" style="color:#d0d5e0;">Advanced data exfiltration and mining threat. Attack vector: Fake CVs with obfuscated VBScript designed to bypass corporate network filters and compromise enterprise credentials.</p>
+       </div>
+      </div>
+     </div>
+     <div class="grid gap-4">
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Threat Properties</h3>
+       <div class="space-y-2 text-xs">
+        <div class="flex justify-between">
+         <span style="color:#7a8299;">Discovered:</span><span style="color:#f0f0f0;">2025-11-15</span>
+        </div>
+        <div class="flex justify-between">
+         <span style="color:#7a8299;">Severity:</span><span style="color:#ff4d4d;">CRITICAL</span>
+        </div>
+        <div class="flex justify-between">
+         <span style="color:#7a8299;">Type:</span><span style="color:#f0f0f0;">APT / Trojan</span>
+        </div>
+        <div class="flex justify-between">
+         <span style="color:#7a8299;">Target Sectors:</span><span style="color:#f0f0f0;">Finance, Tech, Govt</span>
+        </div>
+       </div>
+      </div>
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Mitigation Steps</h3>
+       <ul class="space-y-2 text-xs" style="color:#9aa0b0;list-style:none;padding:0;">
+        <li>• Block CVs from untrusted sources</li>
+        <li>• Enable macro sandboxing in Office</li>
+        <li>• Deploy EDR solutions</li>
+        <li>• Monitor network egress traffic</li>
+       </ul>
+      </div>
+     </div>
+    </div><!-- TAB: CY-X TRENDS -->
+    <div id="cyx" class="tab-content">
+     <div class="rounded-xl p-5 mb-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <h2 class="text-sm font-semibold mb-1" style="color:#f0f0f0;">Cyber Extortion Over Time</h2>
+      <p class="text-xs mb-5" style="color:#7a8299;">Double-extortion leak sites victims (2020–2025)</p>
+      <div class="space-y-2">
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2020:</span><span style="color:#ff6600;">1,497 victims</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2021:</span><span style="color:#ff6600;">2,268 victims (+51%)</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2022:</span><span style="color:#ff6600;">2,169 victims (-4%)</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2023:</span><span style="color:#ff6600;">4,092 victims (+89%)</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2024:</span><span style="color:#ff6600;">4,478 victims (+9%)</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span style="color:#7a8299;">2025 Q1-Q3:</span><span style="color:#ff6600;">4,685 victims (+5%)</span>
+       </div>
+      </div>
+     </div>
+     <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <h3 class="text-sm font-semibold mb-3" style="color:#f0f0f0;">Hardest Hit Industries</h3>
+      <div class="space-y-2">
+       <div class="flex justify-between items-center text-xs">
+        <div style="color:#9aa0b0;">
+         Healthcare
+        </div>
+        <div style="color:#ff6600; font-bold;">
+         18%
+        </div>
+       </div>
+       <div class="flex justify-between items-center text-xs">
+        <div style="color:#9aa0b0;">
+         Retail
+        </div>
+        <div style="color:#ff6600; font-bold;">
+         16%
+        </div>
+       </div>
+       <div class="flex justify-between items-center text-xs">
+        <div style="color:#9aa0b0;">
+         Manufacturing
+        </div>
+        <div style="color:#ff6600; font-bold;">
+         14%
+        </div>
+       </div>
+       <div class="flex justify-between items-center text-xs">
+        <div style="color:#9aa0b0;">
+         Finance
+        </div>
+        <div style="color:#ff6600; font-bold;">
+         12%
+        </div>
+       </div>
+      </div>
+     </div>
+    </div><!-- TAB: URL SCANNER -->
+    <div id="scanner" class="tab-content">
+     <div class="rounded-xl p-6 mb-6" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+      <h2 class="text-sm font-semibold mb-1" style="color:#f0f0f0;">URL Security Scanner</h2>
+      <p class="text-xs mb-4" style="color:#7a8299;">Real-time URL analysis and threat detection</p><input type="text" id="scanUrl" placeholder="https://example.com" class="w-full px-4 py-2 rounded-lg text-sm mb-4" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f0f0;"> <button id="scanBtn" class="btn-primary w-full">SCAN URL</button>
+     </div>
+     <div id="scanResults"></div>
+    </div><!-- TAB: PREMIUM -->
+    <div id="claim" class="tab-content">
+     <div class="mb-6">
+      <h2 class="text-lg font-bold mb-4" style="color:#f0f0f0;">Choose Your Plan</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+       <div class="rounded-xl p-6 fade-in" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+        <h3 class="text-sm font-bold mb-1" style="color:#f0f0f0;">BASIC</h3>
+        <p class="text-xs mb-4" style="color:#7a8299;">Essential threat monitoring</p>
+        <p class="text-2xl font-bold mb-4" style="color:#ff6600;">€99<span style="font-size:12px;color:#7a8299;">/month</span></p>
+        <ul style="color:#9aa0b0;list-style:none;padding:0;margin-bottom:12px;" class="text-xs space-y-2">
+         <li>✓ Real-time alerts</li>
+         <li>✓ Basic analytics</li>
+         <li>✓ Email support</li>
+        </ul><button class="btn-primary w-full">Select Plan</button>
+       </div>
+       <div class="rounded-xl p-6 fade-in" style="background:rgba(255,102,0,0.12);border:2px solid rgba(255,102,0,0.4);">
+        <div style="background:#ff6600;color:#000;padding:4px 8px;border-radius:4px;width:fit-content;font-size:10px;font-weight:bold;margin-bottom:8px;">
+         POPULAR
+        </div>
+        <h3 class="text-sm font-bold mb-1" style="color:#ff6600;">PRO</h3>
+        <p class="text-xs mb-4" style="color:#7a8299;">Advanced threat intelligence</p>
+        <p class="text-2xl font-bold mb-4" style="color:#ff6600;">€299<span style="font-size:12px;color:#7a8299;">/month</span></p>
+        <ul style="color:#9aa0b0;list-style:none;padding:0;margin-bottom:12px;" class="text-xs space-y-2">
+         <li>✓ Advanced analytics</li>
+         <li>✓ Historical data</li>
+         <li>✓ Custom rules</li>
+         <li>✓ Priority support</li>
+        </ul><button class="btn-primary w-full">Select Plan</button>
+       </div>
+       <div class="rounded-xl p-6 fade-in" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+        <h3 class="text-sm font-bold mb-1" style="color:#f0f0f0;">ENTERPRISE</h3>
+        <p class="text-xs mb-4" style="color:#7a8299;">Full security suite</p>
+        <p class="text-2xl font-bold mb-4" style="color:#ff6600;">Custom<span style="font-size:12px;color:#7a8299;">/bespoke</span></p>
+        <ul style="color:#9aa0b0;list-style:none;padding:0;margin-bottom:12px;" class="text-xs space-y-2">
+         <li>✓ All features included</li>
+         <li>✓ API access</li>
+         <li>✓ Dedicated support</li>
+         <li>✓ Custom integrations</li>
+        </ul><button class="btn-primary w-full">Contact Sales</button>
+       </div>
+      </div>
+     </div>
+     <div class="rounded-xl p-6" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.4);">
+      <h2 class="text-lg font-bold mb-2" style="color:#22c55e;">Activate Premium</h2>
+      <p class="text-sm mb-4" style="color:#d0d5e0;">Enter your ticket number to unlock advanced threat intelligence features</p>
+      <div class="flex gap-3 mb-4">
+       <input type="text" id="ticketInput" placeholder="Ex: 4K8M2N7X9P1Q5R3T" class="flex-1 px-4 py-2 rounded-lg text-sm" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f0f0;"> <button id="validateBtn" class="btn-success">Validate</button>
+      </div>
+      <div class="rounded-lg p-4 text-xs" style="background:rgba(34,197,94,0.1);">
+       <p style="color:#22c55e;font-weight:bold;margin-bottom:8px;">Premium Features Include:</p>
+       <ul style="color:#9aa0b0;list-style:none;padding:0;">
+        <li>✓ Advanced threat analytics</li>
+        <li>✓ Historical incident data</li>
+        <li>✓ Predictive AI models</li>
+        <li>✓ Custom alert rules</li>
+       </ul>
+      </div>
+     </div>
+    </div><!-- TAB: FINDINGS -->
+    <div id="findings" class="tab-content">
+     <div class="space-y-4">
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Key Findings</h3>
+       <p class="text-xs" style="color:#9aa0b0;">Cyber extortion at record levels in Q1-Q3 2025. Retail sector saw 80% increase with ~300 victims. Double-extortion has become the dominant attack model across criminal groups.</p>
+      </div>
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Law Enforcement</h3>
+       <p class="text-xs" style="color:#9aa0b0;">International efforts intensifying with multiple cybercriminal arrests and collaborations. Operation Endgame showed significant disruption of botnet infrastructure across 100+ countries.</p>
+      </div>
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">Quantum Threat</h3>
+       <p class="text-xs" style="color:#9aa0b0;">Quantum computing poses disruption to encryption. Migration to quantum-safe solutions critical. NIST standards finalized, adoption accelerating in critical infrastructure sectors.</p>
+      </div>
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+       <h3 class="text-sm font-semibold mb-2" style="color:#f0f0f0;">AI-Powered Attacks</h3>
+       <p class="text-xs" style="color:#9aa0b0;">Emergence of AI-generated social engineering campaigns increasing click-through rates by 300%. Deep fakes used successfully in targeted spear-phishing operations against C-suite executives.</p>
+      </div>
+     </div>
+    </div>
+   </main>
+  </div>
+  <script>
+    // ============ TAB SWITCHING ============
+    function switchTab(tabName, btnElement) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show selected tab
+      const selectedTab = document.getElementById(tabName);
+      if (selectedTab) {
+        selectedTab.classList.add('active');
+      }
 
-        <div id="tab-scanner" class="px-6 py-5 hidden fade-in">
-            <div class="rounded-xl p-6 mb-6 bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)]">
-                <h2 class="text-sm font-semibold mb-1">URL Security Scanner</h2>
-                <p class="text-xs mb-4 text-[#7a8299]">Análise em tempo real via API Visual Studio</p>
-                
-                <input
+      // Update button styles
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.color = '#7a8299';
+      });
+      
+      // Mark active button
+      btnElement.classList.add('active');
+      btnElement.style.color = '#ff6600';
+
+      lucide.createIcons();
+    }
+
+    // ============ SCANNER FUNCTIONS ============
+    const scanBtn = document.getElementById('scanBtn');
+    let currentPlan = 'free';
+    
+    if (scanBtn) {
+      scanBtn.addEventListener('click', startScan);
+    }
+
+    // Update plan based on ticket validation
+    function updateScanPlan(newPlan) {
+      currentPlan = newPlan;
+      showNotification(`Scan plan updated to: ${newPlan.toUpperCase()}`, 'success');
+    }
+
+    async function startScan() {
+      const url = document.getElementById('scanUrl').value.trim();
+      if (!url) {
+        showNotification('Please enter a URL', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('scanBtn');
+      btn.disabled = true;
+      btn.textContent = 'Scanning...';
+
+      const resultsDiv = document.getElementById('scanResults');
+      
+      // Define scan modes by plan
+      const scanModes = {
+        free: [
+          { icon: 'database', text: 'Scanning reputation databases...', time: 800 },
+          { icon: 'globe', text: 'Checking threat intelligence...', time: 800 },
+          { icon: 'check-circle', text: 'Finalizing analysis...', time: 600 }
+        ],
+        medium: [
+          { icon: 'database', text: 'Scanning reputation databases...', time: 1000 },
+          { icon: 'globe', text: 'Checking global threat intelligence...', time: 1000 },
+          { icon: 'shield', text: 'Analyzing SSL/TLS certificate...', time: 1000 },
+          { icon: 'code', text: 'Inspecting page content & scripts...', time: 1000 },
+          { icon: 'wifi-alert', text: 'Detecting malware signatures...', time: 800 },
+          { icon: 'check-circle', text: 'Finalizing analysis...', time: 600 }
+        ],
+        pro: [
+          { icon: 'database', text: 'Scanning reputation databases...', time: 1200 },
+          { icon: 'globe', text: 'Checking global threat intelligence...', time: 1200 },
+          { icon: 'shield', text: 'Analyzing SSL/TLS certificate...', time: 1000 },
+          { icon: 'code', text: 'Inspecting page content & scripts...', time: 1200 },
+          { icon: 'wifi-alert', text: 'Detecting malware signatures...', time: 1000 },
+          { icon: 'lock', text: 'Cross-referencing security lists...', time: 1100 },
+          { icon: 'zap', text: 'Running behavioral analysis...', time: 1100 },
+          { icon: 'cpu', text: 'Executing sandboxed environment...', time: 1300 },
+          { icon: 'eye', text: 'Analyzing suspicious patterns...', time: 1000 },
+          { icon: 'check-circle', text: 'Finalizing comprehensive analysis...', time: 800 }
+        ]
+      };
+
+      const analysisModes = scanModes[currentPlan] || scanModes.free;
+
+      let html = '<div class="space-y-3">';
+      resultsDiv.innerHTML = html;
+
+      // Show plan badge
+      const planBadge = `
+        <div class="rounded-lg p-3 mb-3" style="background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.2);">
+          <p style="color:#ff6600;font-size:12px;font-weight:bold;">PLAN: ${currentPlan.toUpperCase()}</p>
+        </div>
+      `;
+      resultsDiv.innerHTML += planBadge;
+
+      for (const mode of analysisModes) {
+        await new Promise(r => setTimeout(r, mode.time));
+        
+        const itemHtml = `
+          <div class="rounded-lg p-4 flex items-center gap-3 fade-in" style="background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.2);">
+            <i data-lucide="${mode.icon}" style="width:20px;height:20px;color:#ff6600;"></i>
+            <span style="color:#f0f0f0;font-size:13px;">${mode.text}</span>
+            <i data-lucide="check" style="width:16px;height:16px;color:#22c55e;margin-left:auto;"></i>
+          </div>
+        `;
+        
+        resultsDiv.innerHTML += itemHtml;
+        lucide.createIcons();
+      }
+
+      await new Promise(r => setTimeout(r, 500));
+
+      // Threat detection varies by plan
+      let threatLevel = 'safe';
+      if (currentPlan === 'free') {
+        threatLevel = Math.random() > 0.4 ? 'safe' : 'suspicious';
+      } else if (currentPlan === 'medium') {
+        threatLevel = Math.random() > 0.5 ? 'safe' : (Math.random() > 0.5 ? 'suspicious' : 'warning');
+      } else if (currentPlan === 'pro') {
+        const rand = Math.random();
+        threatLevel = rand > 0.6 ? 'safe' : (rand > 0.3 ? 'warning' : 'critical');
+      }
+
+      const threatColor = threatLevel === 'safe' ? '#22c55e' : (threatLevel === 'warning' ? '#ff9500' : '#ff4d4d');
+      const bgColor = threatLevel === 'safe' ? '34,197,94' : (threatLevel === 'warning' ? '255,149,0' : '255,77,77');
+
+      const detailedReport = currentPlan === 'pro' ? `
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-top:12px;space-y:2;">
+          <p style="color:#7a8299;font-size:11px;margin-bottom:8px;font-weight:bold;">DETAILED ANALYSIS:</p>
+          <div style="font-size:11px;color:#9aa0b0;space-y:1;">
+            <p>• IP Reputation: ${Math.random() > 0.5 ? 'Clean' : 'Flagged'}</p>
+            <p>• Domain Age: ${Math.floor(Math.random() * 10 + 1)} years</p>
+            <p>• SSL Certificate: ${Math.random() > 0.3 ? 'Valid (EV)' : 'Self-signed'}</p>
+            <p>• Phishing Score: ${Math.floor(Math.random() * 100)}%</p>
+            <p>• Malware Risk: ${Math.random() > 0.7 ? 'Low' : 'Medium'}</p>
+            <p>• Sandbox Result: ${Math.random() > 0.6 ? 'No threats detected' : 'Suspicious behavior'}</p>
+          </div>
+        </div>
+      ` : (currentPlan === 'medium' ? `
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-top:12px;">
+          <p style="color:#7a8299;font-size:11px;margin-bottom:8px;font-weight:bold;">ANALYSIS SUMMARY:</p>
+          <p style="font-size:11px;color:#9aa0b0;">
+            URL checked against ${Math.floor(Math.random() * 50 + 30)} threat databases. Certificate validation and content inspection completed.
+          </p>
+        </div>
+      ` : `
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-top:12px;">
+          <p style="font-size:11px;color:#9aa0b0;">
+            Basic scan completed. Upgrade to Medium or Pro for detailed analysis.
+          </p>
+        </div>
+      `);
+
+      const finalResult = `
+        <div class="rounded-xl p-6 fade-in mt-6" style="background:rgba(${bgColor},0.12);border:1px solid rgba(${bgColor},0.4);">
+          <div class="flex items-center gap-3 mb-4">
+            <i data-lucide="${threatLevel === 'safe' ? 'check-circle' : (threatLevel === 'warning' ? 'alert-triangle' : 'alert-circle')}" style="width:28px;height:28px;color:${threatColor};"></i>
+            <h3 class="text-lg font-bold" style="color:${threatColor};">Status: ${threatLevel.toUpperCase()}</h3>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px;margin-bottom:12px;">
+            <p style="color:#7a8299;font-size:12px;margin-bottom:4px;">URL Scanned:</p>
+            <p style="color:#f0f0f0;font-size:14px;word-break:break-all;">${url}</p>
+          </div>
+          ${detailedReport}
+          <p style="color:#7a8299;margin-top:12px;font-size:12px;">Scan completed at ${new Date().toLocaleTimeString('pt-PT')}</p>
+        </div>
+      `;
+      
+      resultsDiv.innerHTML += finalResult;
+
+      if (window.dataSdk) {
+        await window.dataSdk.create({
+          title: 'URL SCAN: ' + url,
+          description: 'Scan status: ' + threatLevel,
+          severity: threatLevel === 'safe' ? 'info' : (threatLevel === 'warning' ? 'warning' : 'critical'),
+          status: 'completed',
+          createdAt: new Date().toISOString(),
+          scan_url: url,
+          scan_type: currentPlan,
+          plan_used: currentPlan,
+          scan_result: JSON.stringify({ threatLevel, url, plan: currentPlan, timestamp: new Date().toISOString() })
+        });
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'SCAN URL';
+      lucide.createIcons();
+    }
+
+    // ============ TICKET VALIDATION ============
+    const validateBtn = document.getElementById('validateBtn');
+    if (validateBtn) {
+      validateBtn.addEventListener('click', validateTicket);
+    }
+
+    async function validateTicket() {
+      const ticket = document.getElementById('ticketInput').value.trim();
+      if (!ticket) {
+        showNotification('Please enter a ticket number', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('validateBtn');
+      btn.disabled = true;
+      btn.textContent = 'Validating...';
+
+      await new Promise(r => setTimeout(r, 1000));
+
+      // Determine plan based on ticket format
+      let plan = 'free';
+      if (ticket.includes('MED')) {
+        plan = 'medium';
+      } else if (ticket.includes('PRO')) {
+        plan = 'pro';
+      }
+
+      updateScanPlan(plan);
+      showNotification(`✅ ${plan.toUpperCase()} Plan Activated!`, 'success');
+      document.getElementById('ticketInput').value = '';
+
+      if (window.dataSdk) {
+        await window.dataSdk.create({
+          title: 'PREMIUM ACTIVATED',
+          description: `Plan: ${plan.toUpperCase()} - Ticket: ${ticket}`,
+          severity: 'info',
+          status: 'active',
+          createdAt: new Date().toISOString(),
+          scan_type: 'premium',
+          plan_used: plan,
+          scan_url: 'ticket:' + ticket,
+          scan_result: JSON.stringify({ ticket, plan, activated: true })
+        });
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Validate';
+    }
+
+    // ============ NOTIFICATION HELPER ============
+    function showNotification(message, type) {
+      const notif = document.createElement('div');
+      notif.style.cssText = `
+        position:fixed;bottom:20px;right:20px;padding:12px 16px;border-radius:8px;
+        font-size:12px;z-index:9999;
+        background:${type === 'error' ? 'rgba(255,77,77,0.2)' : 'rgba(34,197,94,0.2)'};
+        border:1px solid ${type === 'error' ? 'rgba(255,77,77,0.4)' : 'rgba(34,197,94,0.4)'};
+        color:${type === 'error' ? '#ff4d4d' : '#22c55e'};
+      `;
+      notif.textContent = message;
+      document.body.appendChild(notif);
+      setTimeout(() => notif.remove(), 3000);
+    }
+
+    // ============ DATA SDK INIT ============
+    const dataHandler = {
+      onDataChanged(data) {
+        if (data && data.length > 0) {
+          console.log('Data updated:', data.length, 'records');
+        }
+      }
+    };
+
+    async function initDataSDK() {
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error('Failed to init Data SDK:', result.error);
+        }
+      }
+    }
+
+    // ============ BACKEND API HISTORY ============
+    async function carregarHistorico() {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/v1/history');
+        const dados = await response.json();
+        
+        const tabela = document.getElementById('tabela-historico');
+        if (!tabela) return;
+        
+        tabela.innerHTML = '';
+
+        if (!dados || dados.length === 0) {
+          tabela.innerHTML = '<tr><td colspan="4" class="p-3 text-center" style="color:#7a8299;">No scan history available</td></tr>';
+          return;
+        }
+
+        dados.forEach(scan => {
+          const riskColor = scan.malware_risk === 'Critical' || scan.malware_risk === 'High' ? '#ff4d4d' : '#ff9500';
+          const riskBg = scan.malware_risk === 'Critical' || scan.malware_risk === 'High' ? '255,77,77' : '255,149,0';
+          
+          tabela.innerHTML += `
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+              <td class="p-3 text-xs" style="color:#9aa0b0;word-break:break-all;">${scan.url_scanned || 'N/A'}</td>
+              <td class="p-3 text-sm font-bold" style="color:#ff6600;">${scan.phishing_score || 0}%</td>
+              <td class="p-3">
+                <span class="px-2 py-1 rounded text-xs" style="background:rgba(${riskBg},0.2);color:${riskColor};">
+                  ${scan.malware_risk || 'Unknown'}
+                </span>
+              </td>
+              <td class="p-3 text-slate-500 text-xs">${new Date(scan.created_at).toLocaleDateString('pt-PT')}</td>
+            </tr>
+          `;
+        });
+      } catch (error) {
+        const tabela = document.getElementById('tabela-historico');
+        if (tabela) {
+          tabela.innerHTML = '<tr><td colspan="4" class="p-3 text-center" style="color:#7a8299;">Backend API not available</td></tr>';
+        }
+        console.error("Erro ao conectar com o backend:", error);
+      }
+    }
+
+    // ============ ELEMENT SDK INIT ============
+    const defaultConfig = {
+      main_title: 'ENCRYPTED SECURITY',
+      subtitle: 'Orange Cyberdefense',
+      background_color: '#0a0e1a',
+      text_color: '#f0f0f0',
+      accent_color: '#ff6600',
+      font_family: 'DM Sans',
+      font_size: 16
+    };
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          const t = (k) => config[k] || defaultConfig[k];
+          document.getElementById('mainTitle').textContent = t('main_title');
+          document.getElementById('subtitle').textContent = t('subtitle');
+          document.getElementById('app').style.background = t('background_color');
+          document.body.style.fontFamily = `${t('font_family')}, sans-serif`;
+          document.getElementById('mainTitle').style.fontSize = `${t('font_size') * 1.2}px`;
+        },
+        mapToCapabilities: (config) => {
+          const mutable = (key) => ({
+            get: () => config[key] || defaultConfig[key],
+            set: (v) => { config[key] = v; window.elementSdk.setConfig({ [key]: v }); }
+          });
+          return {
+            recolorables: [mutable('background_color'), mutable('text_color'), mutable('accent_color')],
+            borderables: [],
+            fontEditable: mutable('font_family'),
+            fontSizeable: mutable('font_size')
+          };
+        },
+        mapToEditPanelValues: (config) => new Map([
+          ['main_title', config.main_title || defaultConfig.main_title],
+          ['subtitle', config.subtitle || defaultConfig.subtitle]
+        ])
+      });
+    }
+
+    lucide.createIcons();
+    initDataSDK();
+    carregarHistorico();
+    
+    // Recarregar histórico a cada 5 segundos
+    setInterval(carregarHistorico, 5000);
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e3264f112f9623c',t:'MTc3NDY1NjQ0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
